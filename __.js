@@ -1,4 +1,4 @@
-// version 1.2
+// version 1.3
 __ = {
 	dn_ : function( s, x1, x2 ) {
 		var dnStart = ( typeof x1 == "object" ) ? x1 : document;
@@ -21,28 +21,48 @@ __ = {
 		var xdn = dnStart[ sfn ]( s );
 		if( xdn ) {
 			if( fn ) {
-				__.dn.each( xdn, fn );
+				__.each( xdn, fn );
 			}
-			if ( typeof xdn.length == "number" ) {
-				if( xdn.length == 1 ) {
+			var c = xdn.length;
+			if ( ! isNaN( c ) ) {
+				if( c == 1 ) {
 					return xdn[ 0 ];
 				}
-				else if( xdn.length == 0 ) {
+				else if( c == 0 ) {
 					return null;
 				}
 			}
 		}
 		return xdn;
 	}
-	, dn : {
-		  each : function( xdn, fn ) {
-			var ldn = ( xdn.length ) ? xdn : [ xdn ];
-			var c = ldn.length;
-			for( var ix=0; ix<c; ix++ ) {
-				fn( ldn[ ix ], ix );
+	, _dn : function( s, dn, fn ) {
+		if( ! dn.closest ) {
+			__.polyfill.closest();
+			__._dn( s, dn, fn );
+		}	
+		else {
+			var dnClosest = dn.closest( s );
+			if( fn ) {
+				__.each( dnClosest, fn );
 			}
+			return dnClosest
+		}	
+	}
+	, each : function( xdn, fn ) {
+		var c = ldn.length;
+		var ldn = ( ! isNaN( c ) ) ? xdn : [ xdn ];
+		for( var ix=0; ix<c; ix++ ) {
+			fn( ldn[ ix ], ix );
 		}
-		, frag : function( h, x1, x2 ) {
+	}
+	, dn : {
+		  insertAfter : function( dnNew, dnBefore ) {
+			dnBefore.parentNode.insertBefore( dnNew, dnBefore.nextSibling );
+		}
+		, del : function( dn ) {
+			dn.parentNode.removeChild( dn );
+		}
+		, add : function( h, x1, x2 ) {
 			var dnRoot = ( typeof x1 == "object" ) ? x1 : document.body;
 			var fn = ( typeof x1 == "function" ) ? x1 : x2;
 			var docFrag = document.createRange().createContextualFragment( h );
@@ -51,12 +71,8 @@ __ = {
 			if( fn ) {
 				this.each( xdn, fn );
 			}
-			// we append the document fragment to root node, at
-			// this point document fragement [docFrag] is emptied
 			dnRoot.appendChild( docFrag );
-			// we check 
 			if( cNew == 1 ) {
-				console.l
 				return dnRoot.lastChild;
 			}
 			var ldnChildren = dnRoot.children;
@@ -67,6 +83,68 @@ __ = {
 				ldn.push( ldnChildren[ ixNew ] );
 			}
 			return ldn;
+		}
+		, show : function( dn ) {
+			if( dn.style.display != "none" ) {
+				return;
+			}
+			var sDisplay = ( dn.hasAttribute( "__.display" ) )
+				? dn.getAttribute( "__.display" )
+				: "block";
+			dn.style.display = sDisplay;
+		}
+		, hide : function( dn ) {
+			if( dn.style.display == "none" ) {
+				return;
+			}
+			var sDisplay = getComputedStyle( dn ).display;
+			dn.setAttribute( "__.display", sDisplay ); 
+			dn.style.display = "none";
+		}
+	}
+	, class : {
+		  toggle : function( dn, s ) {
+			if( dn.classList.toggle ) {
+				dn.classList.toggle( s );		
+			}
+			else {
+				if( dn.classList.contains( s ) ) {
+					dn.classList.remove( s );
+				}
+				else {
+					dn.classList.add( s );
+				}
+			}
+		}
+	}
+	, polyfill : {
+		  matches : function() {
+			this.Element && function( oPrototype ) {
+				oPrototype.matches = oPrototype.matches ||
+				oPrototype.matchesSelector ||
+				oPrototype.webkitMatchesSelector ||
+				oPrototype.msMatchesSelector ||
+				function( selector ) {
+					var node = this, nodes = ( node.parentNode || node.document ).querySelectorAll( selector ), i = -1;
+					while( nodes[ ++i ] && nodes[ i ] != node );
+					return !! nodes[ i ];
+				}
+			}( Element.prototype );
+			window.__matches = true;
+		}
+		, closest : function() {
+			__.polyfill.matches();
+			this.Element && function( oPrototype ) {
+				oPrototype.closest = oPrototype.closest ||
+				function( selector ) {
+					var dn = this;
+					while( dn.matches && ! dn.matches( selector ) ) {
+						dn = dn.parentNode;
+					}
+					return ( dn.matches ) ? dn : null;
+				}
+			}( Element.prototype );
+			window.__closest = true;
 		}
 	}
 }
