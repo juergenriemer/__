@@ -49,8 +49,8 @@ __ = {
 		}	
 	}
 	, each : function( xdn, fn ) {
+		var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
 		var c = ldn.length;
-		var ldn = ( ! isNaN( c ) ) ? xdn : [ xdn ];
 		for( var ix=0; ix<c; ix++ ) {
 			fn( ldn[ ix ], ix );
 		}
