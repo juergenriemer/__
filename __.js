@@ -1,4 +1,5 @@
-// version 1.3
+
+// version 1.5
 __ = {
 	dn_ : function( s, x1, x2 ) {
 		var dnStart = ( typeof x1 == "object" ) ? x1 : document;
@@ -36,17 +37,11 @@ __ = {
 		return xdn;
 	}
 	, _dn : function( s, dn, fn ) {
-		if( ! dn.closest ) {
-			__.polyfill.closest();
-			__._dn( s, dn, fn );
-		}	
-		else {
-			var dnClosest = dn.closest( s );
-			if( fn ) {
-				__.each( dnClosest, fn );
-			}
-			return dnClosest
-		}	
+		var dnClosest = dn.closest( s );
+		if( fn ) {
+			__.each( dnClosest, fn );
+		}
+		return dnClosest
 	}
 	, each : function( xdn, fn ) {
 		var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
@@ -56,13 +51,28 @@ __ = {
 		}
 	}
 	, dn : {
-		  insertAfter : function( dnNew, dnBefore ) {
-			dnBefore.parentNode.insertBefore( dnNew, dnBefore.nextSibling );
-		}
-		, del : function( dn ) {
+		  del : function( dn ) {
 			dn.parentNode.removeChild( dn );
 		}
+		, _move : function( dnNew, dnExisting ) {
+			dnExisting.parentNode.insertBefore( dnNew, dnExisting );
+		  }
+		, move : function( dnNew, dnExisting ) {
+			dnExisting.appendChild( dnNew );
+		  }
+		, move_ : function( dnNew, dnExisting ) {
+			dnExisting.parentNode.insertBefore( dnNew, dnExisting.nextSibling );
+		}
+		, _add : function( h, x1, x2 ) {
+			__.dn._add_( h, x1, x2, "_move" );
+		}
 		, add : function( h, x1, x2 ) {
+			__.dn._add_( h, x1, x2, "move" );
+		}
+		, add_ : function( h, x1, x2 ) {
+			__.dn._add_( h, x1, x2, "move_" );
+		}
+		, _add_ : function( h, x1, x2, sfn ) {
 			var dnRoot = ( typeof x1 == "object" ) ? x1 : document.body;
 			var fn = ( typeof x1 == "function" ) ? x1 : x2;
 			var docFrag = document.createRange().createContextualFragment( h );
@@ -71,7 +81,7 @@ __ = {
 			if( fn ) {
 				this.each( xdn, fn );
 			}
-			dnRoot.appendChild( docFrag );
+			__.dn[ sfn ]( docFrag, dnRoot );
 			if( cNew == 1 ) {
 				return dnRoot.lastChild;
 			}
@@ -102,49 +112,57 @@ __ = {
 			dn.style.display = "none";
 		}
 	}
-	, class : {
-		  toggle : function( dn, s ) {
-			if( dn.classList.toggle ) {
-				dn.classList.toggle( s );		
-			}
-			else {
-				if( dn.classList.contains( s ) ) {
-					dn.classList.remove( s );
-				}
-				else {
-					dn.classList.add( s );
-				}
-			}
-		}
-	}
-	, polyfill : {
-		  matches : function() {
-			this.Element && function( oPrototype ) {
-				oPrototype.matches = oPrototype.matches ||
-				oPrototype.matchesSelector ||
-				oPrototype.webkitMatchesSelector ||
-				oPrototype.msMatchesSelector ||
-				function( selector ) {
-					var node = this, nodes = ( node.parentNode || node.document ).querySelectorAll( selector ), i = -1;
-					while( nodes[ ++i ] && nodes[ i ] != node );
-					return !! nodes[ i ];
-				}
-			}( Element.prototype );
-			window.__matches = true;
-		}
-		, closest : function() {
-			__.polyfill.matches();
-			this.Element && function( oPrototype ) {
-				oPrototype.closest = oPrototype.closest ||
-				function( selector ) {
-					var dn = this;
-					while( dn.matches && ! dn.matches( selector ) ) {
-						dn = dn.parentNode;
-					}
-					return ( dn.matches ) ? dn : null;
-				}
-			}( Element.prototype );
-			window.__closest = true;
-		}
+	, css : function( sStyle ) {
+		var dn = document.createElement( 'style' );
+		document.body.appendChild( dn );
+		dn.innerHTML = sStyle;
 	}
 }
+
+/* *** Polyfills *** */
+/* matches */
+this.Element && function( oPrototype ) {
+	oPrototype.matches = oPrototype.matches ||
+	oPrototype.matchesSelector ||
+	oPrototype.webkitMatchesSelector ||
+	oPrototype.msMatchesSelector ||
+	function( sCSS ) {
+		var dn = this
+		var ldn = ( dn.parentNode || dn.document ).querySelectorAll( sCSS )
+		var i = -1;
+		while( ldn[ ++i ] && ldn[ i ] != dn );
+		return !! ldn[ i ];
+	}
+}( Element.prototype );
+
+/* closest */
+this.Element && function( oPrototype ) {
+	oPrototype.closest = oPrototype.closest || function( sCSS ) {
+		var dn = this;
+		while( dn.matches && ! dn.matches( sCSS ) ) {
+			dn = dn.parentNode;
+		}
+		return ( dn.matches ) ? dn : null;
+	}
+}( Element.prototype );
+
+/* classList.toggle */
+
+( function() {
+	function ClassList( el ) {
+		this.element = el;
+	}
+	ClassList.prototype = {
+		toggle : function( name ) {
+			if( this.contains( name ) ) {
+				this.remove( name );
+				return false;
+			}
+			else {
+				this.add( name );
+				return true;
+			}
+		}
+	};
+}() );
+
