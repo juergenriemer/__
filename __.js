@@ -4,7 +4,37 @@
 // @js_externs var __; __.dn_; __.dn._dn; __.dn.del; __.dn; __.dn._move; __.dn.move; __.dn.move_; __.dn._add; __.dn.add; __.dn.add_; __.dn.hide; __.dn.show; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.each; __.css; __.e; __.b; __.b.email; __.b.empty; __.b.url; __.cookies; __.cookies.get; __.cookies.set; __.cookies.del; __.url; __.url.oParams; __.o; __.o.s; __.o.add; __.o.kRename; __.o.clone; __.o.k; __.s; __.s.o;
 // ==/ClosureCompiler==
 // version 1.5
+/**
+ * JS Library of Technikum Wien
+ * @version 1.0
+ * @namespace __
+ */
 __ = {
+	/**
+	 * @memberof __
+	 * @method dn_
+	 * <pre>
+	 * Takes a CSS selector string and queries the DOM for matching nodes.
+	 * It returns a single DOM node if just one node was found.
+	 * It returns a list of DOM nodes if multiple were found.
+	 * It will return [null] in case nothing was found.
+	 * An optional DOM node as starting point can be passed on otherwise [document] is used.
+	 * An optional callback function to be applied on returned nodes can be passed on which will be invoked with two parameters: the single node and its index of the array
+	 * </pre>
+	 * @example var dnMenu = __.dn_( "#menu" );
+	 * @example var lnLinks = __.dn_( "a.footer", dnMenu );
+	 * @example __.dn_( "a.footer", dnMenu, function( dn, ix ) {
+	 *       dn.style.color = "red";
+	 *       dn.style.border = ix + "px solid green";
+	 *  } );
+	 * @example __.dn_( "[href]", function( dn ) {
+	 *       dn.setAttribute( "href", "#" );
+	 *  } );
+	 * @param {String} s CSS selector string
+	 * @param {Element|Function} [x1] starting node or callback function
+	 * @param {Function} [x2] callback function
+	 * @returns {Element|Array} A DOM node or a list of DOM nodes or null if CSS selector could not be found
+	 */
 	dn_ : function( s, x1, x2 ) {
 		var dnStart = ( typeof x1 == "object" ) ? x1 : document;
 		var fn = ( typeof x1 == "function" ) ? x1 : x2;
@@ -40,6 +70,28 @@ __ = {
 		}
 		return xdn;
 	}
+	/**
+	 * @memberof __
+	 * @method _dn
+	 * <pre>
+	 * Takes a CSS selector string and queries the DOM for the closest matching parent node.
+	 * It returns a DOM node.
+	 * It will return [null] in case nothing was found.
+	 * An optional callback function to be applied on returned nodes can be passed on which will be invoked with two parameters: the single node and its index of the array
+	 * </pre>
+	 * @memberof __
+	 * @method _dn
+	 * @example var dnInput = __.dn_( "[name='email']" );
+	 * var dnForm = __._dn( "form", dnMenu );
+	 * @example var dnForm = __._dn( "form", dnMenu, function( dn ) {
+	 * 	dn.style.border = "1px solid red";
+	 *	dn.submit();
+	 * } );
+	 * @param {String} s CSS selector string
+	 * @param {Element} dn starting node
+	 * @param {Function} [fn] callback function
+	 * @returns {Element} A DOM node or null if CSS selector could not be found
+	 */
 	, _dn : function( s, dn, fn ) {
 		var dnClosest = dn.closest( s );
 		if( fn ) {
@@ -54,19 +106,85 @@ __ = {
 			fn( ldn[ ix ], ix );
 		}
 	}
+	/**
+	 * __.dn provides methods that operate on a single DOM node.
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.dn
+	 */
 	, dn : {
+		/**
+		 * Deletes a DOM node.
+		 * @memberof __.dn
+		 * @method del
+		 * @param {Element} dn DOM node to be deleted
+		 * @example var dnForm = __._dn( "form", dnMenu );
+		 * __.dn.del( dnForm );
+		 */
 		  del : function( dn ) {
 			dn.parentNode.removeChild( dn );
 		}
-		, _move : function( dnNew, dnExisting ) {
-			dnExisting.parentNode.insertBefore( dnNew, dnExisting );
+		/**
+		 * Moves a DOM node right before another DOM node.
+		 * @memberof __.dn
+		 * @method _move
+		 * @param {Element} dnMove DOM node that should get moved
+		 * @param {Element} dnTarget DOM node in front of which the node should get moved to
+		 * @example var dn1 = __.dn_( "#one" );
+		 * var dn2 = __.dn_( "#two" );
+		 * __.dn._move( d2, d1 );
+		 */
+		, _move : function( dnMove, dnTarget ) {
+			dnTarget.parentNode.insertBefore( dnMove, dnTarget );
 		  }
-		, move : function( dnNew, dnExisting ) {
-			dnExisting.appendChild( dnNew );
+		/**
+		 * Moves a DOM node inside another DOM node
+		 * @memberof __.dn
+		 * @method move
+		 * @example var dnUL = __.dn_( "ul" );
+		 * var dnLI = __.dn_( "li:nth-child(1)" );
+		 * __.dn.move( dnLI, dnUL );
+		 * @param {Element} dnMove DOM node that should get moved
+		 * @param {Element} dnTarget DOM node into which the DOM node should get moved
+		 */
+		, move : function( dnMove, dnTarget ) {
+			dnTarget.appendChild( dnMove );
 		  }
-		, move_ : function( dnNew, dnExisting ) {
-			dnExisting.parentNode.insertBefore( dnNew, dnExisting.nextSibling );
+		/**
+		 * Moves a DOM node right after another DOM node.
+		 * @memberof __.dn
+		 * @method move_
+		 * @example var dnLI4 = __.dn_( "li:nth-child( 4 )" );
+		 * var dnLI1 = __.dn_( "li:nth-child( 1 )" );
+		 * __.dn.move_( dnLI1, dnLI4 );
+		 * @param {Element} dnMove DOM node that should get moved
+		 * @param {Element} dnTarget DOM node after which the node should get moved to
+		 */
+		, move_ : function( dnMove, dnTarget ) {
+			dnTarget.parentNode.insertBefore( dnMove, dnTarget.nextSibling );
 		}
+		/**
+		 * <pre>
+		 * Takes an HTML strings, converts them into DOM node(s) and writes them directly infront of an existing DOM node.
+		 * It returns a single DOM node if HTML string has one root tag.
+		 * It returns a list of DOM nodes if HTML string has multiple root tags.
+		 * An optional DOM node as target DOM node can be passed on otherwise [document] is used.
+		 * An optional callback function to be applied on created nodes can be passed on which will be invoked with two parameters: the single node and its index of the array
+		 * </pre>
+		 * @memberof __.dn
+		 * @method _add
+		 * @example var dnDIV = __.add( "<div></div>" );
+		 * @example var h = "<a href='#1'></a><a href='#2'></a>";
+		 * var lnLinks = __.dn_( h, dnDIV );
+		 * @example var h = "<a href='#1'></a><a href='#2'></a>";
+		 * var lnLinks = __.dn_( "h", function( dn, ix ) {
+		 *	dn.style.border = ix + "px solid blue";
+		 * });
+		 * @param {String} h String of valid HTML.
+		 * @param {Element|Function} [x1] target node or callback function
+		 * @param {Function} [x2] callback function
+		 * @returns {Element|Array} A DOM node or a list of DOM nodes
+		 */
 		, _add : function( h, x1, x2 ) {
 			return __.dn._add_( h, x1, x2, "_move" );
 		}
@@ -155,6 +273,12 @@ __ = {
 			}
 		}
 	}
+	/**
+	 * __.s provides methods that operate on strings
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.s
+	 */
 	, s : {
 		o : function( s ) {
 			try {
@@ -165,6 +289,12 @@ __ = {
 			}
 		}
 	}
+	/**
+	 * __.o provides methods that operate on objects
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.o
+	 */
 	, o : {
 		  s : function( o ) {
 			return JSON.stringify( o );
@@ -196,8 +326,7 @@ __ = {
 				return k;
 			};
 		}
-	};
-
+	}
 	, css : function( sStyle ) {
 		var dn = document.createElement( 'style' );
 		document.body.appendChild( dn );
@@ -209,6 +338,12 @@ __ = {
 			e.preventDefault();
 		}
 	}
+	/**
+	 * __.b provides methods that check
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.b
+	 */
 	, b : {
 		  email : function( s ) {
 			return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[\.]{1}[a-zA-Z]{2,4}$/.test( s );
@@ -306,6 +441,8 @@ this.Element && function( oPrototype ) {
 		}
 	};
 }() );
+
+
 
 
 
