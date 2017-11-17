@@ -11,8 +11,6 @@
  */
 __ = {
 	/**
-	 * @memberof __
-	 * @method dn_
 	 * <pre>
 	 * Takes a CSS selector string and queries the DOM for matching nodes.
 	 * It returns a single DOM node if just one node was found.
@@ -21,6 +19,8 @@ __ = {
 	 * An optional DOM node as starting point can be passed on otherwise [document] is used.
 	 * An optional callback function to be applied on returned nodes can be passed on which will be invoked with two parameters: the single node and its index of the array
 	 * </pre>
+	 * @memberof __
+	 * @method dn_
 	 * @example var dnMenu = __.dn_( "#menu" );
 	 * @example var lnLinks = __.dn_( "a.footer", dnMenu );
 	 * @example __.dn_( "a.footer", dnMenu, function( dn, ix ) {
@@ -71,8 +71,6 @@ __ = {
 		return xdn;
 	}
 	/**
-	 * @memberof __
-	 * @method _dn
 	 * <pre>
 	 * Takes a CSS selector string and queries the DOM for the closest matching parent node.
 	 * It returns a DOM node.
@@ -99,6 +97,30 @@ __ = {
 		}
 		return dnClosest
 	}
+	/**
+	 * <pre>
+	 * Receives either an element or an array and a callback function.
+	* In case of an array it iterates and invokes the callback on each element.
+	 * In case an element it invokes the callback directly.
+	 * The callback is invoked with two parameters: the element and its index.
+	 * </pre>
+	 * @memberof __
+	 * @method each
+	 * @example var ls = [ "one", "two", "three" ];
+	 * __.each( ls, function( s, ix ) {
+	 *     console.log( ix + ". " + s ); 
+	 * } );
+	 * @example var ldn = [ dn1, dn2, dn3 ];
+	 * __.each( ldn, function( dn ) {
+	 *     dn.style.color = "red";
+	 * } );
+	 * @example __.each( dn, function( dn ) {
+	 *     dn.style.color = "red";
+	 * } );
+	 * @param {Array|Element} xdn Array or a single element
+	 * @param {Function} [fn] callback function
+	 * @returns {Element} A DOM node or null if CSS selector could not be found
+	 */
 	, each : function( xdn, fn ) {
 		var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
 		var c = ldn.length;
@@ -165,21 +187,37 @@ __ = {
 		}
 		/**
 		 * <pre>
-		 * Takes an HTML strings, converts them into DOM node(s) and writes them directly infront of an existing DOM node.
+		 * Takes an HTML strings, converts it into DOM node(s) and writes inside of an existing DOM node.
 		 * It returns a single DOM node if HTML string has one root tag.
 		 * It returns a list of DOM nodes if HTML string has multiple root tags.
 		 * An optional DOM node as target DOM node can be passed on otherwise [document] is used.
 		 * An optional callback function to be applied on created nodes can be passed on which will be invoked with two parameters: the single node and its index of the array
 		 * </pre>
 		 * @memberof __.dn
+		 * @method add
+		 * @example var dnUL = __._add( "<ul class='colors'></ul>" );
+		 * @example var h = "<li>red</li><li>green</li>";
+		 * var lnLI = __.add( h, dnUL );
+		 * @example var h = "<li>red</li><li>green</li>";
+		 * var lnLI = __.add( h, dnUL, function( dn ) {
+		 *     dn.style.color = dn.textContent;
+		 *     dn.textContent = ix + ". " + dn.textContent;
+		 * } );
+		 * @param {String} h String of valid HTML.
+		 * @param {Element|Function} [x1] target node or callback function
+		 * @param {Function} [x2] callback function
+		 * @returns {Element|Array} A DOM node or a list of DOM nodes
+		 */
+		, add : function( h, x1, x2 ) {
+			return __.dn._add_( h, x1, x2, "move" );
+		}
+		/**
+		 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM node but right in front of it.
+		 * @memberof __.dn
 		 * @method _add
-		 * @example var dnDIV = __.add( "<div></div>" );
-		 * @example var h = "<a href='#1'></a><a href='#2'></a>";
-		 * var lnLinks = __.dn_( h, dnDIV );
-		 * @example var h = "<a href='#1'></a><a href='#2'></a>";
-		 * var lnLinks = __.dn_( "h", function( dn, ix ) {
-		 *	dn.style.border = ix + "px solid blue";
-		 * });
+		 * @example var dnLogin = __.dn_( "[name='sLogin']" );
+		 * var h = "<div>At least 8 characters</div>";
+		 * var dnRule = __._add( h, dnLogin );
 		 * @param {String} h String of valid HTML.
 		 * @param {Element|Function} [x1] target node or callback function
 		 * @param {Function} [x2] callback function
@@ -188,9 +226,18 @@ __ = {
 		, _add : function( h, x1, x2 ) {
 			return __.dn._add_( h, x1, x2, "_move" );
 		}
-		, add : function( h, x1, x2 ) {
-			return __.dn._add_( h, x1, x2, "move" );
-		}
+		/**
+		 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM node but right after of it.
+		 * @memberof __.dn
+		 * @method add_
+		 * @example var dnLogin = __.dn_( "[name='sComment']" );
+		 * var h = "<a href='#clear'>clear</a><a href='#help'>help</a>";
+		 * var dnRule = __.add_( h, dnComment );
+		 * @param {String} h String of valid HTML.
+		 * @param {Element|Function} [x1] target node or callback function
+		 * @param {Function} [x2] callback function
+		 * @returns {Element|Array} A DOM node or a list of DOM nodes
+		 */
 		, add_ : function( h, x1, x2 ) {
 			return __.dn._add_( h, x1, x2, "move_" );
 		}
@@ -216,6 +263,16 @@ __ = {
 			}
 			return ldn;
 		}
+		/**
+		 * <pre>
+		 * Shows a DOM node.
+		 * It sets the display attribute of a DOM node to "block" or "inline" depending on its original state.
+		 * </pre>
+		 * @memberof __.dn
+		 * @method show
+		 * @example __.dn.show( dnInline );
+		 * @param {Element} dn DOM node to be shown
+		 */
 		, show : function( dn ) {
 			if( dn.style.display != "none" ) {
 				return;
@@ -225,6 +282,16 @@ __ = {
 				: "block";
 			dn.style.display = sDisplay;
 		}
+		/**
+		 * <pre>
+		 * Hides a DOM node.
+		 * It sets the display attribute of a DOM node to "none" preserving the previous value.
+		 * </pre>
+		 * @memberof __.dn
+		 * @method hide
+		 * @example __.dn.hide( dnInline );
+		 * @param {Element} dn DOM node to be hidden
+		 */
 		, hide : function( dn ) {
 			if( dn.style.display == "none" ) {
 				return;
@@ -233,6 +300,15 @@ __ = {
 			dn.setAttribute( "__.display", sDisplay ); 
 			dn.style.display = "none";
 		}
+		/**
+		 * <pre>
+		 * Returns the index of a DOM node in its parent's children list.
+		 * </pre>
+		 * @memberof __.dn
+		 * @method ix 
+		 * @example __.dn.ix( dnLI );
+		 * @param {Element} dn DOM node
+		 */
 		, ix : function( dn ) {
 			var ix = 0;
 			while( ( dn = dn.previousSibling ) != null ) {
@@ -240,22 +316,58 @@ __ = {
 			}
 			return ix;
 		}
-		, x : function( dn, x ) {
-			if( x ) {
-				dn.style.left = parseInt( x ) + "px";
+		/**
+		 * <pre>
+		 * Gets or sets the x-position of a DOM element
+		 * </pre>
+		 * @memberof __.dn
+		 * @method x 
+		 * @example __.dn.x( dn, 300 );
+		 * @example var x = __.dn.x( dn );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [n] x-position in pixels
+		 * @returns {Element} x-position in pixels
+		 */
+		, x : function( dn, n ) {
+			if( n ) {
+				dn.style.left = parseInt( n ) + "px";
 			}
 			else {
 				return dn.getBoundingClientRect().left;
 			}
 		}
-		, y : function( dn, y ) {
-			if( y ) {
-				dn.style.top = parseInt( y ) + "px";
+		/**
+		 * <pre>
+		 * Gets or sets the y-position of a DOM element
+		 * </pre>
+		 * @memberof __.dn
+		 * @method y 
+		 * @example __.dn.x( dn, 300 );
+		 * @example var y = __.dn.y( dn );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [n] y-position in pixels
+		 * @returns {Element} y-position in pixels
+		 */
+		, y : function( dn, n ) {
+			if( n ) {
+				dn.style.top = parseInt( n ) + "px";
 			}
 			else {
 				return dn.getBoundingClientRect().top;
 			}
 		}
+		/**
+		 * <pre>
+		 * Gets or sets the width of a DOM element
+		 * </pre>
+		 * @memberof __.dn
+		 * @method dx 
+		 * @example __.dn.dx( dn, 300 );
+		 * @example var dx = __.dn.dx( dn );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [n] width in pixels
+		 * @returns {Element} width in pixels
+		 */
 		, dx : function( dn, dx ) {
 			if( dx ) {
 				dn.style.width = parseInt( dx ) + "px";
@@ -264,6 +376,18 @@ __ = {
 				return dn.getBoundingClientRect().width;
 			}
 		}
+		/**
+		 * <pre>
+		 * Gets or sets the height of a DOM element
+		 * </pre>
+		 * @memberof __.dn
+		 * @method dy 
+		 * @example __.dn.dy( dn, 300 );
+		 * @example var dy = __.dn.dy( dn );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [n] height in pixels
+		 * @returns {Element} height in pixels
+		 */
 		, dy : function( dn, dy ) {
 			if( dy ) {
 				dn.style.height = parseInt( dy ) + "px";
@@ -280,6 +404,18 @@ __ = {
 	 * @namespace __.s
 	 */
 	, s : {
+		/**
+		 * <pre>
+		 * Converts a string into an object.
+		 * It will return [null] if it fails.
+		 * </pre>
+		 * @memberof __.s
+		 * @method o
+		 * @example var s = "{'sName':'John','nAge':44}";
+		 * var o = __.s.o ( s );
+		 * @param {String} s string we want to examine
+		 * @returns {Booelan} Result of the check
+		 */
 		o : function( s ) {
 			try {
 				return JSON.parse( s );
@@ -287,6 +423,76 @@ __ = {
 			catch( e ) {
 				return null;
 			}
+		}
+		/**
+		 * <pre>
+		 * Checks whether a string is empty after stripping of whitespaces
+		 * </pre>
+		 * @memberof __.s
+		 * @method empty
+		 * @example var s = "  ";
+		 * var bEmpty = __.b.empty( s );
+		 * @param {String} s string we want to examine
+		 * @returns {Booelan} Result of the check
+		 */
+		, empty : function( s ) {
+			return ( s.trim() == "" );
+		}
+	}
+	/**
+	 * __.l provides methods that operate on lists
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.l
+	 */
+	, l : {
+		/**
+		 * <pre>
+		 * Remove an element from a list
+		 * </pre>
+		 * @memberof __.l
+		 * @method del
+		 * @example var l = [ 1, 3, 7 ];
+		 * var l = __.l.del( l, 7 );
+		 * @param {Array} l List from which we want to remove an element
+		 * @param {String|Number} x Element we want to remove
+		 * @returns {Booelan} Result of the check whether list holds the element
+		 */
+		  del : function( l, x ) {
+			var ix = l.indexOf( x );
+			if( ix > -1 ) {
+				l.splice( ix, 1 );
+			}
+			return l;
+		}
+		/**
+		 * <pre>
+		 * Checks whether a list contains an element
+		 * </pre>
+		 * @memberof __.l
+		 * @method contains
+		 * @example var l = [ 1, 3, 7 ];
+		 * var b7 = __.l.contains( l, 7 );
+		 * @param {Array} l list we want to examine
+		 * @returns {Booelan} Result of the check whether list holds the element
+		 */
+		, contains : function( ls, s ) {
+			return ( ls.indexOf( s ) > -1 );
+		}
+		/**
+		 * <pre>
+		 * Checks whether a list is empty
+		 * </pre>
+		 * @memberof __.l
+		 * @method empty
+		 * @example var l = [];
+		 * var bEmpty = __.l.empty( l );
+		 * @param {Array} l list we want to examine
+		 * @returns {Booelan} Result of the check
+		 */
+		, bEmpty : function( l ) {
+			var c = l.length;
+			return ( ! isNaN( c ) && c > 0 ); 
 		}
 	}
 	/**
@@ -296,14 +502,49 @@ __ = {
 	 * @namespace __.o
 	 */
 	, o : {
+		/**
+		 * <pre>
+		 * Converts an object into a string
+		 * </pre>
+		 * @memberof __.o
+		 * @method s
+		 * @example var o = { sName : "John", nAge : 44 }
+		 * var s = __.o.s( o );
+		 * @param {Object} o Object to be stringified.
+		 * @returns {string} String representation of the object.
+		 */
 		  s : function( o ) {
 			return JSON.stringify( o );
 		}
+		/**
+		 * <pre>
+		 * Adds an object to an existing object.
+		 * </pre>
+		 * @memberof __.o
+		 * @method add
+		 * @example var oOrig = { sName : "John", nAge : 44 }
+		 * var oNew = { email : "john@example.com", id : 123 }
+		 * __.o.add( oNew, oOrig );
+		 * @param {Object} ocur Existing object
+		 * @param {Object} onew object to be added
+		 */
 		, add : function( ocur, onew ) {
 			for( var s in onew ) {
 				ocur[ s ] = onew[ s ];
 			} 
 		}
+		/**
+		 * <pre>
+		 * Rename a key of an object.
+		 * </pre>
+		 * @memberof __.o
+		 * @method kRename
+		 * @example var oOrig = { sName : "John", nAge : 44 }
+		 * __.o.kRename( oOrig, "sName", "sFirstName" );
+		 * @param {Object} o object
+		 * @param {String} kold key to be renamed
+		 * @param {String} knew new key name
+		 */
 		// http://stackoverflow.com/a/14592469/463676
 		, kRename : function( o, kold, knew ) {
 			Object.defineProperty(
@@ -313,7 +554,18 @@ __ = {
 			);
 			delete o[ kold ];
 		}
-		, clone : function( o ) {
+		/**
+		 * <pre>
+		 * Create a copy of an object
+		 * </pre>
+		 * @memberof __.o
+		 * @method copy 
+		 * @example var oOrig = { sName : "John", nAge : 44 }
+		 * var oNew = __.o.copy( oOrig );
+		 * @param {Object} o object to be copied
+		 * @returns {Object} Copy of the object
+		 */
+		, copy : function( o ) {
 			try {
 				return JSON.parse( JSON.stringify( o ) );
 			}
@@ -321,50 +573,104 @@ __ = {
 				return null;
 			}
 		}
-		, k : function( o ) {
-			for( k in o ) {
-				return k;
-			};
+		/**
+		 * <pre>
+		 * Checks whether an object is empty
+		 * </pre>
+		 * @memberof __.b
+		 * @method empty
+		 * @example var o = {};
+		 * var bEmpty = __.b.empty( o );
+		 * @param {Object} o object we want to examine
+		 * @returns {Booelan} Result of the check
+		 */
+		, bEmpty : function( x ) {
+			if( typeof x == "string" ) {
+				return ( x == "" );
+			}
+			if( x.length ) {
+				var c = x
+				if ( ! isNaN( c ) ) {
+				return ( x.length == 0 );
+			}
+			if( typeof x == "object" ) {
+				// http://stackoverflow.com/a/34491287/463676
+				for( var k in x ) {
+					return false;
+				}
+				return true;
+			}
+			return false;
 		}
 	}
+	/*
+	 * </pre>
+	 * @memberof __
+	 * @method css
+	 * @example var sStyle = "a.footer { color: red; padding : 0 }";
+	 * __.css( sCSS );
+	 * @param {String} sStyle String of CSS style notation
+	 */
 	, css : function( sStyle ) {
 		var dn = document.createElement( 'style' );
 		document.body.appendChild( dn );
 		dn.innerHTML = sStyle;
 	}
+	/**
+	 * __.e provides methods that operate with events
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.e
+	 */
 	, e : {
+		/**
+		 * <pre>
+		 * Stop generic event handling.
+		 * </pre>
+		 * @memberof __.e
+		 * @method stop
+		 * @example dn.addEventReceiver( "click", function( e ) {
+		 *     __.e.stop( e );
+		 * } );
+		 * @param {Event} e Event object
+		 */
 		stop : function( e ) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
 	}
 	/**
-	 * __.b provides methods that check
+	 * __.b provides methods that check states
 	 * @memberof __
 	 * @type {object}
 	 * @namespace __.b
 	 */
 	, b : {
-		  email : function( s ) {
+		/**
+		 * <pre>
+		 * Checks whether a string is a valid email
+		 * </pre>
+		 * @memberof __.b
+		 * @method mail
+		 * @example var bMail = __.b.mail( "john@example.com" );
+		 * @param {String} s String representing an email address
+		 * @returns {Booelan} Result of the check
+		 */
+		  mail : function( s ) {
 			return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[\.]{1}[a-zA-Z]{2,4}$/.test( s );
 		}
+		/**
+		 * <pre>
+		 * Checks whether a string is a valid URL 
+		 * </pre>
+		 * @memberof __.b
+		 * @method url 
+		 * @example var bUrl = __.b.url( "http://example.com" );
+		 * @param {String} s String representing a URL
+		 * @returns {Booelan} Result of the check
+		 */
 		, url : function( s ) {
 			return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test( v );
-		}
-		, empty : function( x ) {
-			if( typeof x == "string" ) {
-				return ( x == "" );
-			}
-			else if( x.length ) {
-				return ( x.length == 0 );
-			}
-			else if( typeof x == "object" ) {
-				// http://stackoverflow.com/a/34491287/463676
-				for( var dy in o ) {
-					return false;
-				}
-				return true;
-			}
 		}
 	}
 	, cookies : {
@@ -404,9 +710,12 @@ this.Element && function( oPrototype ) {
 	oPrototype.msMatchesSelector ||
 	function( sCSS ) {
 		var dn = this;
-		var ldn = ( dn.parentNode || dn.document ).querySelectorAll( sCSS )
+		var ldn = ( dn.parentNode || dn.document ).querySelectorAll( sCSS );
 		var ix = -1;
-		while( ldn[ ++ix ] && ldn[ ix ] != dn ){};
+		while( ldn[ ++ix ] && ldn[ ix ] != dn ){
+			// just loop until hit the end
+		};
+		return ( ldn[ ix ] ) ? true : false;
 		return !! ldn[ ix ];
 	}
 }( Element.prototype );

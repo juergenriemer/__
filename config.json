@@ -1,0 +1,8 @@
+{
+    "source": {
+
+        "include": [ "~/Documents/GitHub/__/__.js" ],
+
+        "includePattern": ".+\\.js(doc|x)?$"
+    }
+}
