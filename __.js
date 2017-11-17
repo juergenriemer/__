@@ -1,7 +1,7 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @output_file_name __.min.js
-// @js_externs var __; __.dn_; __.dn._dn; __.dn.del; __.dn; __.dn._move; __.dn.move; __.dn.move_; __.dn._add; __.dn.add; __.dn.add_; __.dn.hide; __.dn.show; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.each; __.css; __.e; __.b; __.b.email; __.b.empty; __.b.url; __.cookies; __.cookies.get; __.cookies.set; __.cookies.del; __.url; __.url.oParams; __.o; __.o.s; __.o.add; __.o.kRename; __.o.clone; __.o.k; __.s; __.s.o;
+// @js_externs var __; __.dn_; __.dn._dn; __.dn.del; __.dn; __.dn._move; __.dn.move; __.dn.move_; __.dn._add; __.dn.add; __.dn.add_; __.dn.hide; __.dn.show; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.each; __.css; __.e; __.b; __.b.email; __.b.url; __.cookies; __.cookies.get; __.cookies.set; __.cookies.del; __.url; __.url.oParams; __.o; __.o.s; __.o.add; __.o.kRename; __.o.copy; __.o.empty; __.s; __.s.o; __.s.empty; __.l; __.l.del; __.l.contains; __.l.empty;
 // ==/ClosureCompiler==
 // version 1.5
 /**
@@ -100,7 +100,7 @@ __ = {
 	/**
 	 * <pre>
 	 * Receives either an element or an array and a callback function.
-	* In case of an array it iterates and invokes the callback on each element.
+	 * In case of an array it iterates and invokes the callback on each element.
 	 * In case an element it invokes the callback directly.
 	 * The callback is invoked with two parameters: the element and its index.
 	 * </pre>
@@ -118,8 +118,7 @@ __ = {
 	 *     dn.style.color = "red";
 	 * } );
 	 * @param {Array|Element} xdn Array or a single element
-	 * @param {Function} [fn] callback function
-	 * @returns {Element} A DOM node or null if CSS selector could not be found
+	 * @param {Function} fn callback function
 	 */
 	, each : function( xdn, fn ) {
 		var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
@@ -129,7 +128,7 @@ __ = {
 		}
 	}
 	/**
-	 * __.dn provides methods that operate on a single DOM node.
+	 * Provides methods that operate on a single DOM node.
 	 * @memberof __
 	 * @type {object}
 	 * @namespace __.dn
@@ -248,7 +247,7 @@ __ = {
 			var xdn = docFrag.children;
 			var cNew = xdn.length;
 			if( fn ) {
-				this.each( xdn, fn );
+				__.each( xdn, fn );
 			}
 			__.dn[ sfn ]( docFrag, dnRoot );
 			if( cNew == 1 ) {
@@ -398,7 +397,7 @@ __ = {
 		}
 	}
 	/**
-	 * __.s provides methods that operate on strings
+	 * Provides methods that operate on strings
 	 * @memberof __
 	 * @type {object}
 	 * @namespace __.s
@@ -413,10 +412,10 @@ __ = {
 		 * @method o
 		 * @example var s = "{'sName':'John','nAge':44}";
 		 * var o = __.s.o ( s );
-		 * @param {String} s string we want to examine
-		 * @returns {Booelan} Result of the check
+		 * @param {String} s string we want to convert
+		 * @returns {Object|null} Object or null
 		 */
-		o : function( s ) {
+		  o : function( s ) {
 			try {
 				return JSON.parse( s );
 			}
@@ -431,7 +430,7 @@ __ = {
 		 * @memberof __.s
 		 * @method empty
 		 * @example var s = "  ";
-		 * var bEmpty = __.b.empty( s );
+		 * var bEmpty = __.s.empty( s );
 		 * @param {String} s string we want to examine
 		 * @returns {Booelan} Result of the check
 		 */
@@ -440,7 +439,7 @@ __ = {
 		}
 	}
 	/**
-	 * __.l provides methods that operate on lists
+	 * Provides methods that operate on lists
 	 * @memberof __
 	 * @type {object}
 	 * @namespace __.l
@@ -490,13 +489,13 @@ __ = {
 		 * @param {Array} l list we want to examine
 		 * @returns {Booelan} Result of the check
 		 */
-		, bEmpty : function( l ) {
+		, empty : function( l ) {
 			var c = l.length;
 			return ( ! isNaN( c ) && c > 0 ); 
 		}
 	}
 	/**
-	 * __.o provides methods that operate on objects
+	 * Provides methods that operate on objects
 	 * @memberof __
 	 * @type {object}
 	 * @namespace __.o
@@ -584,31 +583,21 @@ __ = {
 		 * @param {Object} o object we want to examine
 		 * @returns {Booelan} Result of the check
 		 */
-		, bEmpty : function( x ) {
-			if( typeof x == "string" ) {
-				return ( x == "" );
+		, empty : function( x ) {
+			// http://stackoverflow.com/a/34491287/463676
+			for( var k in x ) {
+				return false;
 			}
-			if( x.length ) {
-				var c = x
-				if ( ! isNaN( c ) ) {
-				return ( x.length == 0 );
-			}
-			if( typeof x == "object" ) {
-				// http://stackoverflow.com/a/34491287/463676
-				for( var k in x ) {
-					return false;
-				}
-				return true;
-			}
-			return false;
+			return true;
 		}
 	}
-	/*
+	/**
+	 * <pre>
+	 * Add a stylesheet rule to the page.
 	 * </pre>
 	 * @memberof __
 	 * @method css
-	 * @example var sStyle = "a.footer { color: red; padding : 0 }";
-	 * __.css( sCSS );
+	 * @example __.css( "a.footer { color: red; padding : 0 }" );
 	 * @param {String} sStyle String of CSS style notation
 	 */
 	, css : function( sStyle ) {
@@ -617,7 +606,7 @@ __ = {
 		dn.innerHTML = sStyle;
 	}
 	/**
-	 * __.e provides methods that operate with events
+	 * Provides methods that operate with events
 	 * @memberof __
 	 * @type {object}
 	 * @namespace __.e
@@ -640,7 +629,7 @@ __ = {
 		}
 	}
 	/**
-	 * __.b provides methods that check states
+	 * Provides methods that check states
 	 * @memberof __
 	 * @type {object}
 	 * @namespace __.b
@@ -673,21 +662,71 @@ __ = {
 			return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test( v );
 		}
 	}
-	, cookies : {
+	/**
+	 * Provides methods that operate with cookies
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.cookie
+	 */
+	, cookie : {
+		/**
+		 * <pre>
+		 * Gets a cookie by name
+		 * </pre>
+		 * @memberof __.cookie
+		 * @method get
+		 * @example var sCookie = __.cookie.get( "pref" );
+		 * @param {String} k String representing a cookie name
+		 * @returns {String|null} Value of the cookie or null
+		 */
 		  get : function( k ) {
 			var v = document.cookie.match( '(^|;) ?' + k + '=([^;]*)(;|$)' );
 			return v ? v[ 2 ] : null;
 		}
+		/**
+		 * <pre>
+		 * Sets a cookie by name
+		 * </pre>
+		 * @memberof __.cookie
+		 * @method set
+		 * @example var sCookie = __.cookie.get( "pref", "red", 365 );
+		 * @param {String} k String representing a cookie name
+		 * @param {String} v Value of the cookie
+		 * @param {Number} nDays lifetime of a cookie in days
+		 */
 		, set : function( k, v, nDays ) {
 			var d = new Date;
 			d.setTime( d.getTime() + 86400000 * nDays );
 			document.cookie = k + "=" + v + ";path=/;expires=" + d.toGMTString();
 		}
+		/**
+		 * <pre>
+		 * Removes a cookie by name
+		 * </pre>
+		 * @memberof __.cookie
+		 * @method del
+		 * @example __.cookie.del( "pref" );
+		 * @param {String} k String representing a cookie name
+		 */
 		, del : function( k ) {
 			__.cookie.set( k, '', -1 );
 		}
 	}
+	/**
+	 * Provides methods that operate on the URL
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.url
+	 */
 	, url : {
+		/**
+		 * <pre>
+		 * Reads parameters store in the URL
+		 * </pre>
+		 * @memberof __.url
+		 * @method oParams
+		 * @returns {Object} An object holding key/value pairs extracted from the URL
+		 */
 		  oParams : function () {
 			var o = {};
 			window.location.href.replace(
@@ -716,7 +755,6 @@ this.Element && function( oPrototype ) {
 			// just loop until hit the end
 		};
 		return ( ldn[ ix ] ) ? true : false;
-		return !! ldn[ ix ];
 	}
 }( Element.prototype );
 
@@ -750,6 +788,7 @@ this.Element && function( oPrototype ) {
 		}
 	};
 }() );
+
 
 
 

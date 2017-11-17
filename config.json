@@ -1,8 +1,12 @@
 {
     "source": {
-
-        "include": [ "~/Documents/GitHub/__/__.js" ],
-
+        "include": [ "D:\\jriemer\\GitHub\\__\\__.js" ],
         "includePattern": ".+\\.js(doc|x)?$"
+    },
+    "opts": {
+        "sort": false
+    },
+    "templates": {
+        "sort": false
     }
 }
