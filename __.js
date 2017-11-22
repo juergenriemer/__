@@ -459,7 +459,6 @@ __ = {
 			} )();
 		}
 	}
-	}
 	/**
 	 * Provides methods that operate on strings
 	 * @memberof __
@@ -852,6 +851,8 @@ this.Element && function( oPrototype ) {
 		}
 	};
 }() );
+
+
 
 
 
