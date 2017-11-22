@@ -395,6 +395,70 @@ __ = {
 				return dn.getBoundingClientRect().height;
 			}
 		}
+		/**
+		 * <pre>
+		 * Lets an element fade out
+		 * </pre>
+		 * @memberof __.dn
+		 * @method fade_
+		 * @example __.dn.fade_( dn );
+		 * @example __.dn.fade_ = __.dn.fadeOut( dn, 25, function() {
+		 *     __.dn.del( dn );
+		 * } );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [ms] milliseconds it should take to fade out
+		 * @param {Function} callback function to be invoked after element was faded out.
+		 */
+		, fade_ : function( dn, x1, x2 ) {
+			var ms = ( typeof x1 == "number" ) ? x1 : 250;
+			var fn = ( typeof x1 == "function" ) ? x1 : x2;
+			var nStep = 25 / ms;
+			dn.style.opacity = dn.style.opacity || 1;
+			( function fader() {
+				if( ( dn.style.opacity -= nStep) < 0 ) {
+					__.dn.hide( dn );
+					if( fn ) {
+						fn();
+					}
+				}
+				else {
+					setTimeout( fader, 25 );
+				}
+			} )();
+		}
+		/**
+		 * <pre>
+		 * Lets an element fade in
+		 * </pre>
+		 * @memberof __.dn
+		 * @method _fade
+		 * @example __.dn._fade( dn );
+		 * @example __.dn._fade = __.dn.fadeOut( dn, 1000 );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [ms] milliseconds it should take to fade in 
+		 * @param {Function} callback function to be invoked after element was faded in.
+		 */
+		, _fade : function( dn, x1, x2 ) {
+			var ms = ( typeof x1 == "number" ) ? x1 : 250;
+			var fn = ( typeof x1 == "function" ) ? x1 : x2;
+			var nStep = 25 / ms;
+			dn.style.opacity = dn.style.opacity || 0;
+			__.dn.show( dn );
+			( function fader() {
+				var n = Number( dn.style.opacity ) + nStep;
+				dn.style.opacity = n;
+				if( n > 1 ) {
+					dn.style.opacity = 1;
+					if( fn ) {
+						fn();
+					}
+				}
+				else {
+					setTimeout( fader, 25 );
+				}
+			} )();
+		}
+	}
 	}
 	/**
 	 * Provides methods that operate on strings
