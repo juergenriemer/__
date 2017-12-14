@@ -1,0 +1,125 @@
+<html>
+<!--script src="D:\jriemer\GitHub\__\__.js"></script-->
+<script src="__.js"></script>
+<body>
+<div id="menu">
+	<ul>
+		<li><a href="#one">one</a></li>
+		<li><a href="#two">two</a></li>
+		<li><a href="#three">three</a></li>
+		<li><a href="#four">four</a></li>
+	</ul>
+	<div id="footer">
+		<a class="footer" href="#red">red</a> | 
+		<a class="footer" href="#green">green</a> | 
+		<a class="footer" href="#blue">blue</a>
+	</div>
+</div>
+<div id="feedback">
+	<div class="the-heading">
+		<h3>Feedback</h3>
+	</div>
+	<div class="the-form">
+		<form>
+			<input type="text" name="login" />
+			<br />
+			<input type="text" name="email" />
+			<br />
+			<textarea name="comment"></textarea>
+			<br />
+			<button>Send</button>
+		</form>
+	</div>
+</div>
+<div id="one">one</div>
+<div id="two">two</div>
+</body>
+</html>
+<script>
+
+var dnMenu = __.dn_( "#menu" );
+var ldnLinks = __.dn_( "a.footer", dnMenu );
+__.dn_( "a.footer", dnMenu, function( dn, ix ) {
+      dn.style.color = "red";
+      dn.style.border = ix + "px solid green";
+ } );
+__.dn_( "[href]", function( dn ) {
+      dn.setAttribute( "title", dn.getAttribute( "href" ) );
+ } );
+
+var dnInput = __.dn_( "[name='email']" );
+var dnForm = __._dn( "form", dnInput );
+__._dn( "div.the-form", dnInput, function( dn ) {
+    dn.style.border = "1px solid red";
+    dn.style.padding = "1em";
+} );
+
+var ls = [ "one", "two", "three" ];
+__.each( ls, function( s, ix ) {
+    console.log( ix + ". " + s ); 
+} );
+var dn1 = __.dn_( "[href='#one']" );
+var dn2 = __.dn_( "[href='#two']" );
+var dn3 = __.dn_( "[href='#three']" );
+var ldn = [ dn1, dn2, dn3 ];
+__.each( ldn, function( dn ) {
+    dn.style.color = "red";
+} );
+__.each( dn1, function( dn ) {
+    dn.style.color = "pink";
+} );
+
+var dn1 = __.dn_( "#one" );
+var dn2 = __.dn_( "#two" );
+__.dn._move( dn2, dn1 );
+
+
+var dnUL = __.dn_( "ul" );
+var dnLI = __.dn_( "li:nth-child(1)" );
+__.dn.move( dnLI, dnUL );
+
+
+var dnLI4 = __.dn_( "li:nth-child( 4 )" );
+var dnLI1 = __.dn_( "li:nth-child( 1 )" );
+__.dn.move_( dnLI1, dnLI4 );
+
+var dnUL = __.dn.add( "<ul class='colors'></ul>" );
+var h = "<li>red</li>";
+var lnLI = __.dn.add( h, dnUL );
+var h = "<li>red</li>";
+var lnLI = __.dn.add( h, dnUL, function( dn, ix ) {
+    dn.style.color = dn.textContent;
+    dn.textContent = ix + ". " + dn.textContent;
+} );
+
+var dnLogin = __.dn_( "[name='login']" );
+var h = "<div>At least 8 characters</div>";
+var dnRule = __.dn._add( h, dnLogin );
+
+var dnComment = __.dn_( "[name='comment']" );
+var h = "<a href='#clear'>clear</a>";
+var dnRule = __.dn.add_( h, dnComment );
+
+var dnForm = __.dn_( "form" );
+__.dn.del( dnForm );
+
+__.dn_( "[name='comment']" )
+
+__.dn.move(
+	  __.dn_( "a" )
+	, __._dn( "div", __.dn_( ".the-form") )
+	, function( dn, ix ) {
+		console.log( ix );
+		dn.textContent = "[" + ix + " " + dn.textContent + "]";
+		dn.style.background = "#efefef";
+	}
+)
+__.dn.add(
+	"<span>x</span><span>x</span><span>x</span><span>x</span>"
+	, __._dn( "div", __.dn_( ".the-form") )
+	, function( dn, ix ) {
+		dn.textContent = "[" + ix + " " + dn.textContent + "]";
+		dn.style.background = "#c0c0c0";
+	}
+)
+</script>

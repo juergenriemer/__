@@ -17,12 +17,13 @@ __ = {
 	 * It returns a list of DOM nodes if multiple were found.
 	 * It will return [null] in case nothing was found.
 	 * An optional DOM node as starting point can be passed on otherwise [document] is used.
-	 * An optional callback function to be applied on returned nodes can be passed on which will be invoked with two parameters: the single node and its index of the array
+	 * An optional callback function to be applied on returned nodes can be passed on which
+	 * will be invoked with two parameters: the single node and its index of the array.
 	 * </pre>
 	 * @memberof __
 	 * @method dn_
 	 * @example var dnMenu = __.dn_( "#menu" );
-	 * @example var lnLinks = __.dn_( "a.footer", dnMenu );
+	 * @example var ldnLinks = __.dn_( "a.footer", dnMenu );
 	 * @example __.dn_( "a.footer", dnMenu, function( dn, ix ) {
 	 *       dn.style.color = "red";
 	 *       dn.style.border = ix + "px solid green";
@@ -54,6 +55,8 @@ __ = {
 			}
 		}
 		var xdn = dnStart[ sfn ]( s );
+		xdn = HTMLCollection.prototype.isPrototypeOf( xdn )
+			? [].slice.call( xdn ) : xdn;
 		if( xdn ) {
 			if( fn ) {
 				__.each( xdn, fn );
@@ -75,15 +78,16 @@ __ = {
 	 * Takes a CSS selector string and queries the DOM for the closest matching parent node.
 	 * It returns a DOM node.
 	 * It will return [null] in case nothing was found.
-	 * An optional callback function to be applied on returned nodes can be passed on which will be invoked with two parameters: the single node and its index of the array
+	 * An optional callback function to be applied on the returned node. It will be invoked with
+	 * one parameter: the single node
 	 * </pre>
 	 * @memberof __
 	 * @method _dn
 	 * @example var dnInput = __.dn_( "[name='email']" );
-	 * var dnForm = __._dn( "form", dnMenu );
-	 * @example var dnForm = __._dn( "form", dnMenu, function( dn ) {
-	 * 	dn.style.border = "1px solid red";
-	 *	dn.submit();
+	 * var dnForm = __._dn( "form", dnInput );
+	 * @example __._dn( "div.the-form", dnInput, function( dn ) {
+	 *     dn.style.border = "1px solid red";
+	 *     dn.style.padding = "1em";
 	 * } );
 	 * @param {String} s CSS selector string
 	 * @param {Element} dn starting node
@@ -110,7 +114,10 @@ __ = {
 	 * __.each( ls, function( s, ix ) {
 	 *     console.log( ix + ". " + s ); 
 	 * } );
-	 * @example var ldn = [ dn1, dn2, dn3 ];
+	 * @example var dn1 = __.dn_( "[href='#one']" );
+	 * var dn2 = __.dn_( "[href='#two']" );
+	 * var dn3 = __.dn_( "[href='#three']" );
+	 * var ldn = [ dn1, dn2, dn3 ];
 	 * __.each( ldn, function( dn ) {
 	 *     dn.style.color = "red";
 	 * } );
@@ -139,7 +146,7 @@ __ = {
 		 * @memberof __.dn
 		 * @method del
 		 * @param {Element} dn DOM node to be deleted
-		 * @example var dnForm = __._dn( "form", dnMenu );
+		 * @example var dnForm = __.dn_( "form" );
 		 * __.dn.del( dnForm );
 		 */
 		  del : function( dn ) {
@@ -153,10 +160,17 @@ __ = {
 		 * @param {Element} dnTarget DOM node in front of which the node should get moved to
 		 * @example var dn1 = __.dn_( "#one" );
 		 * var dn2 = __.dn_( "#two" );
-		 * __.dn._move( d2, d1 );
+		 * __.dn._move( dn2, dn1 );
 		 */
 		, _move : function( dnMove, dnTarget ) {
-			dnTarget.parentNode.insertBefore( dnMove, dnTarget );
+			if( dnMove.length ) {
+				__.each( dnMove, function( dn ) {
+					dnTarget.parentNode.insertBefore( dn, dnTarget );
+				} );
+			}
+			else {
+				dnTarget.parentNode.insertBefore( dnMove, dnTarget );
+			}
 		  }
 		/**
 		 * Moves a DOM node inside another DOM node
@@ -169,7 +183,14 @@ __ = {
 		 * @param {Element} dnTarget DOM node into which the DOM node should get moved
 		 */
 		, move : function( dnMove, dnTarget ) {
-			dnTarget.appendChild( dnMove );
+			if( dnMove.length ) {
+				__.each( dnMove, function( dn ) {
+					dnTarget.appendChild( dn );
+				} );
+			}
+			else {
+				dnTarget.appendChild( dnMove );
+			}
 		  }
 		/**
 		 * Moves a DOM node right after another DOM node.
@@ -182,23 +203,31 @@ __ = {
 		 * @param {Element} dnTarget DOM node after which the node should get moved to
 		 */
 		, move_ : function( dnMove, dnTarget ) {
-			dnTarget.parentNode.insertBefore( dnMove, dnTarget.nextSibling );
+			if( dnMove.length ) {
+				__.each( dnMove, function( dn ) {
+					dnTarget.parentNode.insertBefore( dn, dnTarget.nextSibling );
+				} );
+			}
+			else {
+				dnTarget.parentNode.insertBefore( dnMove, dnTarget.nextSibling );
+			}
 		}
 		/**
 		 * <pre>
-		 * Takes an HTML strings, converts it into DOM node(s) and writes inside of an existing DOM node.
+		 * Takes an HTML string, converts it into DOM node(s) and writes inside of an existing DOM node.
 		 * It returns a single DOM node if HTML string has one root tag.
 		 * It returns a list of DOM nodes if HTML string has multiple root tags.
 		 * An optional DOM node as target DOM node can be passed on otherwise [document] is used.
-		 * An optional callback function to be applied on created nodes can be passed on which will be invoked with two parameters: the single node and its index of the array
+		 * An optional callback function to be applied on created nodes can be passed on which will be
+		 * invoked with two parameters: the single node and its index of the array
 		 * </pre>
 		 * @memberof __.dn
 		 * @method add
-		 * @example var dnUL = __._add( "<ul class='colors'></ul>" );
-		 * @example var h = "<li>red</li><li>green</li>";
-		 * var lnLI = __.add( h, dnUL );
-		 * @example var h = "<li>red</li><li>green</li>";
-		 * var lnLI = __.add( h, dnUL, function( dn ) {
+		 * @example var dnUL = __.dn.add( "<ul class='colors'></ul>" );
+		 * @example var h = "<li>red</li>";
+		 * var lnLI = __.dn.add( h, dnUL );
+		 * @example var h = "<li>red</li>";
+		 * var lnLI = __.dn.add( h, dnUL, function( dn, ix ) {
 		 *     dn.style.color = dn.textContent;
 		 *     dn.textContent = ix + ". " + dn.textContent;
 		 * } );
@@ -211,12 +240,13 @@ __ = {
 			return __.dn._add_( h, x1, x2, "move" );
 		}
 		/**
-		 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM node but right in front of it.
+		 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM
+		 * node but right in front of it.
 		 * @memberof __.dn
 		 * @method _add
-		 * @example var dnLogin = __.dn_( "[name='sLogin']" );
+		 * @example var dnLogin = __.dn_( "[name='login']" );
 		 * var h = "<div>At least 8 characters</div>";
-		 * var dnRule = __._add( h, dnLogin );
+		 * var dnRule = __.dn._add( h, dnLogin );
 		 * @param {String} h String of valid HTML.
 		 * @param {Element|Function} [x1] target node or callback function
 		 * @param {Function} [x2] callback function
@@ -226,12 +256,13 @@ __ = {
 			return __.dn._add_( h, x1, x2, "_move" );
 		}
 		/**
-		 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM node but right after of it.
+		 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM
+		 * node but right after of it.
 		 * @memberof __.dn
 		 * @method add_
-		 * @example var dnLogin = __.dn_( "[name='sComment']" );
-		 * var h = "<a href='#clear'>clear</a><a href='#help'>help</a>";
-		 * var dnRule = __.add_( h, dnComment );
+		 * @example var dnComment = __.dn_( "[name='comment']" );
+		 * var h = "<a href='#clear'>clear</a>";
+		 * var dnRule = __.dn.add_( h, dnComment );
 		 * @param {String} h String of valid HTML.
 		 * @param {Element|Function} [x1] target node or callback function
 		 * @param {Function} [x2] callback function
@@ -243,24 +274,15 @@ __ = {
 		, _add_ : function( h, x1, x2, sfn ) {
 			var dnRoot = ( typeof x1 == "object" ) ? x1 : document.body;
 			var fn = ( typeof x1 == "function" ) ? x1 : x2;
-			var docFrag = document.createRange().createContextualFragment( h );
-			var xdn = docFrag.children;
-			var cNew = xdn.length;
+			var dn = document.createElement( "p" );
+			dn.innerHTML = h;
+			var xdn = [].slice.call( dn.children );
+			xdn = ( xdn.length == 1 ) ? xdn[ 0 ] : xdn;
 			if( fn ) {
 				__.each( xdn, fn );
 			}
-			__.dn[ sfn ]( docFrag, dnRoot );
-			if( cNew == 1 ) {
-				return dnRoot.lastChild;
-			}
-			var ldnChildren = dnRoot.children;
-			var cRoot = ldnChildren.length;
-			var ldn = [];
-			for( var ix=0; ix<cNew; ix++ ) {
-				var ixNew = cRoot - 1 - ix;
-				ldn.push( ldnChildren[ ixNew ] );
-			}
-			return ldn;
+			__.dn[ sfn ]( xdn, dnRoot );
+			return xdn;
 		}
 		/**
 		 * <pre>
@@ -500,6 +522,23 @@ __ = {
 		, empty : function( s ) {
 			return ( s.trim() == "" );
 		}
+		/**
+		 * <pre>
+		 * Uppercases the first character of a word
+		 * </pre>
+		 * @memberof __.s
+		 * @method camelcase
+		 * @example var s = __.s.camelcase( "hi mom" );
+		 * @param {String} s string we want to camelcase
+		 * @returns {String} Camelcased string
+		 */
+		, camelcase : function( s ) {
+			var ls = s.split( " " );
+			ls.forEach( function( s, ix ) {
+				ls[ ix ] = s.substr( 0, 1 ).toUpperCase() + s.substr( 1 );
+			} );
+			return ( ls.join( " " ) );
+		}
 	}
 	/**
 	 * Provides methods that operate on lists
@@ -536,10 +575,11 @@ __ = {
 		 * @example var l = [ 1, 3, 7 ];
 		 * var b7 = __.l.contains( l, 7 );
 		 * @param {Array} l list we want to examine
+		 * @param {String|Number} x Element we are looking for
 		 * @returns {Booelan} Result of the check whether list holds the element
 		 */
-		, contains : function( ls, s ) {
-			return ( ls.indexOf( s ) > -1 );
+		, contains : function( l, x ) {
+			return ( l.indexOf( x ) > -1 );
 		}
 		/**
 		 * <pre>
@@ -577,6 +617,29 @@ __ = {
 		 */
 		  s : function( o ) {
 			return JSON.stringify( o );
+		}
+		/**
+		 * <pre>
+		 * Return keys of an object.
+		 * </pre>
+		 * @memberof __.o
+		 * @method k
+		 * @example var o = { sName : "John", nAge : 44 }
+		 * var lk = __.o.k( o ); // [ "sName", "nAge" ]
+		 * @param {Object} o object
+		 * @returns {array} Array of keys
+		 */
+		, k : function( o ) {
+			try {
+				return Object.keys( o );
+			}
+			catch( e ) {
+				var l = [];
+				for( var k in o ) {
+					l.push( k );
+				}
+				return l;
+			}
 		}
 		/**
 		 * <pre>
@@ -667,29 +730,6 @@ __ = {
 		var dn = document.createElement( 'style' );
 		document.body.appendChild( dn );
 		dn.innerHTML = sStyle;
-	}
-	/**
-	 * Provides methods that operate with events
-	 * @memberof __
-	 * @type {object}
-	 * @namespace __.e
-	 */
-	, e : {
-		/**
-		 * <pre>
-		 * Stop generic event handling.
-		 * </pre>
-		 * @memberof __.e
-		 * @method stop
-		 * @example dn.addEventReceiver( "click", function( e ) {
-		 *     __.e.stop( e );
-		 * } );
-		 * @param {Event} e Event object
-		 */
-		stop : function( e ) {
-			e.stopPropagation();
-			e.preventDefault();
-		}
 	}
 	/**
 	 * Provides methods that check states
@@ -784,15 +824,17 @@ __ = {
 	, url : {
 		/**
 		 * <pre>
-		 * Reads parameters store in the URL
+		 * Reads parameters store from the URL or a string if passed on as argument
 		 * </pre>
 		 * @memberof __.url
 		 * @method oParams
+		 * @param {String} [url] URL string
 		 * @returns {Object} An object holding key/value pairs extracted from the URL
 		 */
-		  oParams : function () {
+		  oParams : function( url ) {
 			var o = {};
-			window.location.href.replace(
+			var s = ( url ) ? url : window.location.href;
+			s.replace(
 				/[?&]+([^=&]+)=([^&]*)/gi,
 				function( m, k, v ) {
 					o[ k ] = v;
@@ -854,6 +896,137 @@ this.Element && function( oPrototype ) {
 
 
 
+
+
+__.win = {
+	  dx: function () {
+		return window.innerWidth;
+	}
+	, dy: function () {
+		return window.innerHeight;
+	}
+};
+
+
+__.Async = function( args ) {
+	var k = ( args ) ? ( args.sName || "default" ) : "default";
+	var args = args || {};
+	args.sName = k;
+	__.Async.store[ k ] = new __.Async.Promise( args );
+	__.Async.sActive = k;
+	return __.Async.store[ k ];
+}
+__.Async.store = {};
+__.Async.active = function( sName ) {
+	__.Async.sActive = sName || "default";
+};
+__.Async.fnerr = function( a, b ) {
+	console.log( "[error]", a, b );
+}
+__.Async.fnok = function( a ) {
+	console.log( "[--ok--]", a );
+}
+__.Async.hub = {
+	  resolve : function( a ) { __.Async.fnok( a ); }
+	, reject : function( a, b ) { __.Async.fnerr( a, b ); }
+};
+__.async = function( sName ) {
+	if( sName ) {
+		return __.Async.store[ sName ];
+	}
+	if( ! __.Async.sActive ) {
+		return __.Async.hub;
+	}
+	return __.Async.store[ __.Async.sActive ];
+}
+
+__.Async.Promise = function( args ) {
+	this.sName = args.sName;
+	this.sStatus = "idle";
+	this.args = {};
+	this.lofn = [];
+	this.ctx = args.ctx || window;
+	this.fnerr = ( args && args.fnerr ) ? args.fnerr : __.Async.fnerr;
+	this.fnend = ( args && args.fnend ) ? args.fnend : __.Async.fnok;
+	return this;
+};
+__.Async.Promise.prototype = {
+	  then : function( x1, x2, x3 ) {
+		var ofn = {
+			  ctx : ( typeof x1 == "object" ) ? x1 : this.ctx
+			, sfn : ( typeof x1 == "object" ) ? x2 : x1
+			, args : ( typeof x2 == "string" ) ? x3 : ( x2 ) ? x2 : {}
+		};
+		if( /^wait:/.test( ofn.sfn ) ) {
+			var ms = ofn.sfn.split( ":" )[ 1 ];
+			ofn.sfn = function() {
+				setTimeout( function() {
+					 __.async().resolve();
+				}, ms );
+			};
+		}
+		if( this.sStatus == "pending" ) {
+			ofn.bLateArrival = true;
+			var c = this.lofn.length;
+			for( var ix=0; ix<c; ix++ ) {
+				if( ! this.lofn[ ix ].bLateArrival ) {
+					this.lofn.splice( ix, 0, ofn );
+					break;
+				}
+			}
+		}
+		else {
+			this.lofn.push( ofn );
+		}
+		return this;
+	}
+	, next : function() {
+		var that = this;
+		setTimeout( function() {
+			// cut next function object from list
+			var ofn = that.lofn.shift();
+			// c_onsole.log( "nextasync|"+that.sName+"|> " + ofn.sfn );
+			__.o.add( that.args, ofn.args );
+			// we now invoke the function.
+			if( typeof ofn.sfn == "string" ) {
+				// in case its name is passed on as string
+				// we invoke as key from context object passing
+				// on our accumulated arguments object
+				ofn.ctx[ ofn.sfn ]( that.args );
+			}
+			else {
+				// in case we passed on an anonymous function
+				// we invoke via "call" with context object again
+				// passing on our accumulated arguments object
+				ofn.sfn.call( ofn.ctx, that.args );
+			}
+		}, 0 );
+	}
+	, start : function() {
+		this.sStatus = "pending";
+		this.next();
+		return this;
+	}
+	, resolve : function( args ) {
+		__.Async.sActive = this.sName;
+		__.o.add( this.args, args );
+		if( this.lofn.length > 0 ) {
+			this.next();
+		}
+		else {
+			this.fnend( args, this.args );
+			this.sStatus = "idle";
+			__.Async.sActive = null;
+		}
+	}
+	, reject : function( args ) {
+		__.Async.sActive = this.sName;
+		this.fnerr( args, this.args );
+	}
+	, active : function( sActive ) {
+		__.Async.sActive = sActive;
+	}
+}
 
 
 
