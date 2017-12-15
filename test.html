@@ -122,4 +122,39 @@ __.dn.add(
 		dn.style.background = "#c0c0c0";
 	}
 )
+waiter = function( args ) {
+	var async = __.async();
+	var ms = Math.random() * 500;
+	setTimeout( function() {
+		var aResult = args.aResult;
+		if( ! aResult ) {
+			aResult = []
+		}
+		aResult.push( async.sName + " " + ms );
+		async.resolve( { aResult : aResult} );
+	}, ms );
+}
+__.Aysnc.bDebug = true;
+var a1 = new __.Async()// { sName : "one" } )
+.then( this, "waiter" )
+.then( this, "waiter" )
+.then( this, "waiter" )
+.then( this, "waiter" )
+.then( function( args ) {
+	console.log( 'one >>' );
+	console.log( args );
+} )
+.start();
+/*
+var a2 = new __.Async( { sName : "two" } )
+.then( this, "waiter" )
+.then( this, "waiter" )
+.then( this, "waiter" )
+.then( this, "waiter" )
+.then( function( args ) {
+	console.log( 'two >>' );
+	console.log( args );
+} )
+.start();
+*/
 </script>

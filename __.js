@@ -5,7 +5,6 @@
 // ==/ClosureCompiler==
 // version 1.5
 /**
- * JS Library of Technikum Wien
  * @version 1.0
  * @namespace __
  */
@@ -916,19 +915,22 @@ __.Async = function( args ) {
 	__.Async.sActive = k;
 	return __.Async.store[ k ];
 }
+__.Aysnc.bDebug = false;
 __.Async.store = {};
-__.Async.active = function( sName ) {
-	__.Async.sActive = sName || "default";
-};
 __.Async.fnerr = function( a, b ) {
 	console.log( "[error]", a, b );
 }
 __.Async.fnok = function( a ) {
 	console.log( "[--ok--]", a );
 }
+// REF ren hub to stub? 
 __.Async.hub = {
 	  resolve : function( a ) { __.Async.fnok( a ); }
 	, reject : function( a, b ) { __.Async.fnerr( a, b ); }
+};
+// REF below needed? we switch names in __.async now, no?
+__.Async.active = function( sName ) {
+	__.Async.sActive = sName || "default";
 };
 __.async = function( sName ) {
 	if( sName ) {
@@ -982,10 +984,14 @@ __.Async.Promise.prototype = {
 	}
 	, next : function() {
 		var that = this;
+// REF: setTimeout needed? no!
 		setTimeout( function() {
 			// cut next function object from list
 			var ofn = that.lofn.shift();
-			// c_onsole.log( "nextasync|"+that.sName+"|> " + ofn.sfn );
+
+			if( __.Aysnc.bDebug ) {
+				console.log( "nextasync|"+that.sName+"|> " + ofn.sfn );
+			}
 			__.o.add( that.args, ofn.args );
 			// we now invoke the function.
 			if( typeof ofn.sfn == "string" ) {
@@ -1008,7 +1014,11 @@ __.Async.Promise.prototype = {
 		return this;
 	}
 	, resolve : function( args ) {
+		// REF: don't ned above
 		__.Async.sActive = this.sName;
+		// Think of putting accumulated args in second argument
+		// or even an async store or leave it for we save argument
+		// duplication in a series
 		__.o.add( this.args, args );
 		if( this.lofn.length > 0 ) {
 			this.next();
