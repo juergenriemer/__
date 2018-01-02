@@ -975,7 +975,6 @@ __.Async.Promise = function( args ) {
 	this.lofn = [];
 	this.ctx = args.ctx || window;
 	this.fnerr = ( args && args.fnerr ) ? args.fnerr : __.Async.fnerr;
-	this.fnend = ( args && args.fnend ) ? args.fnend : __.Async.fnok;
 	this.fnstat = ( args && args.fnstat ) ? args.fnstat : null;
 	return this;
 };
@@ -1089,24 +1088,24 @@ __.Async.Promise.prototype = {
 		}
 	}
 	, _next : function() {
-		var that = this;
 		this.ix++;	
-		// cut next function object from list
-		var ofn = that.lofn.shift();
 		this._stats( ofn.sMsg );
-		__.o.add( that.args, ofn.args );
+		// cut next function object from list
+		var ofn = this.lofn.shift();
+		// add passed on arguments
+		__.o.add( this.args, ofn.args );
 		// we now invoke the function.
 		if( typeof ofn.sfn == "string" ) {
 			// in case its name is passed on as string
 			// we invoke as key from context object passing
 			// on our accumulated arguments object
-			ofn.ctx[ ofn.sfn ]( that.args );
+			ofn.ctx[ ofn.sfn ]( this.args );
 		}
 		else {
 			// in case we passed on an anonymous function
 			// we invoke via "call" with context object again
 			// passing on our accumulated arguments object
-			ofn.sfn.call( ofn.ctx, that.args );
+			ofn.sfn.call( ofn.ctx, this.args );
 		}
 	}
 	, start : function() {
@@ -1123,7 +1122,6 @@ __.Async.Promise.prototype = {
 			this._next();
 		}
 		else {
-			this.fnend( args, this.args );
 			this.sStatus = "idle";
 		}
 	}
