@@ -191,15 +191,14 @@ waiter2 = function( args ) {
 	}, ms );
 }
 fnStatus=function( args ){
-console.log( args.pct );
 	__.dn_( "#output" ).innerHTML += "<br>" + args.guid + " - " + args.sMsg;
-	proz = Math.round( args.ix / args.c * 100 );
+	var pct = Math.round( args.ix / args.c * 100 );
 	var dnProgress = __.dn_( ".-pb" );
 	var dnBar = __.dn_( "div", dnProgress );
 	var dnText = __.dn_( "p", dnProgress );
 	var dx = __.dn.dx( dnProgress );
 	dnText.textContent = args.sMsg || "";
-	dnBar.style.width = ( dx / 100 * proz );
+	dnBar.style.width = ( dx / 100 * pct );
 }
 assert = function( s, o1, o2 ) {
 	if( __.l.equal( o1, o2 ) ) {

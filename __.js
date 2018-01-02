@@ -728,9 +728,6 @@ __ = {
 		 */
 		, equal : function( o1, o2 ) {
 			try {
-				var s1 = JSON.parse( JSON.stringify( o1 ) );
-				var s2 = JSON.parse( JSON.stringify( o2 ) );
-				console.log( s1, s2, (s1===s2) );
 				return ( JSON.parse( JSON.stringify( o1 ) ) ==
 				         JSON.parse( JSON.stringify( o2 ) ) );
 			}
@@ -979,7 +976,7 @@ __.Async.Promise = function( args ) {
 	this.ctx = args.ctx || window;
 	this.fnerr = ( args && args.fnerr ) ? args.fnerr : __.Async.fnerr;
 	this.fnend = ( args && args.fnend ) ? args.fnend : __.Async.fnok;
-	this.fnstat = ( args && args.fnstat ) ? args.fnstat : null; //__.Async.fnstat;
+	this.fnstat = ( args && args.fnstat ) ? args.fnstat : null;
 	return this;
 };
 __.Async.Promise.prototype = {
@@ -1002,7 +999,7 @@ __.Async.Promise.prototype = {
 			}
 			, args : {}
 		};
-		this.add( ofn );
+		this._add( ofn );
 		return this;
 			
 	}
@@ -1030,14 +1027,18 @@ __.Async.Promise.prototype = {
 			, args : {}
 			, sMsg : ( typeof x2 == "string" ) ? x2 : x3
 		};
-		this.add( ofn );
+		this._add( ofn );
 		return this;
 	}
 	, then : function( x1, x2, x3, x4 ) {
 		var ofn = {
 			  ctx : ( typeof x1 == "object" ) ? x1 : this.ctx
 			, sfn : ( typeof x1 == "object" ) ? x2 : x1
-			, args : ( typeof x2 == "string" ) ? x3 : ( x2 ) ? x2 : {}
+			, args : ( typeof x2 == "string" )
+				? x3
+				: ( x2 )
+					? x2
+					: {}
 			, sMsg : ( typeof x3 == "object" )
 				? x4
 				: ( typeof x3 == "string" )
@@ -1046,17 +1047,24 @@ __.Async.Promise.prototype = {
 						? x2
 						: ""
 		};
-console.log( ofn.sMsg );
-		this.add( ofn );
+		this._add( ofn );
 		return this;
 	}
-	, add : function( ofn ) {
+	, _add : function( ofn ) {
 		this.c++;
 		ofn.guid = this.guid;
+		// We first check whether we are already running the async stack
 		if( this.sStatus == "pending" ) {
+			// in which case we need to add new actions at the beginning
+			// of the function array but at the end of any such added actions
+			// we end up with an array like this [ new1, new2, old3, old4 ]
+			// we mark the new action as "late arrival"
 			ofn.bLateArrival = true;
+			// iterate through the exising array
 			var c = this.lofn.length;
 			for( var ix=0; ix<c; ix++ ) {
+				// and inject the new action after the first action that
+				// is not a "late arrival" itself
 				if( ! this.lofn[ ix ].bLateArrival ) {
 					this.lofn.splice( ix, 0, ofn );
 					break;
@@ -1064,12 +1072,13 @@ console.log( ofn.sMsg );
 			}
 		}
 		else {
+			// no "late arrival" a normal action to be added to the end of 
+			// the array holding all actions
 			this.lofn.push( ofn );
 		}
 	}
-	, stats : function( sMsg ) {
+	, _stats : function( sMsg ) {
 		if( sMsg && this.fnstat ) {
-console.log( this.c + " - " + this.ix );
 			this.fnstat( {
 				  guid : this.guid
 				, sMsg : sMsg
@@ -1079,12 +1088,12 @@ console.log( this.c + " - " + this.ix );
 			} );
 		}
 	}
-	, next : function() {
+	, _next : function() {
 		var that = this;
 		this.ix++;	
 		// cut next function object from list
 		var ofn = that.lofn.shift();
-		this.stats( ofn.sMsg );
+		this._stats( ofn.sMsg );
 		__.o.add( that.args, ofn.args );
 		// we now invoke the function.
 		if( typeof ofn.sfn == "string" ) {
@@ -1102,7 +1111,7 @@ console.log( this.c + " - " + this.ix );
 	}
 	, start : function() {
 		this.sStatus = "pending";
-		this.next();
+		this._next();
 		return this;
 	}
 	, resolve : function( args ) {
@@ -1111,7 +1120,7 @@ console.log( this.c + " - " + this.ix );
 		// duplication in a series
 		__.o.add( this.args, args );
 		if( this.lofn.length > 0 ) {
-			this.next();
+			this._next();
 		}
 		else {
 			this.fnend( args, this.args );
