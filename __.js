@@ -582,6 +582,22 @@ __ = {
 		}
 		/**
 		 * <pre>
+		 * Check if two arrays contain exactly the same data
+		 * </pre>
+		 * @memberof __.l
+		 * @method equal
+		 * @example var l1 = [ 1, 2, 3 ];
+		 * var l2 = [ 1, 2, 3 ];
+		 * var bEqual = __.l.equal( l1, l2 );
+		 * @param {Array} l1 first array to be compared 
+		 * @param {Array} l2 second array to be compared 
+		 * @returns {Boolean} result of comparison
+		 */
+		, equal : function( l1, l2 ) {
+			return ( l1.join( "-" ) == l2.join( "-" ) );
+		}
+		/**
+		 * <pre>
 		 * Checks whether a list is empty
 		 * </pre>
 		 * @memberof __.l
@@ -699,9 +715,34 @@ __ = {
 		}
 		/**
 		 * <pre>
+		 * Check if two objects contain exactly the same data
+		 * </pre>
+		 * @memberof __.o
+		 * @method equal
+		 * @example var o1 = { sName : "John", nAge : 44 };
+		 * var o2 = { sName : "John", nAge : 44 };
+		 * var bEqual = __.o.equal( o1, o2 );
+		 * @param {Object} o1 first object to be compared 
+		 * @param {Object} o2 second object to be compared 
+		 * @returns {Boolean} result of comparison
+		 */
+		, equal : function( o1, o2 ) {
+			try {
+				var s1 = JSON.parse( JSON.stringify( o1 ) );
+				var s2 = JSON.parse( JSON.stringify( o2 ) );
+				console.log( s1, s2, (s1===s2) );
+				return ( JSON.parse( JSON.stringify( o1 ) ) ==
+				         JSON.parse( JSON.stringify( o2 ) ) );
+			}
+			catch( e ) {
+				return null;
+			}
+		}
+		/**
+		 * <pre>
 		 * Checks whether an object is empty
 		 * </pre>
-		 * @memberof __.b
+		 * @memberof __.o
 		 * @method empty
 		 * @example var o = {};
 		 * var bEmpty = __.b.empty( o );
@@ -906,16 +947,13 @@ __.win = {
 	}
 };
 
-
 __.Async = function( args ) {
-	var k = ( args ) ? ( args.sName || "default" ) : "default";
+	var guid = "Async" + ( ++__.Async.ix );
 	var args = args || {};
-	args.sName = k;
-	__.Async.store[ k ] = new __.Async.Promise( args );
-	__.Async.sActive = k;
-	return __.Async.store[ k ];
+	args.guid = guid;
+	return __.Async.store[ guid ] = new __.Async.Promise( args );
 }
-__.Aysnc.bDebug = false;
+__.Async.ix = 0;
 __.Async.store = {};
 __.Async.fnerr = function( a, b ) {
 	console.log( "[error]", a, b );
@@ -923,50 +961,98 @@ __.Async.fnerr = function( a, b ) {
 __.Async.fnok = function( a ) {
 	console.log( "[--ok--]", a );
 }
-// REF ren hub to stub? 
-__.Async.hub = {
+__.Async.stub = {
 	  resolve : function( a ) { __.Async.fnok( a ); }
 	, reject : function( a, b ) { __.Async.fnerr( a, b ); }
 };
-// REF below needed? we switch names in __.async now, no?
-__.Async.active = function( sName ) {
-	__.Async.sActive = sName || "default";
-};
-__.async = function( sName ) {
-	if( sName ) {
-		return __.Async.store[ sName ];
-	}
-	if( ! __.Async.sActive ) {
-		return __.Async.hub;
-	}
-	return __.Async.store[ __.Async.sActive ];
-}
 
+__.async = function( args ) {
+	return ( typeof args == "object" && args.guid )
+		? __.Async.store[ args.guid ]
+		: __.Async.stub;
+}
 __.Async.Promise = function( args ) {
-	this.sName = args.sName;
+	this.guid = args.guid;
 	this.sStatus = "idle";
-	this.args = {};
+	this.args = args;
 	this.lofn = [];
 	this.ctx = args.ctx || window;
 	this.fnerr = ( args && args.fnerr ) ? args.fnerr : __.Async.fnerr;
 	this.fnend = ( args && args.fnend ) ? args.fnend : __.Async.fnok;
+	this.fnstat = ( args && args.fnstat ) ? args.fnstat : null; //__.Async.fnstat;
 	return this;
 };
 __.Async.Promise.prototype = {
-	  then : function( x1, x2, x3 ) {
+	  c : 0
+	, ix : 0
+	, clear : function( lk ) {
+		var that = this;
+		var ofn = {
+			  ctx : this.ctx
+			, sfn : function() {
+				if( lk ) {
+					lk.forEach( function( k ) {
+						delete that.args[ k ];
+					} );
+				}
+				else {
+					that.args = { guid : that.guid };
+				}
+				that.resolve();
+			}
+			, args : {}
+		};
+		this.add( ofn );
+		return this;
+			
+	}
+	, wait : function( x1, x2, x3 ) {
+		var that = this;
+		var ofn = {
+			  ctx : this.ctx
+			, sfn : ( typeof x2 == "function" )
+				? function() {
+					var fnPoll = function() {
+						if( x2() ) {
+							that.resolve();
+						}
+						else {
+							setTimeout( fnPoll, x1 );	
+						}
+					};
+					fnPoll();
+				}
+				: function() {
+					setTimeout( function() {
+						 that.resolve();
+					}, x1 );
+				}
+			, args : {}
+			, sMsg : ( typeof x2 == "string" ) ? x2 : x3
+		};
+		this.add( ofn );
+		return this;
+	}
+	, then : function( x1, x2, x3, x4 ) {
 		var ofn = {
 			  ctx : ( typeof x1 == "object" ) ? x1 : this.ctx
 			, sfn : ( typeof x1 == "object" ) ? x2 : x1
 			, args : ( typeof x2 == "string" ) ? x3 : ( x2 ) ? x2 : {}
+			, sMsg : ( typeof x3 == "object" )
+				? x4
+				: ( typeof x3 == "string" )
+					? x3
+					: ( typeof x2 == "string" )
+						? x2
+						: ""
 		};
-		if( /^wait:/.test( ofn.sfn ) ) {
-			var ms = ofn.sfn.split( ":" )[ 1 ];
-			ofn.sfn = function() {
-				setTimeout( function() {
-					 __.async().resolve();
-				}, ms );
-			};
-		}
+console.log( ofn.sMsg );
+		this.add( ofn );
+		return this;
+	}
+	, add : function( ofn ) {
+		this.c++;
+		ofn.guid = this.guid;
 		if( this.sStatus == "pending" ) {
 			ofn.bLateArrival = true;
 			var c = this.lofn.length;
@@ -980,33 +1066,39 @@ __.Async.Promise.prototype = {
 		else {
 			this.lofn.push( ofn );
 		}
-		return this;
+	}
+	, stats : function( sMsg ) {
+		if( sMsg && this.fnstat ) {
+console.log( this.c + " - " + this.ix );
+			this.fnstat( {
+				  guid : this.guid
+				, sMsg : sMsg
+				, c : this.c
+				, ix : this.ix
+				, pct : this.ix * 100 / this.c
+			} );
+		}
 	}
 	, next : function() {
 		var that = this;
-// REF: setTimeout needed? no!
-		setTimeout( function() {
-			// cut next function object from list
-			var ofn = that.lofn.shift();
-
-			if( __.Aysnc.bDebug ) {
-				console.log( "nextasync|"+that.sName+"|> " + ofn.sfn );
-			}
-			__.o.add( that.args, ofn.args );
-			// we now invoke the function.
-			if( typeof ofn.sfn == "string" ) {
-				// in case its name is passed on as string
-				// we invoke as key from context object passing
-				// on our accumulated arguments object
-				ofn.ctx[ ofn.sfn ]( that.args );
-			}
-			else {
-				// in case we passed on an anonymous function
-				// we invoke via "call" with context object again
-				// passing on our accumulated arguments object
-				ofn.sfn.call( ofn.ctx, that.args );
-			}
-		}, 0 );
+		this.ix++;	
+		// cut next function object from list
+		var ofn = that.lofn.shift();
+		this.stats( ofn.sMsg );
+		__.o.add( that.args, ofn.args );
+		// we now invoke the function.
+		if( typeof ofn.sfn == "string" ) {
+			// in case its name is passed on as string
+			// we invoke as key from context object passing
+			// on our accumulated arguments object
+			ofn.ctx[ ofn.sfn ]( that.args );
+		}
+		else {
+			// in case we passed on an anonymous function
+			// we invoke via "call" with context object again
+			// passing on our accumulated arguments object
+			ofn.sfn.call( ofn.ctx, that.args );
+		}
 	}
 	, start : function() {
 		this.sStatus = "pending";
@@ -1014,8 +1106,6 @@ __.Async.Promise.prototype = {
 		return this;
 	}
 	, resolve : function( args ) {
-		// REF: don't ned above
-		__.Async.sActive = this.sName;
 		// Think of putting accumulated args in second argument
 		// or even an async store or leave it for we save argument
 		// duplication in a series
@@ -1026,15 +1116,10 @@ __.Async.Promise.prototype = {
 		else {
 			this.fnend( args, this.args );
 			this.sStatus = "idle";
-			__.Async.sActive = null;
 		}
 	}
 	, reject : function( args ) {
-		__.Async.sActive = this.sName;
 		this.fnerr( args, this.args );
-	}
-	, active : function( sActive ) {
-		__.Async.sActive = sActive;
 	}
 }
 

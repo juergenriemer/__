@@ -2,6 +2,40 @@
 <!--script src="D:\jriemer\GitHub\__\__.js"></script-->
 <script src="__.js"></script>
 <body>
+<style>
+.-pb
+	{
+	border:			1px solid steelblue;
+	background-color:	#b6cee2;
+	height:			20px;
+	position:		relative;
+	z-index:		777;
+	}
+
+.-pb p
+	{
+	background:		transparent;
+	z-index:		888;
+	line-height:		20px;
+	margin:0;
+	text-align : center;
+	color:			white;
+	position:		relative;
+	}
+
+.-pb div
+	{
+	z-index:		777;
+	background:		steelblue;
+	height:			100%;
+	position:		absolute;
+	top:			0;
+	}
+</style>
+<div class='-pb'>
+	<p></p>
+	<div></div>
+</div>
 <div id="menu">
 	<ul>
 		<li><a href="#one">one</a></li>
@@ -122,39 +156,175 @@ __.dn.add(
 		dn.style.background = "#c0c0c0";
 	}
 )
+
+// Async
+
+__.dn.add( "<div id='output' style='border:1px solid red'>output</div>" );
+window.name = "doing";
+
 waiter = function( args ) {
-	var async = __.async();
-	var ms = Math.random() * 500;
+	var async = __.async( args );
+	var ms = Math.round( Math.random() * 100 );
 	setTimeout( function() {
-		var aResult = args.aResult;
+		var aResult = args && args.aResult;
 		if( ! aResult ) {
 			aResult = []
 		}
-		aResult.push( async.sName + " " + ms );
+		var s = ( args && args.x ) ? args.x : "_";
+		aResult.push( "w" + s );
 		async.resolve( { aResult : aResult} );
 	}, ms );
 }
-__.Aysnc.bDebug = true;
-var a1 = new __.Async()// { sName : "one" } )
-.then( this, "waiter" )
-.then( this, "waiter" )
-.then( this, "waiter" )
-.then( this, "waiter" )
+waiter();
+waiter( { arg1 : 1 } );
+waiter2 = function( args ) {
+	var async = __.async( args );
+	var ms = Math.round( Math.random() * 200 );
+	setTimeout( function() {
+		var aResult = args && args.aResult;
+		if( ! aResult ) {
+			aResult = []
+		}
+		var s = ( args && args.x ) ? args.x : "_";
+		aResult.push( "w2" + s );
+		async.resolve( { aResult : aResult} );
+	}, ms );
+}
+fnStatus=function( args ){
+console.log( args.pct );
+	__.dn_( "#output" ).innerHTML += "<br>" + args.guid + " - " + args.sMsg;
+	proz = Math.round( args.ix / args.c * 100 );
+	var dnProgress = __.dn_( ".-pb" );
+	var dnBar = __.dn_( "div", dnProgress );
+	var dnText = __.dn_( "p", dnProgress );
+	var dx = __.dn.dx( dnProgress );
+	dnText.textContent = args.sMsg || "";
+	dnBar.style.width = ( dx / 100 * proz );
+}
+assert = function( s, o1, o2 ) {
+	if( __.l.equal( o1, o2 ) ) {
+		console.log( s + ': OK' );
+	} else {
+		console.log( s + ': ERR' );
+		console.log( o1, o2 );
+	}
+}
+__.Async.bDebug = true;
+var a1 = new __.Async( { fnstat : fnStatus } )
+.then( this, "waiter", { x : 4 }, "a1.1" )
+.then( this, "waiter", "a1.2" )
+.wait( 800, function() {
+	return window.name == "done";
+}, "wait for window name" )
+.then( this, "waiter", { x : 6 }, "a1.3" )
+.then( this, "waiter", { x : 2 }, "a1.4" )
 .then( function( args ) {
-	console.log( 'one >>' );
-	console.log( args );
-} )
-.start();
-/*
-var a2 = new __.Async( { sName : "two" } )
-.then( this, "waiter" )
-.then( this, "waiter" )
-.then( this, "waiter" )
-.then( this, "waiter" )
+	var async = __.async( args );
+	[1,2,3].forEach( function( n ) {
+		async.then( this, "waiter", { x : n }, "a1.5." + n )
+	} );
+	async.resolve();
+}, "a1.5" )
+.then( this, "waiter", { x : 6 }, "a1.6" )
+.then( this, "waiter", { x : 2 }, "a1.7" )
 .then( function( args ) {
-	console.log( 'two >>' );
-	console.log( args );
-} )
+	assert( "one", ["w4","w4","w6","w2","w1","w2","w3","w6","w2"], args.aResult );
+}, "last msg" )
 .start();
-*/
+
+// ************
+
+var a2 = new __.Async()
+.then( this, "waiter2", "a2.1" )
+.then( this, "waiter2", "a2.2" )
+.then( this, "waiter2", { x : 20 }, "a2.3" )
+.then( this, "waiter2", "a2.4" )
+.then( this, "waiter2", "a2.4" )
+.wait( 400 )
+.then( function( args ) {
+	window.name = "done";
+	__.async( args ).resolve();
+}, "set window name" )
+.clear( [ "x" ] )
+.then( this, "waiter2", "a2.4" )
+.then( function( args ) {
+	assert( "two", ["w2_","w2_","w220","w220","w220","w2_"], args.aResult );
+}, "last statement" )
+.start()
+var mixed = new __.Async()
+.then( this, "waiter", "mixed.1"  )
+.clear()
+.then( this, "waiter", "mixed.1"  )
+.then( this, "waiter", "mixed.1"  )
+.then( this, "waiter2", "mixed.2"  )
+.then( function( args ) {
+	var async = __.async( args );
+	async.then( this, "waiter2", "mixed.3"  )
+	async.resolve();
+} )
+.then( this, "waiter", "mixed.4"  )
+.then( function( args ) {
+	assert( "mix", ["w_","w_","w2_","w2_","w_"], args.aResult );
+} )
+.start()
+
+// ******** test with objects
+obj = {
+	  owaiter : function( args ) {
+		var async = __.async( args );
+		var ms = Math.round( Math.random() * 300 );
+		setTimeout( function() {
+			var aResult = args && args.aResult;
+			if( ! aResult ) {
+				aResult = []
+			}
+			var s = ( args && args.x ) ? args.x : "_";
+			aResult.push( "ow" + s );
+			async.resolve( { aResult : aResult} );
+		}, ms );
+	}
+	, owaiter2 : function( args ) {
+		var async = __.async( args );
+		var ms = Math.round( Math.random() * 10 );
+		setTimeout( function() {
+			var aResult = args && args.aResult;
+			if( ! aResult ) {
+				aResult = []
+			}
+			var s = ( args && args.x ) ? args.x : "_";
+			aResult.push( "ow2" + s );
+			async.resolve( { aResult : aResult} );
+		}, ms );
+	}
+	, first : function( cbfn ) {
+		var that = this;
+		( new __.Async() )
+		.then( this, "owaiter2", "ofirst.1"  )	
+		.then( this, "owaiter2", "ofirst.2"  )	
+		.then( function( args ) {
+			var async = __.async( args );
+			async.then( that, "owaiter2", "ofirst.3"  );
+			async.resolve();
+		} )
+		.then( function( args ) {
+			assert( "oinner", ["ow2_","ow2_","ow2_"], args.aResult );
+			cbfn();
+		} )
+		.start();
+	}
+	, init : function() {
+		var that = this;
+		this.first( function() {
+			( new __.Async() )
+			.then( that, "owaiter", "oinit.1"  )	
+			.then( that, "owaiter", "oinit.2" )	
+			.then( that, "owaiter", "oinit.3" )	
+			.then( function( args ) {
+				assert( "oinit", ["ow_","ow_","ow_"], args.aResult );
+			} )
+			.start();
+		} );	
+	}
+};
+obj.init();
 </script>
