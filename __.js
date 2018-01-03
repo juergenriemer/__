@@ -538,6 +538,25 @@ __ = {
 			} );
 			return ( ls.join( " " ) );
 		}
+		/**
+		 * <pre>
+		 * Tokenize a string to certain levels:
+		 * simple: remove spaces an lowercase
+		 * </pre>
+		 * @memberof __.s
+		 * @method tokenize
+		 * @example var s = __.s.tokenize( "Hi Mom" ); // himom
+		 * @param {String} s string we want to tokenize
+		 * @param {String} [sType] string to indicate level (default is simple)
+		 * @returns {String} tokenized string
+		 */
+		, tokenize : function( s, sType ) {
+			if( ! sType || sType == "simple" ) {
+				s = s.replace( / /g, "" );
+				return s.toLowerCase();
+			}
+			return s;
+		}
 	}
 	/**
 	 * Provides methods that operate on lists
@@ -609,7 +628,7 @@ __ = {
 		 */
 		, empty : function( l ) {
 			var c = l.length;
-			return ( ! isNaN( c ) && c > 0 ); 
+			return ! ( ! isNaN( c ) && c > 0 ); 
 		}
 	}
 	/**
