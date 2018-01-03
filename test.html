@@ -208,8 +208,28 @@ assert = function( s, o1, o2 ) {
 		console.log( o1, o2 );
 	}
 }
+
+o = {
+	do : function() {
+	var that = this;
+	( new __.Async( { fnstat : fnStatus} ) )
+	.then( that, "getRecords", { idUser : 123 }, "Getting records" )
+	.then( function( args ) {
+	__.dn_( "#output" ).innerHTML = args.hResult;
+	__.async( args ).resolve();
+	}, "Printing records" )
+	.start();
+	}
+	, getRecords : function( args ) {
+		setTimeout( function() {
+			var hResult = "<b>no records</b>";
+			__.async( args ).resolve( hResult );
+		}, 2000 ); 
+	}
+}
+o.do()
 __.Async.bDebug = true;
-var a1 = new __.Async( { fnstat : fnStatus } )
+var a1 = new __.Async( { xfnstat : fnStatus } )
 .then( this, "waiter", { x : 4 }, "a1.1" )
 .then( this, "waiter", "a1.2" )
 .wait( 800, function() {
@@ -326,4 +346,7 @@ obj = {
 	}
 };
 obj.init();
+
+
+
 </script>

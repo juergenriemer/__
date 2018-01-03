@@ -1029,7 +1029,26 @@ __.Async.Promise.prototype = {
 		this._add( ofn );
 		return this;
 	}
+	/**
+	 * <pre>
+	 * Registers a method to the Async chain
+	 * </pre>
+	 * @memberof __.Async.Promise
+	 * @method then
+	 * @example ( new __.Async() )
+	 * .then( that, "getRecords", { idUser : 123 }, "Getting records" )
+	 * .then( function( args ) {
+	 *     __.dn_( "#output" ).innerHTML = args.hResult;
+	 *     __.async( args ).resolve();
+	 * }, "Printing records" )
+	 * .start();
+	 * @param {Object|Function} x1 Either an anonymous function or parent object of the method
+	 * @param {String|String} x2 Either string of method name or status message
+	 * @param {String|String} x3 Either string of method name or status message
+	 * @returns {String|null} Value of the cookie or null
+	 */
 	, then : function( x1, x2, x3, x4 ) {
+		// construct an action's object
 		var ofn = {
 			  ctx : ( typeof x1 == "object" ) ? x1 : this.ctx
 			, sfn : ( typeof x1 == "object" ) ? x2 : x1
@@ -1062,8 +1081,8 @@ __.Async.Promise.prototype = {
 			// iterate through the exising array
 			var c = this.lofn.length;
 			for( var ix=0; ix<c; ix++ ) {
-				// and inject the new action after the first action that
-				// is not a "late arrival" itself
+				// and inject the new action after the first 
+				// action that is not a "late arrival" itself
 				if( ! this.lofn[ ix ].bLateArrival ) {
 					this.lofn.splice( ix, 0, ofn );
 					break;
@@ -1071,16 +1090,19 @@ __.Async.Promise.prototype = {
 			}
 		}
 		else {
-			// no "late arrival" a normal action to be added to the end of 
-			// the array holding all actions
+			// no "late arrival" a normal action to be added to the
+			// end of the array holding all actions
 			this.lofn.push( ofn );
 		}
 	}
 	, _stats : function( sMsg ) {
-		if( sMsg && this.fnstat ) {
+		// in case we have set a status call back on init...
+		if( this.fnstat ) {
+			// ... we invoke it with possible message and
+			// information on progress
 			this.fnstat( {
 				  guid : this.guid
-				, sMsg : sMsg
+				, sMsg : sMsg || ""
 				, c : this.c
 				, ix : this.ix
 				, pct : this.ix * 100 / this.c
@@ -1088,11 +1110,13 @@ __.Async.Promise.prototype = {
 		}
 	}
 	, _next : function() {
-		this.ix++;	
-		this._stats( ofn.sMsg );
 		// cut next function object from list
 		var ofn = this.lofn.shift();
-		// add passed on arguments
+		// increase action count
+		this.ix++;	
+		// invoke status method
+		this._stats( ofn.sMsg );
+		// add passed on arguments to args object
 		__.o.add( this.args, ofn.args );
 		// we now invoke the function.
 		if( typeof ofn.sfn == "string" ) {
@@ -1109,24 +1133,29 @@ __.Async.Promise.prototype = {
 		}
 	}
 	, start : function() {
+		// we start action chain by setting status to pending
 		this.sStatus = "pending";
+		// triggering the first action
 		this._next();
+		// and returning this object for possible further chaining
 		return this;
 	}
 	, resolve : function( args ) {
-		// Think of putting accumulated args in second argument
-		// or even an async store or leave it for we save argument
-		// duplication in a series
+		// add returned results to args object
 		__.o.add( this.args, args );
+		// invoke next action if array is not empty
 		if( this.lofn.length > 0 ) {
 			this._next();
 		}
 		else {
+			// otherwise stop and set status to idle
 			this.sStatus = "idle";
 		}
 	}
-	, reject : function( args ) {
-		this.fnerr( args, this.args );
+	, reject : function( oError ) {
+		// an error happened, we stop here and invoke
+		// the error function with error and args object
+		this.fnerr( oError, this.args );
 	}
 }
 
