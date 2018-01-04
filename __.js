@@ -1,7 +1,7 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @output_file_name __.min.js
-// @js_externs var __; __.dn_; __.dn._dn; __.dn.del; __.dn; __.dn._move; __.dn.move; __.dn.move_; __.dn._add; __.dn.add; __.dn.add_; __.dn.hide; __.dn.show; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.each; __.css; __.e; __.b; __.b.email; __.b.url; __.cookies; __.cookies.get; __.cookies.set; __.cookies.del; __.url; __.url.oParams; __.o; __.o.s; __.o.add; __.o.kRename; __.o.copy; __.o.empty; __.s; __.s.o; __.s.empty; __.l; __.l.del; __.l.contains; __.l.empty;
+// @js_externs var __; __.dn_; __.dn._dn; __.dn.del; __.dn; __.dn._move; __.dn.move; __.dn.move_; __.dn._add; __.dn.add; __.dn.add_; __.dn.hide; __.dn.show; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.each; __.css; __.e; __.b; __.b.email; __.b.url; __.cookies; __.cookies.get; __.cookies.set; __.cookies.del; __.url; __.url.oParams; __.o; __.o.s; __.o.add; __.o.kRename; __.o.c; __.o.copy; __.o.empty; __.s; __.s.o; __.s.empty; __.s.tokenize; __.l; __.l.del; __.l.contains; __.l.empty;
 // ==/ClosureCompiler==
 // version 1.5
 /**
@@ -712,6 +712,26 @@ __ = {
 				, Object.getOwnPropertyDescriptor( o, kold )
 			);
 			delete o[ kold ];
+		}
+		/**
+		 * <pre>
+		 * Counts first level elements of an object
+		 * </pre>
+		 * @memberof __.o
+		 * @method c 
+		 * @example var o = { sName : "John", nAge : 44 }
+		 * var oNew = __.o.c( o ); // 2
+		 * @param {Object} o object to be examined 
+		 * @returns {Number} count of elements
+		 */
+		, c : function( o ) {
+			var c = 0;
+			for( var k in o ) {
+				if( o.hasOwnProperty( k ) ) {
+					++c;
+				}
+			}
+			return c;
 		}
 		/**
 		 * <pre>
