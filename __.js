@@ -630,6 +630,29 @@ __ = {
 			var c = l.length;
 			return ! ( ! isNaN( c ) && c > 0 ); 
 		}
+		/**
+		 * <pre>
+		 * Sorts an array of objects by an object's key
+		 * </pre>
+		 * @memberof __.l
+		 * @method empty
+		 * @example var lo = [ { v : 12 }, { v : 11 }, { v : 2 } ];
+		 * lo = __.l.kSort( lo );
+		 * @param {Array} lo list of objects we want to sort by key
+		 * @param {String} k key we want to sort by
+		 * @returns {Array} Sorted array of objects
+		 */
+		, kSort : function( lo, k ) {
+			return lo.sort( function( a, b ) {
+				var x = a[ k ];
+				var y = b[ k ];
+				return ( (x < y )
+					? -1
+					: ( (x > y )
+						? 1
+						: 0 ) );
+			} );
+		}
 	}
 	/**
 	 * Provides methods that operate on objects
@@ -1012,27 +1035,31 @@ __.Async.Promise = function( args ) {
 	this.sStatus = "idle";
 	this.args = args;
 	this.lofn = [];
-	this.ctx = args.ctx || window;
-	this.fnerr = ( args && args.fnerr ) ? args.fnerr : __.Async.fnerr;
-	this.fnstat = ( args && args.fnstat ) ? args.fnstat : null;
+	this.bDebug = false;
+	this.ctx = ( args && args.ctx ) ? args.ctx : window;
+	this.fnerr = ( args && args.fnerr ) ? args.fnerr : null;
+//not yet set here
+	this.fnstat = ( args && args.fnstat )
+		? args.fnstat
+		: ( this.bDebug )
+			? function( a ) { console.log( a ); }
+			: null;
 	return this;
 };
 __.Async.Promise.prototype = {
 	  c : 0
 	, ix : 0
-	, clear : function( lk ) {
+	, debug : function() {
+		this.bDebug = true;
+		console.log( "debugging: " + this.guid );
+		return this;
+	}
+	, clear : function() {
 		var that = this;
 		var ofn = {
 			  ctx : this.ctx
 			, sfn : function() {
-				if( lk ) {
-					lk.forEach( function( k ) {
-						delete that.args[ k ];
-					} );
-				}
-				else {
-					that.args = { guid : that.guid };
-				}
+				that.args = { guid : that.guid };
 				that.resolve();
 			}
 			, args : {}
@@ -1189,12 +1216,23 @@ __.Async.Promise.prototype = {
 		else {
 			// otherwise stop and set status to idle
 			this.sStatus = "idle";
+			this._cleanUp();
 		}
 	}
 	, reject : function( oError ) {
 		// an error happened, we stop here and invoke
 		// the error function with error and args object
-		this.fnerr( oError, this.args );
+		if( this.fnerr ) {
+			this.fnerr( oError, this.args );
+			this._cleanUp();
+		}
+	}
+	, _cleanUp : function() {
+console.log( this.guid +" - " + this.bDebug );
+		if( ! this.bDebug ) {
+			delete __.Async.store[ this.guid ];
+			console.log(">>>"+ this.guid );
+		}
 	}
 }
 

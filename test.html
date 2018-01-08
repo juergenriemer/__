@@ -156,9 +156,21 @@ __.dn.add(
 		dn.style.background = "#c0c0c0";
 	}
 )
+assert = function( a, b, sfn ) {
+	if( __.o.s( a ) == __.o.s( b ) ) {
+		console.log( sfn + " OK" );
+	}
+	else {
+		console.log( sfn + " ERR", a, b  );
+	}
+}
+// __.l
+var lo = [ { v : 5 }, { v : 11 }, { v : 1 } ];
+var loE = [ { v : 1 }, { v : 5 }, { v : 11 } ];
+lo = __.l.kSort( lo, "v" );
+assert( lo, loE, "__.l.kSort" );
 
 // Async
-
 __.dn.add( "<div id='output' style='border:1px solid red'>output</div>" );
 window.name = "doing";
 
@@ -208,17 +220,17 @@ assert = function( s, o1, o2 ) {
 		console.log( o1, o2 );
 	}
 }
-
 o = {
 	do : function() {
-	var that = this;
-	( new __.Async( { fnstat : fnStatus} ) )
-	.then( that, "getRecords", { idUser : 123 }, "Getting records" )
-	.then( function( args ) {
-	__.dn_( "#output" ).innerHTML = args.hResult;
-	__.async( args ).resolve();
-	}, "Printing records" )
-	.start();
+		var that = this;
+		( new __.Async() )
+.debug()
+		.then( that, "getRecords", { idUser : 123 }, "Getting records" )
+		.then( function( args ) {
+			__.dn_( "#output" ).innerHTML = args.hResult;
+			__.async( args ).resolve();
+		}, "Printing records" )
+		.start();
 	}
 	, getRecords : function( args ) {
 		setTimeout( function() {
@@ -228,8 +240,8 @@ o = {
 	}
 }
 o.do()
-__.Async.bDebug = true;
-var a1 = new __.Async( { xfnstat : fnStatus } )
+var a1 = new __.Async()
+.debug()
 .then( this, "waiter", { x : 4 }, "a1.1" )
 .then( this, "waiter", "a1.2" )
 .wait( 800, function() {
@@ -264,10 +276,13 @@ var a2 = new __.Async()
 	window.name = "done";
 	__.async( args ).resolve();
 }, "set window name" )
-.clear( [ "x" ] )
 .then( this, "waiter2", "a2.4" )
 .then( function( args ) {
-	assert( "two", ["w2_","w2_","w220","w220","w220","w2_"], args.aResult );
+	assert( "two", ["w2_","w2_","w220","w220","w220","w220"], args.aResult );
+}, "first last statement" )
+.clear()
+.then( function( args ) {
+	assert( "two", [], args.aResult );
 }, "last statement" )
 .start()
 var mixed = new __.Async()
