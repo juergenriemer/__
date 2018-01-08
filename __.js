@@ -1231,9 +1231,11 @@ __.Async.Promise.prototype = {
 	}
 }
 
-
-
-
-
-
+__.e = {
+	stop : function( e ) {
+		e.stopPropagation();
+		e.preventDefault();
+	}
+}
+__.l.remove = __.l.del;
 
