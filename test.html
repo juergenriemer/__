@@ -224,7 +224,6 @@ o = {
 	do : function() {
 		var that = this;
 		( new __.Async() )
-.debug()
 		.then( that, "getRecords", { idUser : 123 }, "Getting records" )
 		.then( function( args ) {
 			__.dn_( "#output" ).innerHTML = args.hResult;
@@ -240,8 +239,7 @@ o = {
 	}
 }
 o.do()
-var a1 = new __.Async()
-.debug()
+var a1 = new __.Async( { fnstat : fnStatus } )
 .then( this, "waiter", { x : 4 }, "a1.1" )
 .then( this, "waiter", "a1.2" )
 .wait( 800, function() {
@@ -260,12 +258,14 @@ var a1 = new __.Async()
 .then( this, "waiter", { x : 2 }, "a1.7" )
 .then( function( args ) {
 	assert( "one", ["w4","w4","w6","w2","w1","w2","w3","w6","w2"], args.aResult );
+	__.async( args ).resolve();
 }, "last msg" )
 .start();
 
 // ************
 
 var a2 = new __.Async()
+.debug()
 .then( this, "waiter2", "a2.1" )
 .then( this, "waiter2", "a2.2" )
 .then( this, "waiter2", { x : 20 }, "a2.3" )
@@ -279,12 +279,16 @@ var a2 = new __.Async()
 .then( this, "waiter2", "a2.4" )
 .then( function( args ) {
 	assert( "two", ["w2_","w2_","w220","w220","w220","w220"], args.aResult );
+	__.async( args ).resolve();
 }, "first last statement" )
 .clear()
+.then( this, "waiter2", "a2.5" )
 .then( function( args ) {
-	assert( "two", [], args.aResult );
+	assert( "two", [ "w2_" ], args.aResult );
+	__.async( args ).resolve();
 }, "last statement" )
 .start()
+
 var mixed = new __.Async()
 .then( this, "waiter", "mixed.1"  )
 .clear()
@@ -299,6 +303,7 @@ var mixed = new __.Async()
 .then( this, "waiter", "mixed.4"  )
 .then( function( args ) {
 	assert( "mix", ["w_","w_","w2_","w2_","w_"], args.aResult );
+	__.async( args ).resolve();
 } )
 .start()
 
@@ -342,6 +347,7 @@ obj = {
 		} )
 		.then( function( args ) {
 			assert( "oinner", ["ow2_","ow2_","ow2_"], args.aResult );
+			__.async( args ).resolve();
 			cbfn();
 		} )
 		.start();
@@ -355,6 +361,7 @@ obj = {
 			.then( that, "owaiter", "oinit.3" )	
 			.then( function( args ) {
 				assert( "oinit", ["ow_","ow_","ow_"], args.aResult );
+				__.async( args ).resolve();
 			} )
 			.start();
 		} );	

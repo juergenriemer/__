@@ -1007,10 +1007,10 @@ __.win = {
 };
 
 __.Async = function( args ) {
-	var guid = "Async" + ( ++__.Async.ix );
+	var _guid = "Async" + ( ++__.Async.ix );
 	var args = args || {};
-	args.guid = guid;
-	return __.Async.store[ guid ] = new __.Async.Promise( args );
+	args._guid = _guid;
+	return __.Async.store[ _guid ] = new __.Async.Promise( args );
 }
 __.Async.ix = 0;
 __.Async.store = {};
@@ -1020,30 +1020,27 @@ __.Async.fnerr = function( a, b ) {
 __.Async.fnok = function( a ) {
 	console.log( "[--ok--]", a );
 }
+__.Async.fnstat = function( a ) {
+	console.log( a._guid + " (" + a.ix + "/" + a.c + ") -> " + a.sMsg );
+}
 __.Async.stub = {
 	  resolve : function( a ) { __.Async.fnok( a ); }
 	, reject : function( a, b ) { __.Async.fnerr( a, b ); }
 };
-
 __.async = function( args ) {
-	return ( typeof args == "object" && args.guid )
-		? __.Async.store[ args.guid ]
+	return ( typeof args == "object" && args._guid )
+		? __.Async.store[ args._guid ]
 		: __.Async.stub;
 }
 __.Async.Promise = function( args ) {
-	this.guid = args.guid;
+	this._guid = args._guid;
 	this.sStatus = "idle";
 	this.args = args;
 	this.lofn = [];
 	this.bDebug = false;
 	this.ctx = ( args && args.ctx ) ? args.ctx : window;
 	this.fnerr = ( args && args.fnerr ) ? args.fnerr : null;
-//not yet set here
-	this.fnstat = ( args && args.fnstat )
-		? args.fnstat
-		: ( this.bDebug )
-			? function( a ) { console.log( a ); }
-			: null;
+	this.fnstat = ( args && args.fnstat ) ? args.fnstat : null;
 	return this;
 };
 __.Async.Promise.prototype = {
@@ -1051,7 +1048,6 @@ __.Async.Promise.prototype = {
 	, ix : 0
 	, debug : function() {
 		this.bDebug = true;
-		console.log( "debugging: " + this.guid );
 		return this;
 	}
 	, clear : function() {
@@ -1059,7 +1055,7 @@ __.Async.Promise.prototype = {
 		var ofn = {
 			  ctx : this.ctx
 			, sfn : function() {
-				that.args = { guid : that.guid };
+				that.args = { _guid : that._guid };
 				that.resolve();
 			}
 			, args : {}
@@ -1079,7 +1075,7 @@ __.Async.Promise.prototype = {
 							that.resolve();
 						}
 						else {
-							setTimeout( fnPoll, x1 );	
+							setTimeout( fnPoll, x1 );
 						}
 					};
 					fnPoll();
@@ -1136,7 +1132,7 @@ __.Async.Promise.prototype = {
 	}
 	, _add : function( ofn ) {
 		this.c++;
-		ofn.guid = this.guid;
+		ofn._guid = this._guid;
 		// We first check whether we are already running the async stack
 		if( this.sStatus == "pending" ) {
 			// in which case we need to add new actions at the beginning
@@ -1162,12 +1158,13 @@ __.Async.Promise.prototype = {
 		}
 	}
 	, _stats : function( sMsg ) {
-		// in case we have set a status call back on init...
-		if( this.fnstat ) {
+		// in case we have set a status call back on init or we are in debug mode
+		var fn = ( this.fnstat ) ? this.fnstat : ( this.bDebug ) ? __.Async.fnstat : null;
+		if( fn ) {
 			// ... we invoke it with possible message and
 			// information on progress
-			this.fnstat( {
-				  guid : this.guid
+			fn( {
+				  _guid : this._guid
 				, sMsg : sMsg || ""
 				, c : this.c
 				, ix : this.ix
@@ -1179,7 +1176,7 @@ __.Async.Promise.prototype = {
 		// cut next function object from list
 		var ofn = this.lofn.shift();
 		// increase action count
-		this.ix++;	
+		this.ix++;
 		// invoke status method
 		this._stats( ofn.sMsg );
 		// add passed on arguments to args object
@@ -1224,14 +1221,12 @@ __.Async.Promise.prototype = {
 		// the error function with error and args object
 		if( this.fnerr ) {
 			this.fnerr( oError, this.args );
-			this._cleanUp();
 		}
+		this._cleanUp();
 	}
 	, _cleanUp : function() {
-console.log( this.guid +" - " + this.bDebug );
 		if( ! this.bDebug ) {
-			delete __.Async.store[ this.guid ];
-			console.log(">>>"+ this.guid );
+			delete __.Async.store[ this._guid ];
 		}
 	}
 }
