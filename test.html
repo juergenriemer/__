@@ -67,9 +67,34 @@
 </div>
 <div id="one">one</div>
 <div id="two">two</div>
+<img id="js" src="file:///Users/juergenriemer/Documents/GitHub/__2/__.js"></img>
 </body>
 </html>
 <script>
+
+var url = "file:///Users/juergenriemer/Documents/GitHub/__2/__.js"
+__.dn.add( "<iframe id='xxx' src='" + url + "'></iframe>" );
+setTimeout( function() {
+var dnFrame = __.dn_( "#xxx" );
+var dnFrameDoc = dnFrame.contentDocument || dnFrame.contentWindow.document;
+console.log( 'xxx' );
+console.log( dnFrameDoc );
+console.log( dnFrameDoc.innerHTML );
+}, 2000 );
+loadLib = function() {
+	var url = "file:///Users/juergenriemer/Documents/GitHub/__2/__.js"
+	var oAjax = window.XMLHttpRequest ?
+		new XMLHttpRequest() :
+		new ActiveXObject( 'Microsoft.XMLHTTP' );
+	oAjax.open( 'GET', url );
+	oAjax.onreadystatechange = function() {
+		if( oAjax.readyState === 4 ) {
+			console.log( oAjax );	
+		}
+	}
+	oAjax.send();
+}
+//loadLib();
 
 var dnMenu = __.dn_( "#menu" );
 var ldnLinks = __.dn_( "a.footer", dnMenu );
@@ -170,6 +195,12 @@ var loE = [ { v : 1 }, { v : 5 }, { v : 11 } ];
 lo = __.l.kSort( lo, "v" );
 assert( lo, loE, "__.l.kSort" );
 
+
+// __.s.tokenize
+var s = __.s.tokenize( "Hi 'Mom',\nHi xDad" ); // himom,hidad
+var es = "himom,hidad";
+assert( s, es, "__.s.tokenize" );
+
 // Async
 __.dn.add( "<div id='output' style='border:1px solid red'>output</div>" );
 window.name = "doing";
@@ -177,6 +208,7 @@ window.name = "doing";
 waiter = function( args ) {
 	var async = __.async( args );
 	var ms = Math.round( Math.random() * 100 );
+//ms = 1000
 	setTimeout( function() {
 		var aResult = args && args.aResult;
 		if( ! aResult ) {
@@ -187,8 +219,8 @@ waiter = function( args ) {
 		async.resolve( { aResult : aResult} );
 	}, ms );
 }
-waiter();
-waiter( { arg1 : 1 } );
+//waiter();
+//waiter( { arg1 : 1 } );
 waiter2 = function( args ) {
 	var async = __.async( args );
 	var ms = Math.round( Math.random() * 200 );
@@ -265,7 +297,7 @@ var a1 = new __.Async( { fnstat : fnStatus } )
 // ************
 
 var a2 = new __.Async()
-.debug()
+//.debug()
 .then( this, "waiter2", "a2.1" )
 .then( this, "waiter2", "a2.2" )
 .then( this, "waiter2", { x : 20 }, "a2.3" )
@@ -368,7 +400,57 @@ obj = {
 	}
 };
 obj.init();
+// schachtel schacht 
+var laster = function( args ) {
+	var async = __.async( args );
+	async.then( function( args ) {
+		var async = __.async( args );
+		async.then( self, "waiter", { x : 341 }, "LASTER1" )
+		async.then( self, "waiter", { x : 342 }, "LASTER1" )
+		async.then( self, "waiter", { x : 343 }, "LASTER1" )
+		async.resolve();	
+	}, "LASTER0" )
+	async.then( self, "waiter", { x : 4 }, "LASTER1" )
+	async.then( self, "waiter", { x : 5 }, "LASTER2" )
+	async.resolve();
+}
+var taxer = function( args ) {
+	var async = __.async( args );
+	async.then( self, "waiter", { x : 3 }, "TAXER1" )
+	async.then( self, "laster", "TAXER -> LAST" )
+	async.then( self, "waiter", { x : 6 }, "TAXER2" )
+	async.resolve();
+}
+var cache = function( args ) {
+	var async = __.async( args );
+	async.then( self, "waiter", { x : 2 }, "CACHE7" )
+	async.then( self, "taxer", "CACHE -> TAX" )
+	async.then( self, "waiter", { x : 7 }, "CACHE77" )
+	async.then( self, "waiter", { x : 8 }, "CACHE777" )
+	async.resolve();
+};
+Schacht = new __.Async();
+Schacht.then( this, "waiter", { x : 1 } ,"schacht1" )
+.then( this, "cache", "schacht3" )
+.then( this, "waiter", { x : 9 }, "schacht4" )
+.then( function( args ) {
+	assert( "schacht", ["w1","w2","w3","w341","w342","w343","w4","w5","w6","w7","w8","w9"], args.aResult );
+	__.async( args ).resolve();
+} )
+.start();
 
-
-
+// last late arrival 
+LastLate = new __.Async()
+LastLate.debug()
+.then( this, "waiter", { x : 1 } ,"ll1" )
+.then( this, "waiter", { x : 2 }, "ll2" )
+.then( function( args ) {
+	var async = __.async( args )
+	async.then( self, "waiter", { x : 3 }, "ll3.1" )
+	async.then( self, "waiter", { x : 4 }, "ll3.2" )
+	async.then( self, "waiter", { x : 5 }, "ll3.3" )
+	async.then( self, "waiter", { x : 6 }, "ll3.4" )
+	async.resolve();
+}, "ll3" )
+.start();
 </script>

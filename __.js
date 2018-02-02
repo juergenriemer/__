@@ -541,18 +541,20 @@ __ = {
 		/**
 		 * <pre>
 		 * Tokenize a string to certain levels:
-		 * simple: remove spaces an lowercase
+		 * simple: remove spaces, quotes, newlines an lowercase
 		 * </pre>
 		 * @memberof __.s
 		 * @method tokenize
-		 * @example var s = __.s.tokenize( "Hi Mom" ); // himom
+		 * @example var s = __.s.tokenize( "Hi 'Mom'" ); // himom
 		 * @param {String} s string we want to tokenize
 		 * @param {String} [sType] string to indicate level (default is simple)
 		 * @returns {String} tokenized string
 		 */
 		, tokenize : function( s, sType ) {
 			if( ! sType || sType == "simple" ) {
-				s = s.replace( / /g, "" );
+				s = s.replace( /\s/g, "" );
+				s = s.replace( /'/g, "" );
+				s = s.replace( /"/g, "" );
 				return s.toLowerCase();
 			}
 			return s;
@@ -1028,9 +1030,14 @@ __.Async.stub = {
 	, reject : function( a, b ) { __.Async.fnerr( a, b ); }
 };
 __.async = function( args ) {
-	return ( typeof args == "object" && args._guid )
+	// fetch the promise object from args._guid
+	var oPromise = ( typeof args == "object" && args._guid )
 		? __.Async.store[ args._guid ]
 		: __.Async.stub;
+	// we set the late arrivals flag on the promise, i.e. any newly
+	// added task will get put at beginning of task queue
+	oPromise.bLateArrivals = true;
+	return oPromise;
 }
 __.Async.Promise = function( args ) {
 	this._guid = args._guid;
@@ -1046,6 +1053,7 @@ __.Async.Promise = function( args ) {
 __.Async.Promise.prototype = {
 	  c : 0
 	, ix : 0
+	, bLateArrivals : false
 	, debug : function() {
 		this.bDebug = true;
 		return this;
@@ -1133,22 +1141,41 @@ __.Async.Promise.prototype = {
 	, _add : function( ofn ) {
 		this.c++;
 		ofn._guid = this._guid;
-		// We first check whether we are already running the async stack
-		if( this.sStatus == "pending" ) {
+		// We first check whether we are in late arrival mode, this
+		// happens if another batch of tasks is assigned 
+		if( this.bLateArrivals ) {
 			// in which case we need to add new actions at the beginning
-			// of the function array but at the end of any such added actions
+			// of the task queue but at the end of any such added actions
 			// we end up with an array like this [ new1, new2, old3, old4 ]
-			// we mark the new action as "late arrival"
+			// so we have to mark the new action as "late arrival"
+			// for subsequent late arrivals to position them below previous ones
 			ofn.bLateArrival = true;
-			// iterate through the exising array
+			// first we get number of task left in our task stack
 			var c = this.lofn.length;
-			for( var ix=0; ix<c; ix++ ) {
-				// and inject the new action after the first 
-				// action that is not a "late arrival" itself
-				if( ! this.lofn[ ix ].bLateArrival ) {
-					this.lofn.splice( ix, 0, ofn );
-					break;
+			// if we still have tasks in our stack...
+			if( c ) {
+				// we iterate through the exising array
+				for( var ix=0; ix<c; ix++ ) {
+					// and inject the new action after the first 
+					// action that is not a "late arrival" itself
+					// or a 
+					var bSet = false;
+					if( ! this.lofn[ ix ].bLateArrival ) {
+						bSet = true;
+						this.lofn.splice( ix, 0, ofn );
+						break;
+					}
 				}
+				// so if we found only late arrivals
+				if( ! bSet ) {
+					// we simply push the new task to the end
+					this.lofn.push( ofn );
+				}
+			}
+			// the task stack is empty!
+			else {
+				// we simply push the new task into the stack
+				this.lofn.push( ofn );
 			}
 		}
 		else {
@@ -1159,7 +1186,11 @@ __.Async.Promise.prototype = {
 	}
 	, _stats : function( sMsg ) {
 		// in case we have set a status call back on init or we are in debug mode
-		var fn = ( this.fnstat ) ? this.fnstat : ( this.bDebug ) ? __.Async.fnstat : null;
+		var fn = ( this.fnstat )
+			? this.fnstat
+			: ( this.bDebug )
+				? __.Async.fnstat
+				: null;
 		if( fn ) {
 			// ... we invoke it with possible message and
 			// information on progress
@@ -1204,6 +1235,12 @@ __.Async.Promise.prototype = {
 		return this;
 	}
 	, resolve : function( args ) {
+		// first we clear any bLateArrivals flag
+		this.bLateArrivals = false;
+		// next we remove all late arrival flags from tasks
+		this.lofn.forEach( function( ofn ) {
+			ofn.bLateArrival = false;
+		} );
 		// add returned results to args object
 		__.o.add( this.args, args );
 		// invoke next action if array is not empty

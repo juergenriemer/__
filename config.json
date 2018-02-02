@@ -1,6 +1,6 @@
 {
     "source": {
-        "include": [ "D:\\jriemer\\GitHub\\__\\__.js" ],
+	"include" : [ "/Users/juergenriemer/Documents/GitHub/__2/" ],
         "includePattern": ".+\\.js(doc|x)?$"
     },
     "opts": {
