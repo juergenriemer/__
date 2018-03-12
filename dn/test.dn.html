@@ -1,0 +1,2114 @@
+<html>
+<!--script src="D:\jriemer\GitHub\__\__.js"></script-->
+<script src="__.js"></script>
+<script src="__.Async.js"></script>
+
+<body>
+<script>
+
+</script>
+<!--textarea id="__">
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @output_file_name __.min.js
+// @js_externs var __; __.dn_; __.dn._dn; __.dn.del; __.dn; __.dn._move; __.dn.move; __.dn.move_; __.dn._add; __.dn.add; __.dn.add_; __.dn.hide; __.dn.show; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.each; __.css; __.e; __.b; __.b.email; __.b.url; __.cookies; __.cookies.get; __.cookies.set; __.cookies.del; __.url; __.url.oParams; __.o; __.o.s; __.o.add; __.o.kRename; __.o.c; __.o.copy; __.o.empty; __.s; __.s.o; __.s.empty; __.s.tokenize; __.l; __.l.del; __.l.contains; __.l.empty;
+// ==/ClosureCompiler==
+// version 1.5
+/**
+ * @version 1.0
+ * @namespace __
+ */
+__ = {
+	/**
+	 * <pre>
+	 * Takes a CSS selector string and queries the DOM for matching nodes.
+	 * It returns a single DOM node if just one node was found.
+	 * It returns a list of DOM nodes if multiple were found.
+	 * It will return [null] in case nothing was found.
+	 * An optional DOM node as starting point can be passed on otherwise [document] is used.
+	 * An optional callback function to be applied on returned nodes can be passed on which
+	 * will be invoked with two parameters: the single node and its index of the array.
+	 * </pre>
+	 * @memberof __
+	 * @method dn_
+	 * @example var dnMenu = __.dn_( "#menu" );
+	 * @example var ldnLinks = __.dn_( "a.footer", dnMenu );
+	 * @example __.dn_( "a.footer", dnMenu, function( dn, ix ) {
+	 *       dn.style.color = "red";
+	 *       dn.style.border = ix + "px solid green";
+	 *  } );
+	 * @example __.dn_( "[href]", function( dn ) {
+	 *       dn.setAttribute( "href", "#" );
+	 *  } );
+	 * @param {String} s CSS selector string
+	 * @param {Element|Function} [x1] starting node or callback function
+	 * @param {Function} [x2] callback function
+	 * @returns {Element|Array} A DOM node or a list of DOM nodes or null if CSS selector could not be found
+	 */
+	dn_ : function( s, x1, x2 ) {
+		var dnStart = ( typeof x1 == "object" ) ? x1 : document;
+		var fn = ( typeof x1 == "function" ) ? x1 : x2;
+		var sfn = "querySelectorAll";
+		if( /^.[a-zA-Z0-9_-]*$/.test( s ) ) {
+			var sfst = s.substr( 0, 1 );
+			if( sfst == "#" ) {
+				sfn = "getElementById";
+				s = s.substr( 1 );
+			}
+			else if( sfst == "." ) {
+				sfn = "getElementsByClassName";
+				s = s.substr( 1 );
+			}
+			else if( /[a-zA-Z]/.test( sfst ) ) {
+				sfn = "getElementsByTagName";
+			}
+		}
+		var xdn = dnStart[ sfn ]( s );
+		xdn = HTMLCollection.prototype.isPrototypeOf( xdn )
+			? [].slice.call( xdn ) : xdn;
+		if( xdn ) {
+			if( fn ) {
+				__.each( xdn, fn );
+			}
+			var c = xdn.length;
+			if ( ! isNaN( c ) ) {
+				if( c == 1 ) {
+					return xdn[ 0 ];
+				}
+				else if( c == 0 ) {
+					return null;
+				}
+			}
+		}
+		return xdn;
+	}
+	/**
+	 * <pre>
+	 * Takes a CSS selector string and queries the DOM for the closest matching parent node.
+	 * It returns a DOM node.
+	 * It will return [null] in case nothing was found.
+	 * An optional callback function to be applied on the returned node. It will be invoked with
+	 * one parameter: the single node
+	 * </pre>
+	 * @memberof __
+	 * @method _dn
+	 * @example var dnInput = __.dn_( "[name='email']" );
+	 * var dnForm = __._dn( "form", dnInput );
+	 * @example
+	 * __._dn( "div.the-form", dnInput, function( dn ) {
+	 *     dn.style.border = "1px solid red";
+	 *     dn.style.padding = "1em";
+	 * } );
+	 * @result
+	 * __._dn( "form", dnInput ).style.padding == "1em"
+	 * __._dn( "form", dnInput ).style.border == "1px solid red"
+	 * @param {String} s CSS selector string
+	 * @param {Element} dn starting node
+	 * @param {Function} [fn] callback function
+	 * @returns {Element} A DOM node or null if CSS selector could not be found
+	 */
+	, _dn : function( s, dn, fn ) {
+		var dnClosest = dn.closest( s );
+		if( fn ) {
+			__.each( dnClosest, fn );
+		}
+		return dnClosest
+	}
+	/**
+	 * <pre>
+	 * Receives either an element or an array and a callback function.
+	 * In case of an array it iterates and invokes the callback on each element.
+	 * In case an element it invokes the callback directly.
+	 * The callback is invoked with two parameters: the element and its index.
+	 * </pre>
+	 * @memberof __
+	 * @method each
+	 * @example var ls = [ "one", "two", "three" ];
+	 * __.each( ls, function( s, ix ) {
+	 *     console.log( ix + ". " + s ); 
+	 * } );
+	 * @example var dn1 = __.dn_( "[href='#one']" );
+	 * var dn2 = __.dn_( "[href='#two']" );
+	 * var dn3 = __.dn_( "[href='#three']" );
+	 * var ldn = [ dn1, dn2, dn3 ];
+	 * __.each( ldn, function( dn ) {
+	 *     dn.style.color = "red";
+	 * } );
+	 * @example __.each( dn, function( dn ) {
+	 *     dn.style.color = "red";
+	 * } );
+	 * @param {Array|Element} xdn Array or a single element
+	 * @param {Function} fn callback function
+	 */
+	, each : function( xdn, fn ) {
+		var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
+		var c = ldn.length;
+		for( var ix=0; ix<c; ix++ ) {
+			fn( ldn[ ix ], ix );
+		}
+	}
+	/**
+	 * Provides methods that operate on a single DOM node.
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.dn
+	 */
+	, dn : {
+		/**
+		 * Deletes a DOM node.
+		 * @memberof __.dn
+		 * @method del
+		 * @param {Element} dn DOM node to be deleted
+		 * @example var dnForm = __.dn_( "form" );
+		 * __.dn.del( dnForm );
+		 */
+		  del : function( dn ) {
+			dn.parentNode.removeChild( dn );
+		}
+		/**
+		 * Moves a DOM node right before another DOM node.
+		 * @memberof __.dn
+		 * @method _move
+		 * @param {Element} dnMove DOM node that should get moved
+		 * @param {Element} dnTarget DOM node in front of which the node should get moved to
+		 * @example var dn1 = __.dn_( "#one" );
+		 * var dn2 = __.dn_( "#two" );
+		 * __.dn._move( dn2, dn1 );
+		 */
+		, _move : function( dnMove, dnTarget ) {
+			if( dnMove.length ) {
+				__.each( dnMove, function( dn ) {
+					dnTarget.parentNode.insertBefore( dn, dnTarget );
+				} );
+			}
+			else {
+				dnTarget.parentNode.insertBefore( dnMove, dnTarget );
+			}
+		  }
+		/**
+		 * Moves a DOM node inside another DOM node
+		 * @memberof __.dn
+		 * @method move
+		 * @example var dnUL = __.dn_( "ul" );
+		 * var dnLI = __.dn_( "li:nth-child(1)" );
+		 * __.dn.move( dnLI, dnUL );
+		 * @param {Element} dnMove DOM node that should get moved
+		 * @param {Element} dnTarget DOM node into which the DOM node should get moved
+		 */
+		, move : function( dnMove, dnTarget ) {
+			if( dnMove.length ) {
+				__.each( dnMove, function( dn ) {
+					dnTarget.appendChild( dn );
+				} );
+			}
+			else {
+				dnTarget.appendChild( dnMove );
+			}
+		  }
+		/**
+		 * Moves a DOM node right after another DOM node.
+		 * @memberof __.dn
+		 * @method move_
+		 * @example var dnLI4 = __.dn_( "li:nth-child( 4 )" );
+		 * var dnLI1 = __.dn_( "li:nth-child( 1 )" );
+		 * __.dn.move_( dnLI1, dnLI4 );
+		 * @param {Element} dnMove DOM node that should get moved
+		 * @param {Element} dnTarget DOM node after which the node should get moved to
+		 */
+		, move_ : function( dnMove, dnTarget ) {
+			if( dnMove.length ) {
+				__.each( dnMove, function( dn ) {
+					dnTarget.parentNode.insertBefore( dn, dnTarget.nextSibling );
+				} );
+			}
+			else {
+				dnTarget.parentNode.insertBefore( dnMove, dnTarget.nextSibling );
+			}
+		}
+		/**
+		 * <pre>
+		 * Takes an HTML string, converts it into DOM node(s) and writes inside of an existing DOM node.
+		 * It returns a single DOM node if HTML string has one root tag.
+		 * It returns a list of DOM nodes if HTML string has multiple root tags.
+		 * An optional DOM node as target DOM node can be passed on otherwise [document] is used.
+		 * An optional callback function to be applied on created nodes can be passed on which will be
+		 * invoked with two parameters: the single node and its index of the array
+		 * </pre>
+		 * @memberof __.dn
+		 * @method add
+		 * @example var dnUL = __.dn.add( "<ul class='colors'></ul>" );
+		 * @example var h = "<li>red</li>";
+		 * var lnLI = __.dn.add( h, dnUL );
+		 * @example var h = "<li>red</li>";
+		 * var lnLI = __.dn.add( h, dnUL, function( dn, ix ) {
+		 *     dn.style.color = dn.textContent;
+		 *     dn.textContent = ix + ". " + dn.textContent;
+		 * } );
+		 * @param {String} h String of valid HTML.
+		 * @param {Element|Function} [x1] target node or callback function
+		 * @param {Function} [x2] callback function
+		 * @returns {Element|Array} A DOM node or a list of DOM nodes
+		 */
+		, add : function( h, x1, x2 ) {
+			return __.dn._add_( h, x1, x2, "move" );
+		}
+		/**
+		 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM
+		 * node but right in front of it.
+		 * @memberof __.dn
+		 * @method _add
+		 * @example var dnLogin = __.dn_( "[name='login']" );
+		 * var h = "<div>At least 8 characters</div>";
+		 * var dnRule = __.dn._add( h, dnLogin );
+		 * @param {String} h String of valid HTML.
+		 * @param {Element|Function} [x1] target node or callback function
+		 * @param {Function} [x2] callback function
+		 * @returns {Element|Array} A DOM node or a list of DOM nodes
+		 */
+		, _add : function( h, x1, x2 ) {
+			return __.dn._add_( h, x1, x2, "_move" );
+		}
+		/**
+		 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM
+		 * node but right after of it.
+		 * @memberof __.dn
+		 * @method add_
+		 * @example var dnComment = __.dn_( "[name='comment']" );
+		 * var h = "<a href='#clear'>clear</a>";
+		 * var dnRule = __.dn.add_( h, dnComment );
+		 * @param {String} h String of valid HTML.
+		 * @param {Element|Function} [x1] target node or callback function
+		 * @param {Function} [x2] callback function
+		 * @returns {Element|Array} A DOM node or a list of DOM nodes
+		 */
+		, add_ : function( h, x1, x2 ) {
+			return __.dn._add_( h, x1, x2, "move_" );
+		}
+		, _add_ : function( h, x1, x2, sfn ) {
+			var dnRoot = ( typeof x1 == "object" ) ? x1 : document.body;
+			var fn = ( typeof x1 == "function" ) ? x1 : x2;
+			var dn = document.createElement( "p" );
+			dn.innerHTML = h;
+			var xdn = [].slice.call( dn.children );
+			xdn = ( xdn.length == 1 ) ? xdn[ 0 ] : xdn;
+			if( fn ) {
+				__.each( xdn, fn );
+			}
+			__.dn[ sfn ]( xdn, dnRoot );
+			return xdn;
+		}
+		/**
+		 * <pre>
+		 * Shows a DOM node.
+		 * It sets the display attribute of a DOM node to "block" or "inline" depending on its original state.
+		 * </pre>
+		 * @memberof __.dn
+		 * @method show
+		 * @example __.dn.show( dnInline );
+		 * @param {Element} dn DOM node to be shown
+		 */
+		, show : function( dn ) {
+			if( dn.style.display != "none" ) {
+				return;
+			}
+			var sDisplay = ( dn.hasAttribute( "__.display" ) )
+				? dn.getAttribute( "__.display" )
+				: "block";
+			dn.style.display = sDisplay;
+		}
+		/**
+		 * <pre>
+		 * Hides a DOM node.
+		 * It sets the display attribute of a DOM node to "none" preserving the previous value.
+		 * </pre>
+		 * @memberof __.dn
+		 * @method hide
+		 * @example __.dn.hide( dnInline );
+		 * @param {Element} dn DOM node to be hidden
+		 */
+		, hide : function( dn ) {
+			if( dn.style.display == "none" ) {
+				return;
+			}
+			var sDisplay = getComputedStyle( dn ).display;
+			dn.setAttribute( "__.display", sDisplay ); 
+			dn.style.display = "none";
+		}
+		/**
+		 * <pre>
+		 * Returns the index of a DOM node in its parent's children list.
+		 * </pre>
+		 * @memberof __.dn
+		 * @method ix 
+		 * @example __.dn.ix( dnLI );
+		 * @param {Element} dn DOM node
+		 */
+		, ix : function( dn ) {
+			var ix = 0;
+			while( ( dn = dn.previousSibling ) != null ) {
+				ix++;
+			}
+			return ix;
+		}
+		/**
+		 * <pre>
+		 * Gets or sets the x-position of a DOM element
+		 * </pre>
+		 * @memberof __.dn
+		 * @method x 
+		 * @example __.dn.x( dn, 300 );
+		 * @example var x = __.dn.x( dn );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [n] x-position in pixels
+		 * @returns {Element} x-position in pixels
+		 */
+		, x : function( dn, n ) {
+			if( n ) {
+				dn.style.left = parseInt( n ) + "px";
+			}
+			else {
+				return dn.getBoundingClientRect().left;
+			}
+		}
+		/**
+		 * <pre>
+		 * Gets or sets the y-position of a DOM element
+		 * </pre>
+		 * @memberof __.dn
+		 * @method y 
+		 * @example __.dn.x( dn, 300 );
+		 * @example var y = __.dn.y( dn );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [n] y-position in pixels
+		 * @returns {Element} y-position in pixels
+		 */
+		, y : function( dn, n ) {
+			if( n ) {
+				dn.style.top = parseInt( n ) + "px";
+			}
+			else {
+				return dn.getBoundingClientRect().top;
+			}
+		}
+		/**
+		 * <pre>
+		 * Gets or sets the width of a DOM element
+		 * </pre>
+		 * @memberof __.dn
+		 * @method dx 
+		 * @example __.dn.dx( dn, 300 );
+		 * @example var dx = __.dn.dx( dn );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [n] width in pixels
+		 * @returns {Element} width in pixels
+		 */
+		, dx : function( dn, dx ) {
+			if( dx ) {
+				dn.style.width = parseInt( dx ) + "px";
+			}
+			else {
+				return dn.getBoundingClientRect().width;
+			}
+		}
+		/**
+		 * <pre>
+		 * Gets or sets the height of a DOM element
+		 * </pre>
+		 * @memberof __.dn
+		 * @method dy 
+		 * @example __.dn.dy( dn, 300 );
+		 * @example var dy = __.dn.dy( dn );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [n] height in pixels
+		 * @returns {Element} height in pixels
+		 */
+		, dy : function( dn, dy ) {
+			if( dy ) {
+				dn.style.height = parseInt( dy ) + "px";
+			}
+			else {
+				return dn.getBoundingClientRect().height;
+			}
+		}
+		/**
+		 * <pre>
+		 * Lets an element fade out
+		 * </pre>
+		 * @memberof __.dn
+		 * @method fade_
+		 * @example __.dn.fade_( dn );
+		 * @example __.dn.fade_ = __.dn.fadeOut( dn, 25, function() {
+		 *     __.dn.del( dn );
+		 * } );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [ms] milliseconds it should take to fade out
+		 * @param {Function} callback function to be invoked after element was faded out.
+		 */
+		, fade_ : function( dn, x1, x2 ) {
+			var ms = ( typeof x1 == "number" ) ? x1 : 250;
+			var fn = ( typeof x1 == "function" ) ? x1 : x2;
+			var nStep = 25 / ms;
+			dn.style.opacity = dn.style.opacity || 1;
+			( function fader() {
+				if( ( dn.style.opacity -= nStep) < 0 ) {
+					__.dn.hide( dn );
+					if( fn ) {
+						fn();
+					}
+				}
+				else {
+					setTimeout( fader, 25 );
+				}
+			} )();
+		}
+		/**
+		 * <pre>
+		 * Lets an element fade in
+		 * </pre>
+		 * @memberof __.dn
+		 * @method _fade
+		 * @example __.dn._fade( dn );
+		 * @example __.dn._fade = __.dn.fadeOut( dn, 1000 );
+		 * @param {Element} dn DOM node
+		 * @param {Integer} [ms] milliseconds it should take to fade in 
+		 * @param {Function} callback function to be invoked after element was faded in.
+		 */
+		, _fade : function( dn, x1, x2 ) {
+			var ms = ( typeof x1 == "number" ) ? x1 : 250;
+			var fn = ( typeof x1 == "function" ) ? x1 : x2;
+			var nStep = 25 / ms;
+			dn.style.opacity = dn.style.opacity || 0;
+			__.dn.show( dn );
+			( function fader() {
+				var n = Number( dn.style.opacity ) + nStep;
+				dn.style.opacity = n;
+				if( n > 1 ) {
+					dn.style.opacity = 1;
+					if( fn ) {
+						fn();
+					}
+				}
+				else {
+					setTimeout( fader, 25 );
+				}
+			} )();
+		}
+	}
+	/**
+	 * Provides methods that operate on strings
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.s
+	 */
+	, s : {
+		/**
+		 * <pre>
+		 * Converts a string into an object.
+		 * It will return [null] if it fails.
+		 * </pre>
+		 * @memberof __.s
+		 * @method o
+		 * @example var s = "{'sName':'John','nAge':44}";
+		 * var o = __.s.o ( s );
+		 * @param {String} s string we want to convert
+		 * @returns {Object|null} Object or null
+		 */
+		  o : function( s ) {
+			try {
+				return JSON.parse( s );
+			}
+			catch( e ) {
+				return null;
+			}
+		}
+		/**
+		 * <pre>
+		 * Checks whether a string is empty after stripping of whitespaces
+		 * </pre>
+		 * @memberof __.s
+		 * @method empty
+		 * @example var s = "  ";
+		 * var bEmpty = __.s.empty( s );
+		 * @param {String} s string we want to examine
+		 * @returns {Booelan} Result of the check
+		 */
+		, empty : function( s ) {
+			return ( s.trim() == "" );
+		}
+		/**
+		 * <pre>
+		 * Uppercases the first character of a word
+		 * </pre>
+		 * @memberof __.s
+		 * @method camelcase
+		 * @example var s = __.s.camelcase( "hi mom" );
+		 * @param {String} s string we want to camelcase
+		 * @returns {String} Camelcased string
+		 */
+		, camelcase : function( s ) {
+			var ls = s.split( " " );
+			ls.forEach( function( s, ix ) {
+				ls[ ix ] = s.substr( 0, 1 ).toUpperCase() + s.substr( 1 );
+			} );
+			return ( ls.join( " " ) );
+		}
+		/**
+		 * <pre>
+		 * Tokenize a string to certain levels:
+		 * simple: remove spaces, quotes, newlines an lowercase
+		 * </pre>
+		 * @memberof __.s
+		 * @method tokenize
+		 * @example var s = __.s.tokenize( "Hi 'Mom'" ); // himom
+		 * @param {String} s string we want to tokenize
+		 * @param {String} [sType] string to indicate level (default is simple)
+		 * @returns {String} tokenized string
+		 */
+		, tokenize : function( s, sType ) {
+			if( ! sType || sType == "simple" ) {
+				s = s.replace( /\s/g, "" );
+				s = s.replace( /'/g, "" );
+				s = s.replace( /"/g, "" );
+				return s.toLowerCase();
+			}
+			return s;
+		}
+	}
+	/**
+	 * Provides methods that operate on lists
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.l
+	 */
+	, l : {
+		/**
+		 * <pre>
+		 * Remove an element from a list
+		 * </pre>
+		 * @memberof __.l
+		 * @method del
+		 * @example var l = [ 1, 3, 7 ];
+		 * var l = __.l.del( l, 7 );
+		 * @param {Array} l List from which we want to remove an element
+		 * @param {String|Number} x Element we want to remove
+		 * @returns {Booelan} Result of the check whether list holds the element
+		 */
+		  del : function( l, x ) {
+			var ix = l.indexOf( x );
+			if( ix > -1 ) {
+				l.splice( ix, 1 );
+			}
+			return l;
+		}
+		/**
+		 * <pre>
+		 * Checks whether a list contains an element
+		 * </pre>
+		 * @memberof __.l
+		 * @method contains
+		 * @example
+		 * var ix = 7;
+		 * var l = [ 1, 3, ix ];
+		 * var b7 = __.l.contains( l, ix );
+		 * @result b7 == true
+		 * b7 == true
+		 * @param {Array} l list we want to examine
+		 * @param {String|Number} x Element we are looking for
+		 * @returns {Booelan} Result of the check whether list holds the element
+		 */
+		, contains : function( l, x ) {
+			return ( l.indexOf( x ) > -1 );
+		}
+		/**
+		 * <pre>
+		 * Check if two arrays contain exactly the same data
+		 * </pre>
+		 * @memberof __.l
+		 * @method equal
+		 * @example var l1 = [ 1, 2, 3 ];
+		 * var l2 = [ 1, 2, 3 ];
+		 * var bEqual = __.l.equal( l1, l2 );
+		 * @param {Array} l1 first array to be compared 
+		 * @param {Array} l2 second array to be compared 
+		 * @returns {Boolean} result of comparison
+		 */
+		, equal : function( l1, l2 ) {
+			return ( l1.join( "-" ) == l2.join( "-" ) );
+		}
+		/**
+		 * <pre>
+		 * Checks whether a list is empty
+		 * </pre>
+		 * @memberof __.l
+		 * @method empty
+		 * @example var l = [];
+		 * var bEmpty = __.l.empty( l );
+		 * @param {Array} l list we want to examine
+		 * @returns {Booelan} Result of the check
+		 */
+		, empty : function( l ) {
+			var c = l.length;
+			return ! ( ! isNaN( c ) && c > 0 ); 
+		}
+		/**
+		 * <pre>
+		 * Sorts an array of objects by an object's key
+		 * </pre>
+		 * @memberof __.l
+		 * @method empty
+		 * @example var lo = [ { v : 12 }, { v : 11 }, { v : 2 } ];
+		 * lo = __.l.kSort( lo );
+		 * @param {Array} lo list of objects we want to sort by key
+		 * @param {String} k key we want to sort by
+		 * @returns {Array} Sorted array of objects
+		 */
+		, kSort : function( lo, k ) {
+			return lo.sort( function( a, b ) {
+				var x = a[ k ];
+				var y = b[ k ];
+				return ( (x < y )
+					? -1
+					: ( (x > y )
+						? 1
+						: 0 ) );
+			} );
+		}
+	}
+	/**
+	 * Provides methods that operate on objects
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.o
+	 */
+	, o : {
+		/**
+		 * <pre>
+		 * Converts an object into a string
+		 * </pre>
+		 * @memberof __.o
+		 * @method s
+		 * @example var o = { sName : "John", nAge : 44 }
+		 * var s = __.o.s( o );
+		 * @param {Object} o Object to be stringified.
+		 * @returns {string} String representation of the object.
+		 */
+		  s : function( o ) {
+			return JSON.stringify( o );
+		}
+		/**
+		 * <pre>
+		 * Return keys of an object.
+		 * </pre>
+		 * @memberof __.o
+		 * @method k
+		 * @example var o = { sName : "John", nAge : 44 }
+		 * var lk = __.o.k( o ); // [ "sName", "nAge" ]
+		 * @param {Object} o object
+		 * @returns {array} Array of keys
+		 */
+		, k : function( o ) {
+			try {
+				return Object.keys( o );
+			}
+			catch( e ) {
+				var l = [];
+				for( var k in o ) {
+					l.push( k );
+				}
+				return l;
+			}
+		}
+		/**
+		 * <pre>
+		 * Adds an object to an existing object.
+		 * </pre>
+		 * @memberof __.o
+		 * @method add
+		 * @example var oOrig = { sName : "John", nAge : 44 }
+		 * var oNew = { email : "john@example.com", id : 123 }
+		 * __.o.add( oNew, oOrig );
+		 * @param {Object} ocur Existing object
+		 * @param {Object} onew object to be added
+		 */
+		, add : function( ocur, onew ) {
+			for( var s in onew ) {
+				ocur[ s ] = onew[ s ];
+			} 
+		}
+		/**
+		 * <pre>
+		 * Rename a key of an object.
+		 * </pre>
+		 * @memberof __.o
+		 * @method kRename
+		 * @example var oOrig = { sName : "John", nAge : 44 }
+		 * __.o.kRename( oOrig, "sName", "sFirstName" );
+		 * @param {Object} o object
+		 * @param {String} kold key to be renamed
+		 * @param {String} knew new key name
+		 */
+		// http://stackoverflow.com/a/14592469/463676
+		, kRename : function( o, kold, knew ) {
+			Object.defineProperty(
+				  o
+				, knew
+				, Object.getOwnPropertyDescriptor( o, kold )
+			);
+			delete o[ kold ];
+		}
+		/**
+		 * <pre>
+		 * Counts first level elements of an object
+		 * </pre>
+		 * @memberof __.o
+		 * @method c 
+		 * @example var o = { sName : "John", nAge : 44 }
+		 * var oNew = __.o.c( o ); // 2
+		 * @param {Object} o object to be examined 
+		 * @returns {Number} count of elements
+		 */
+		, c : function( o ) {
+			var c = 0;
+			for( var k in o ) {
+				if( o.hasOwnProperty( k ) ) {
+					++c;
+				}
+			}
+			return c;
+		}
+		/**
+		 * <pre>
+		 * Create a copy of an object
+		 * </pre>
+		 * @memberof __.o
+		 * @method copy 
+		 * @example var oOrig = { sName : "John", nAge : 44 }
+		 * var oNew = __.o.copy( oOrig );
+		 * @param {Object} o object to be copied
+		 * @returns {Object} Copy of the object
+		 */
+		, copy : function( o ) {
+			try {
+				return JSON.parse( JSON.stringify( o ) );
+			}
+			catch( e ) {
+				return null;
+			}
+		}
+		/**
+		 * <pre>
+		 * Check if two objects contain exactly the same data
+		 * </pre>
+		 * @memberof __.o
+		 * @method equal
+		 * @example var o1 = { sName : "John", nAge : 44 };
+		 * var o2 = { sName : "John", nAge : 44 };
+		 * var bEqual = __.o.equal( o1, o2 );
+		 * @param {Object} o1 first object to be compared 
+		 * @param {Object} o2 second object to be compared 
+		 * @returns {Boolean} result of comparison
+		 */
+		, equal : function( o1, o2 ) {
+			try {
+				return ( JSON.parse( JSON.stringify( o1 ) ) ==
+				         JSON.parse( JSON.stringify( o2 ) ) );
+			}
+			catch( e ) {
+				return null;
+			}
+		}
+		/**
+		 * <pre>
+		 * Checks whether an object is empty
+		 * </pre>
+		 * @memberof __.o
+		 * @method empty
+		 * @example var o = {};
+		 * var bEmpty = __.b.empty( o );
+		 * @param {Object} o object we want to examine
+		 * @returns {Booelan} Result of the check
+		 */
+		, empty : function( x ) {
+			// http://stackoverflow.com/a/34491287/463676
+			for( var k in x ) {
+				return false;
+			}
+			return true;
+		}
+	}
+	/**
+	 * <pre>
+	 * Add a stylesheet rule to the page.
+	 * </pre>
+	 * @memberof __
+	 * @method css
+	 * @example __.css( "a.footer { color: red; padding : 0 }" );
+	 * @param {String} sStyle String of CSS style notation
+	 */
+	, css : function( sStyle ) {
+		var dn = document.createElement( 'style' );
+		document.body.appendChild( dn );
+		dn.innerHTML = sStyle;
+	}
+	/**
+	 * Provides methods that check states
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.b
+	 */
+	, b : {
+		/**
+		 * <pre>
+		 * Checks whether a string is a valid email
+		 * </pre>
+		 * @memberof __.b
+		 * @method mail
+		 * @example var bMail = __.b.mail( "john@example.com" );
+		 * @param {String} s String representing an email address
+		 * @returns {Booelan} Result of the check
+		 */
+		  mail : function( s ) {
+			return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[\.]{1}[a-zA-Z]{2,4}$/.test( s );
+		}
+		/**
+		 * <pre>
+		 * Checks whether a string is a valid URL 
+		 * </pre>
+		 * @memberof __.b
+		 * @method url 
+		 * @example var bUrl = __.b.url( "http://example.com" );
+		 * @param {String} s String representing a URL
+		 * @returns {Booelan} Result of the check
+		 */
+		, url : function( s ) {
+			return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test( v );
+		}
+	}
+	/**
+	 * Provides methods that operate with cookies
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.cookie
+	 */
+	, cookie : {
+		/**
+		 * <pre>
+		 * Gets a cookie by name
+		 * </pre>
+		 * @memberof __.cookie
+		 * @method get
+		 * @example var sCookie = __.cookie.get( "pref" );
+		 * @param {String} k String representing a cookie name
+		 * @returns {String|null} Value of the cookie or null
+		 */
+		  get : function( k ) {
+			var v = document.cookie.match( '(^|;) ?' + k + '=([^;]*)(;|$)' );
+			return v ? v[ 2 ] : null;
+		}
+		/**
+		 * <pre>
+		 * Sets a cookie by name
+		 * </pre>
+		 * @memberof __.cookie
+		 * @method set
+		 * @example var sCookie = __.cookie.get( "pref", "red", 365 );
+		 * @param {String} k String representing a cookie name
+		 * @param {String} v Value of the cookie
+		 * @param {Number} nDays lifetime of a cookie in days
+		 */
+		, set : function( k, v, nDays ) {
+			var d = new Date;
+			d.setTime( d.getTime() + 86400000 * nDays );
+			document.cookie = k + "=" + v + ";path=/;expires=" + d.toGMTString();
+		}
+		/**
+		 * <pre>
+		 * Removes a cookie by name
+		 * </pre>
+		 * @memberof __.cookie
+		 * @method del
+		 * @example __.cookie.del( "pref" );
+		 * @param {String} k String representing a cookie name
+		 */
+		, del : function( k ) {
+			__.cookie.set( k, '', -1 );
+		}
+	}
+	/**
+	 * Provides methods that operate on the URL
+	 * @memberof __
+	 * @type {object}
+	 * @namespace __.url
+	 */
+	, url : {
+		/**
+		 * <pre>
+		 * Reads parameters store from the URL or a string if passed on as argument
+		 * </pre>
+		 * @memberof __.url
+		 * @method oParams
+		 * @param {String} [url] URL string
+		 * @returns {Object} An object holding key/value pairs extracted from the URL
+		 */
+		  oParams : function( url ) {
+			var o = {};
+			var s = ( url ) ? url : window.location.href;
+			s.replace(
+				/[?&]+([^=&]+)=([^&]*)/gi,
+				function( m, k, v ) {
+					o[ k ] = v;
+				}
+			);
+			return o;
+		}
+	}
+}
+
+/* *** Polyfills *** */
+/* matches */
+this.Element && function( oPrototype ) {
+	oPrototype.matches = oPrototype.matches ||
+	oPrototype.matchesSelector ||
+	oPrototype.webkitMatchesSelector ||
+	oPrototype.msMatchesSelector ||
+	function( sCSS ) {
+		var dn = this;
+		var ldn = ( dn.parentNode || dn.document ).querySelectorAll( sCSS );
+		var ix = -1;
+		while( ldn[ ++ix ] && ldn[ ix ] != dn ){
+			// just loop until hit the end
+		};
+		return ( ldn[ ix ] ) ? true : false;
+	}
+}( Element.prototype );
+
+/* closest */
+this.Element && function( oPrototype ) {
+	oPrototype.closest = oPrototype.closest || function( sCSS ) {
+		var dn = this;
+		while( dn.matches && ! dn.matches( sCSS ) ) {
+			dn = dn.parentNode;
+		}
+		return ( dn.matches ) ? dn : null;
+	}
+}( Element.prototype );
+
+/* classList.toggle */
+
+( function() {
+	function ClassList( el ) {
+		this.element = el;
+	}
+	ClassList.prototype = {
+		toggle : function( name ) {
+			if( this.contains( name ) ) {
+				this.remove( name );
+				return false;
+			}
+			else {
+				this.add( name );
+				return true;
+			}
+		}
+	};
+}() );
+
+
+
+
+
+__.win = {
+	  dx: function () {
+		return window.innerWidth;
+	}
+	, dy: function () {
+		return window.innerHeight;
+	}
+};
+
+__.Async = function( args ) {
+	var _guid = "Async" + ( ++__.Async.ix );
+	var args = args || {};
+	args._guid = _guid;
+	return __.Async.store[ _guid ] = new __.Async.Promise( args );
+}
+__.Async.ix = 0;
+__.Async.store = {};
+__.Async.fnerr = function( a, b ) {
+	console.log( "[error]", a, b );
+}
+__.Async.fnok = function( a ) {
+	console.log( "[--ok--]", a );
+}
+__.Async.fnstat = function( a ) {
+	console.log( a._guid + " (" + a.ix + "/" + a.c + ") -> " + a.sMsg );
+}
+__.Async.stub = {
+	  resolve : function( a ) { __.Async.fnok( a ); }
+	, reject : function( a, b ) { __.Async.fnerr( a, b ); }
+};
+__.async = function( args ) {
+	// fetch the promise object from args._guid
+	var oPromise = ( typeof args == "object" && args._guid )
+		? __.Async.store[ args._guid ]
+		: __.Async.stub;
+	// we set the late arrivals flag on the promise, i.e. any newly
+	// added task will get put at beginning of task queue
+	oPromise.bLateArrivals = true;
+	return oPromise;
+}
+__.Async.Promise = function( args ) {
+	this._guid = args._guid;
+	this.sStatus = "idle";
+	this.args = args;
+	this.lofn = [];
+	this.bDebug = false;
+	this.ctx = ( args && args.ctx ) ? args.ctx : window;
+	this.fnerr = ( args && args.fnerr ) ? args.fnerr : null;
+	this.fnstat = ( args && args.fnstat ) ? args.fnstat : null;
+	return this;
+};
+__.Async.Promise.prototype = {
+	  c : 0
+	, ix : 0
+	, bLateArrivals : false
+	, debug : function() {
+		this.bDebug = true;
+		return this;
+	}
+	, clear : function() {
+		var that = this;
+		var ofn = {
+			  ctx : this.ctx
+			, sfn : function() {
+				that.args = { _guid : that._guid };
+				that.resolve();
+			}
+			, args : {}
+		};
+		this._add( ofn );
+		return this;
+			
+	}
+	, wait : function( x1, x2, x3 ) {
+		var that = this;
+		var ofn = {
+			  ctx : this.ctx
+			, sfn : ( typeof x2 == "function" )
+				? function() {
+					var fnPoll = function() {
+						if( x2() ) {
+							that.resolve();
+						}
+						else {
+							setTimeout( fnPoll, x1 );
+						}
+					};
+					fnPoll();
+				}
+				: function() {
+					setTimeout( function() {
+						 that.resolve();
+					}, x1 );
+				}
+			, args : {}
+			, sMsg : ( typeof x2 == "string" ) ? x2 : x3
+		};
+		this._add( ofn );
+		return this;
+	}
+	/**
+	 * <pre>
+	 * Registers a method to the Async chain
+	 * </pre>
+	 * @memberof __.Async.Promise
+	 * @method then
+	 * @example ( new __.Async() )
+	 * .then( that, "getRecords", { idUser : 123 }, "Getting records" )
+	 * .then( function( args ) {
+	 *     __.dn_( "#output" ).innerHTML = args.hResult;
+	 *     __.async( args ).resolve();
+	 * }, "Printing records" )
+	 * .start();
+	 * @param {Object|Function} x1 Either an anonymous function or parent object of the method
+	 * @param {String|String} x2 Either string of method name or status message
+	 * @param {String|String} x3 Either string of method name or status message
+	 * @returns {String|null} Value of the cookie or null
+	 */
+	, then : function( x1, x2, x3, x4 ) {
+		// construct an action's object
+		var ofn = {
+			  ctx : ( typeof x1 == "object" ) ? x1 : this.ctx
+			, sfn : ( typeof x1 == "object" ) ? x2 : x1
+			, args : ( typeof x2 == "string" )
+				? x3
+				: ( x2 )
+					? x2
+					: {}
+			, sMsg : ( typeof x3 == "object" )
+				? x4
+				: ( typeof x3 == "string" )
+					? x3
+					: ( typeof x2 == "string" )
+						? x2
+						: ""
+		};
+		this._add( ofn );
+		return this;
+	}
+	, _add : function( ofn ) {
+		this.c++;
+		ofn._guid = this._guid;
+		// We first check whether we are in late arrival mode, this
+		// happens if another batch of tasks is assigned 
+		if( this.bLateArrivals ) {
+			// in which case we need to add new actions at the beginning
+			// of the task queue but at the end of any such added actions
+			// we end up with an array like this [ new1, new2, old3, old4 ]
+			// so we have to mark the new action as "late arrival"
+			// for subsequent late arrivals to position them below previous ones
+			ofn.bLateArrival = true;
+			// first we get number of task left in our task stack
+			var c = this.lofn.length;
+			// if we still have tasks in our stack...
+			if( c ) {
+				// we iterate through the exising array
+				for( var ix=0; ix<c; ix++ ) {
+					// and inject the new action after the first 
+					// action that is not a "late arrival" itself
+					// or a 
+					var bSet = false;
+					if( ! this.lofn[ ix ].bLateArrival ) {
+						bSet = true;
+						this.lofn.splice( ix, 0, ofn );
+						break;
+					}
+				}
+				// so if we found only late arrivals
+				if( ! bSet ) {
+					// we simply push the new task to the end
+					this.lofn.push( ofn );
+				}
+			}
+			// the task stack is empty!
+			else {
+				// we simply push the new task into the stack
+				this.lofn.push( ofn );
+			}
+		}
+		else {
+			// no "late arrival" a normal action to be added to the
+			// end of the array holding all actions
+			this.lofn.push( ofn );
+		}
+	}
+	, _stats : function( sMsg ) {
+		// in case we have set a status call back on init or we are in debug mode
+		var fn = ( this.fnstat )
+			? this.fnstat
+			: ( this.bDebug )
+				? __.Async.fnstat
+				: null;
+		if( fn ) {
+			// ... we invoke it with possible message and
+			// information on progress
+			fn( {
+				  _guid : this._guid
+				, sMsg : sMsg || ""
+				, c : this.c
+				, ix : this.ix
+				, pct : this.ix * 100 / this.c
+			} );
+		}
+	}
+	, _next : function() {
+		// cut next function object from list
+		var ofn = this.lofn.shift();
+		// increase action count
+		this.ix++;
+		// invoke status method
+		this._stats( ofn.sMsg );
+		// add passed on arguments to args object
+		__.o.add( this.args, ofn.args );
+		// we now invoke the function.
+		if( typeof ofn.sfn == "string" ) {
+			// in case its name is passed on as string
+			// we invoke as key from context object passing
+			// on our accumulated arguments object
+			ofn.ctx[ ofn.sfn ]( this.args );
+		}
+		else {
+			// in case we passed on an anonymous function
+			// we invoke via "call" with context object again
+			// passing on our accumulated arguments object
+			ofn.sfn.call( ofn.ctx, this.args );
+		}
+	}
+	, start : function() {
+		// we start action chain by setting status to pending
+		this.sStatus = "pending";
+		// triggering the first action
+		this._next();
+		// and returning this object for possible further chaining
+		return this;
+	}
+	, resolve : function( args ) {
+		// first we clear any bLateArrivals flag
+		this.bLateArrivals = false;
+		// next we remove all late arrival flags from tasks
+		this.lofn.forEach( function( ofn ) {
+			ofn.bLateArrival = false;
+		} );
+		// add returned results to args object
+		__.o.add( this.args, args );
+		// invoke next action if array is not empty
+		if( this.lofn.length > 0 ) {
+			this._next();
+		}
+		else {
+			// otherwise stop and set status to idle
+			this.sStatus = "idle";
+			this._cleanUp();
+		}
+	}
+	, reject : function( oError ) {
+		// an error happened, we stop here and invoke
+		// the error function with error and args object
+		if( this.fnerr ) {
+			this.fnerr( oError, this.args );
+		}
+		this._cleanUp();
+	}
+	, _cleanUp : function() {
+		if( ! this.bDebug ) {
+			delete __.Async.store[ this._guid ];
+		}
+	}
+}
+
+__.e = {
+	stop : function( e ) {
+		e.stopPropagation();
+		e.preventDefault();
+	}
+}
+__.l.remove = __.l.del;
+</textarea-->
+<style>
+.-pb
+	{
+	border:			1px solid steelblue;
+	background-color:	#b6cee2;
+	height:			20px;
+	position:		relative;
+	z-index:		777;
+	}
+
+.-pb p
+	{
+	background:		transparent;
+	z-index:		888;
+	line-height:		20px;
+	margin:0;
+	text-align : center;
+	color:			white;
+	position:		relative;
+	}
+
+.-pb div
+	{
+	z-index:		777;
+	background:		steelblue;
+	height:			100%;
+	position:		absolute;
+	top:			0;
+	}
+</style>
+<div class='-pb'>
+	<p></p>
+	<div></div>
+</div>
+<div id="menu">
+	<ul>
+		<li><a href="#one">one</a></li>
+		<li><a href="#two">two</a></li>
+		<li><a href="#three">three</a></li>
+		<li><a href="#four">four</a></li>
+	</ul>
+	<div id="footer">
+		<a class="footer" href="#red">red</a> | 
+		<a class="footer" href="#green">green</a> | 
+		<a class="footer" href="#blue">blue</a>
+	</div>
+</div>
+<div id="feedback">
+	<div class="the-heading">
+		<h3>Feedback</h3>
+	</div>
+	<div class="the-form">
+		<form>
+			<input type="text" name="login" />
+			<br />
+			<input type="text" name="email" />
+			<br />
+			<textarea name="comment"></textarea>
+			<br />
+			<button>Send</button>
+		</form>
+	</div>
+</div>
+<div id="one">one</div>
+<div id="two">two</div>
+<img id="js" src="file:///Users/juergenriemer/Documents/GitHub/__2/__.js"></img>
+</body>
+</html>
+<script>
+
+var dnMenu = __.dn_( "#menu" );
+var ldnLinks = __.dn_( "a.footer", dnMenu );
+__.dn_( "a.footer", dnMenu, function( dn, ix ) {
+      dn.style.color = "red";
+      dn.style.border = ix + "px solid green";
+ } );
+__.dn_( "[href]", function( dn ) {
+      dn.setAttribute( "title", dn.getAttribute( "href" ) );
+ } );
+
+var dnInput = __.dn_( "[name='email']" );
+var dnForm = __._dn( "form", dnInput );
+__._dn( "div.the-form", dnInput, function( dn ) {
+    dn.style.border = "1px solid red";
+    dn.style.padding = "1em";
+} );
+
+var ls = [ "one", "two", "three" ];
+__.each( ls, function( s, ix ) {
+    console.log( ix + ". " + s ); 
+} );
+var dn1 = __.dn_( "[href='#one']" );
+var dn2 = __.dn_( "[href='#two']" );
+var dn3 = __.dn_( "[href='#three']" );
+var ldn = [ dn1, dn2, dn3 ];
+__.each( ldn, function( dn ) {
+    dn.style.color = "red";
+} );
+__.each( dn1, function( dn ) {
+    dn.style.color = "pink";
+} );
+
+var dn1 = __.dn_( "#one" );
+var dn2 = __.dn_( "#two" );
+__.dn._move( dn2, dn1 );
+
+
+var dnUL = __.dn_( "ul" );
+var dnLI = __.dn_( "li:nth-child(1)" );
+__.dn.move( dnLI, dnUL );
+
+
+var dnLI4 = __.dn_( "li:nth-child( 4 )" );
+var dnLI1 = __.dn_( "li:nth-child( 1 )" );
+__.dn.move_( dnLI1, dnLI4 );
+
+var dnUL = __.dn.add( "<ul class='colors'></ul>" );
+var h = "<li>red</li>";
+var lnLI = __.dn.add( h, dnUL );
+var h = "<li>red</li>";
+var lnLI = __.dn.add( h, dnUL, function( dn, ix ) {
+    dn.style.color = dn.textContent;
+    dn.textContent = ix + ". " + dn.textContent;
+} );
+
+var dnLogin = __.dn_( "[name='login']" );
+var h = "<div>At least 8 characters</div>";
+var dnRule = __.dn._add( h, dnLogin );
+
+var dnComment = __.dn_( "[name='comment']" );
+var h = "<a href='#clear'>clear</a>";
+var dnRule = __.dn.add_( h, dnComment );
+
+var dnForm = __.dn_( "form" );
+__.dn.del( dnForm );
+
+__.dn_( "[name='comment']" )
+
+__.dn.move(
+	  __.dn_( "a" )
+	, __._dn( "div", __.dn_( ".the-form") )
+	, function( dn, ix ) {
+		console.log( ix );
+		dn.textContent = "[" + ix + " " + dn.textContent + "]";
+		dn.style.background = "#efefef";
+	}
+)
+__.dn.add(
+	"<span>x</span><span>x</span><span>x</span><span>x</span>"
+	, __._dn( "div", __.dn_( ".the-form") )
+	, function( dn, ix ) {
+		dn.textContent = "[" + ix + " " + dn.textContent + "]";
+		dn.style.background = "#c0c0c0";
+	}
+)
+
+assert = function( a, b, sfn ) {
+	if( typeof a == "object" ) {
+		if( __.o.s( a ) == __.o.s( b ) ) {
+			console.log( sfn + " OK" );
+		}
+		else {
+			console.log( sfn + " ERR", a, b  );
+		}
+	}
+	else {
+		if( a == b ) {
+			console.log( sfn + " OK" );
+		}
+		else {
+			console.log( sfn + " ERR", a, b  );
+		}
+	}
+}
+// __.l
+var lo = [ { v : 5 }, { v : 11 }, { v : 1 } ];
+var loE = [ { v : 1 }, { v : 5 }, { v : 11 } ];
+lo = __.l.kSort( lo, "v" );
+assert( lo, loE, "__.l.kSort" );
+
+
+// __.s.tokenize
+var s = __.s.tokenize( "Hi 'Mom',\nHi Dad" ); // himom,hidad
+var es = "himom,hidad";
+assert( s, es, "__.s.tokenize" );
+
+// __.s.unCamelCase
+var s = __.s.unCamelCase( "HiMom" );
+var es = "Hi Mom";
+assert( s, es, "__.s.unCamelCase" );
+
+// __.l.kSort
+var lo = [ { v : 12 }, { x : 11 }, { s : "x" },  { v : 2 } ];
+lo = __.l.kSort( lo, "v" );
+elo = [ {x:11}, {s:"x"}, { v : 2} , { v : 12 } ];
+assert( lo, elo, "__.l.kSort" );
+
+// __.dt.date
+var o = __.dt.date( "2018/04/04" );
+var eo = {nDay:4,nMonth:3,olla:{ a:1,b:{u:"x"}},sDay:"Wednesday",sDayShort:"Wed",sMonth:"April",sMonthShort:"Apr"};
+recurs = function( o ) {
+	path = ""
+	for( var k in o ) {
+		if( typeof o[ k ] == "object" && o[ k ] !== null ) {
+			path = ""
+			recurs( o[ k ] );
+		}
+		else {
+			path += k;
+			console.log( path + " "+ k + " " + o[ k ] );
+		}
+	}
+}
+recurs( eo );
+assert( o, eo, "__.dt.date" );
+
+// Async
+__.dn.add( "<div id='output' style='border:1px solid red'>output</div>" );
+window.name = "doing";
+
+waiter = function( args ) {
+	var async = __.async( args );
+	var ms = Math.round( Math.random() * 100 );
+//ms = 1000
+	setTimeout( function() {
+		var aResult = args && args.aResult;
+		if( ! aResult ) {
+			aResult = []
+		}
+		var s = ( args && args.x ) ? args.x : "_";
+		aResult.push( "w" + s );
+		async.resolve( { aResult : aResult} );
+	}, ms );
+}
+//waiter();
+//waiter( { arg1 : 1 } );
+waiter2 = function( args ) {
+	var async = __.async( args );
+	var ms = Math.round( Math.random() * 200 );
+	setTimeout( function() {
+		var aResult = args && args.aResult;
+		if( ! aResult ) {
+			aResult = []
+		}
+		var s = ( args && args.x ) ? args.x : "_";
+		aResult.push( "w2" + s );
+		async.resolve( { aResult : aResult} );
+	}, ms );
+}
+fnStatus=function( args ){
+	__.dn_( "#output" ).innerHTML += "<br>" + args.guid + " - " + args.sMsg;
+	var pct = Math.round( args.ix / args.c * 100 );
+	var dnProgress = __.dn_( ".-pb" );
+	var dnBar = __.dn_( "div", dnProgress );
+	var dnText = __.dn_( "p", dnProgress );
+	var dx = __.dn.dx( dnProgress );
+	dnText.textContent = args.sMsg || "";
+	dnBar.style.width = ( dx / 100 * pct );
+}
+assert = function( s, o1, o2 ) {
+	if( __.l.equal( o1, o2 ) ) {
+		console.log( s + ': OK' );
+	} else {
+		console.log( s + ': ERR' );
+		console.log( o1, o2 );
+	}
+}
+o = {
+	do : function() {
+		var that = this;
+		( new __.Async() )
+		.then( that, "getRecords", { idUser : 123 }, "Getting records" )
+		.then( function( args ) {
+			__.dn_( "#output" ).innerHTML = args.hResult;
+			__.async( args ).resolve();
+		}, "Printing records" )
+		.start();
+	}
+	, getRecords : function( args ) {
+		setTimeout( function() {
+			var hResult = "<b>no records</b>";
+			__.async( args ).resolve( hResult );
+		}, 2000 ); 
+	}
+}
+o.do()
+var a1 = new __.Async( { fnstat : fnStatus } )
+.then( this, "waiter", { x : 4 }, "a1.1" )
+.then( this, "waiter", "a1.2" )
+.wait( 800, function() {
+	return window.name == "done";
+}, "wait for window name" )
+.then( this, "waiter", { x : 6 }, "a1.3" )
+.then( this, "waiter", { x : 2 }, "a1.4" )
+.then( function( args ) {
+	var async = __.async( args );
+	[1,2,3].forEach( function( n ) {
+		async.then( this, "waiter", { x : n }, "a1.5." + n )
+	} );
+	async.resolve();
+}, "a1.5" )
+.then( this, "waiter", { x : 6 }, "a1.6" )
+.then( this, "waiter", { x : 2 }, "a1.7" )
+.then( function( args ) {
+	assert( "one", ["w4","w4","w6","w2","w1","w2","w3","w6","w2"], args.aResult );
+	__.async( args ).resolve();
+}, "last msg" )
+.start();
+
+// ************
+
+var a2 = new __.Async()
+//.debug()
+.then( this, "waiter2", "a2.1" )
+.then( this, "waiter2", "a2.2" )
+.then( this, "waiter2", { x : 20 }, "a2.3" )
+.then( this, "waiter2", "a2.4" )
+.then( this, "waiter2", "a2.4" )
+.wait( 400 )
+.then( function( args ) {
+	window.name = "done";
+	__.async( args ).resolve();
+}, "set window name" )
+.then( this, "waiter2", "a2.4" )
+.then( function( args ) {
+	assert( "two", ["w2_","w2_","w220","w220","w220","w220"], args.aResult );
+	__.async( args ).resolve();
+}, "first last statement" )
+.clear()
+.then( this, "waiter2", "a2.5" )
+.then( function( args ) {
+	assert( "two", [ "w2_" ], args.aResult );
+	__.async( args ).resolve();
+}, "last statement" )
+.start()
+
+var mixed = new __.Async()
+.then( this, "waiter", "mixed.1"  )
+.clear()
+.then( this, "waiter", "mixed.1"  )
+.then( this, "waiter", "mixed.1"  )
+.then( this, "waiter2", "mixed.2"  )
+.then( function( args ) {
+	var async = __.async( args );
+	async.then( this, "waiter2", "mixed.3"  )
+	async.resolve();
+} )
+.then( this, "waiter", "mixed.4"  )
+.then( function( args ) {
+	assert( "mix", ["w_","w_","w2_","w2_","w_"], args.aResult );
+	__.async( args ).resolve();
+} )
+.start()
+
+// ******** test with objects
+obj = {
+	  owaiter : function( args ) {
+		var async = __.async( args );
+		var ms = Math.round( Math.random() * 300 );
+		setTimeout( function() {
+			var aResult = args && args.aResult;
+			if( ! aResult ) {
+				aResult = []
+			}
+			var s = ( args && args.x ) ? args.x : "_";
+			aResult.push( "ow" + s );
+			async.resolve( { aResult : aResult} );
+		}, ms );
+	}
+	, owaiter2 : function( args ) {
+		var async = __.async( args );
+		var ms = Math.round( Math.random() * 10 );
+		setTimeout( function() {
+			var aResult = args && args.aResult;
+			if( ! aResult ) {
+				aResult = []
+			}
+			var s = ( args && args.x ) ? args.x : "_";
+			aResult.push( "ow2" + s );
+			async.resolve( { aResult : aResult} );
+		}, ms );
+	}
+	, first : function( cbfn ) {
+		var that = this;
+		( new __.Async() )
+		.then( this, "owaiter2", "ofirst.1"  )	
+		.then( this, "owaiter2", "ofirst.2"  )	
+		.then( function( args ) {
+			var async = __.async( args );
+			async.then( that, "owaiter2", "ofirst.3"  );
+			async.resolve();
+		} )
+		.then( function( args ) {
+			assert( "oinner", ["ow2_","ow2_","ow2_"], args.aResult );
+			__.async( args ).resolve();
+			cbfn();
+		} )
+		.start();
+	}
+	, init : function() {
+		var that = this;
+		this.first( function() {
+			( new __.Async() )
+			.then( that, "owaiter", "oinit.1"  )	
+			.then( that, "owaiter", "oinit.2" )	
+			.then( that, "owaiter", "oinit.3" )	
+			.then( function( args ) {
+				assert( "oinit", ["ow_","ow_","ow_"], args.aResult );
+				__.async( args ).resolve();
+			} )
+			.start();
+		} );	
+	}
+};
+obj.init();
+// schachtel schacht 
+var laster = function( args ) {
+	var async = __.async( args );
+	async.then( function( args ) {
+		var async = __.async( args );
+		async.then( self, "waiter", { x : 341 }, "LASTER1" )
+		async.then( self, "waiter", { x : 342 }, "LASTER1" )
+		async.then( self, "waiter", { x : 343 }, "LASTER1" )
+		async.resolve();	
+	}, "LASTER0" )
+	async.then( self, "waiter", { x : 4 }, "LASTER1" )
+	async.then( self, "waiter", { x : 5 }, "LASTER2" )
+	async.resolve();
+}
+var taxer = function( args ) {
+	var async = __.async( args );
+	async.then( self, "waiter", { x : 3 }, "TAXER1" )
+	async.then( self, "laster", "TAXER -> LAST" )
+	async.then( self, "waiter", { x : 6 }, "TAXER2" )
+	async.resolve();
+}
+var cache = function( args ) {
+	var async = __.async( args );
+	async.then( self, "waiter", { x : 2 }, "CACHE7" )
+	async.then( self, "taxer", "CACHE -> TAX" )
+	async.then( self, "waiter", { x : 7 }, "CACHE77" )
+	async.then( self, "waiter", { x : 8 }, "CACHE777" )
+	async.resolve();
+};
+Schacht = new __.Async();
+Schacht.then( this, "waiter", { x : 1 } ,"schacht1" )
+.then( this, "cache", "schacht3" )
+.then( this, "waiter", { x : 9 }, "schacht4" )
+.then( function( args ) {
+	assert( "schacht", ["w1","w2","w3","w341","w342","w343","w4","w5","w6","w7","w8","w9"], args.aResult );
+	__.async( args ).resolve();
+} )
+.start();
+
+// last late arrival 
+LastLate = new __.Async()
+LastLate.debug()
+.then( this, "waiter", { x : 1 } ,"ll1" )
+.then( this, "waiter", { x : 2 }, "ll2" )
+.then( function( args ) {
+	var async = __.async( args )
+	async.then( self, "waiter", { x : 3 }, "ll3.1" )
+	async.then( self, "waiter", { x : 4 }, "ll3.2" )
+	async.then( self, "waiter", { x : 5 }, "ll3.3" )
+	async.then( self, "waiter", { x : 6 }, "ll3.4" )
+	async.resolve();
+}, "ll3" )
+.start();
+
+// stop async
+Stop = new __.Async()
+Stop.debug()
+.then( this, "waiter", { x : 1 } ,"stop1" )
+.then( function( args ) {
+	__.async( args ).stop();
+}, "stop2" )
+.then( this, "waiter", { x : 1 } ,"stop3" )
+.then( this, "waiter", { x : 1 } ,"stop4" )
+.start();
+// ------------------ asserting __.utils.js here -------
+cOkAssert = 0;
+cErrAssert = 0;
+assert = function( b, s ) {
+	var s = ( s ) ? s : "";
+	if( b === true ) {
+		console.log( "OK : " + s );
+		cOkAssert++;
+	}
+	else {
+		console.log( "ERR : " + s );
+		cErrAssert++;
+	}
+}
+
+
+console.log( ">>>>>>>>>>>> __.utils.js" );
+
+var o1 = {a:[1,3,1,[false,true,{a:1},[99,-1,"g"]]]};
+var o2 = {a:[1,3,1,[false,true,{a:1},["g",99,-1]]]};
+assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 4" )
+
+var o1 = [{a:1},[99,-1,"g"]];
+var o2 = [{a:1},[99,-1,"g"]];
+assert( __.o.equal( o1,o2 ), "object with multiple undefined" )
+
+var o1 = {a:[,[[]],[]]}; 
+var o2 = {a:[,[],[[]]]};
+assert( false === __.o.equal( o1,o2 ), "object with multiple undefined" )
+
+var o1 = {a:[]}; var o2 = {a:[0]};
+assert( false === __.o.equal( o1,o2 ), "object with undefined, zero" )
+
+var o1 = {a:[0,[[0]]]}; var o2 = {a:[0,[0,[]]]};
+assert( false === __.o.equal( o1,o2 ), "nested object with undefined, zero" )
+
+var o1 = {a:[[[,0]],]}; var o2 = {a:[,[[0,]]]};
+assert( false === __.o.equal( o1,o2 ), "nested object with undefined, zero 2" )
+
+assert( false === __.o.equal( [],[0] ), "undefined, zero" )
+
+var o1 = {a:[1,,4]};
+var o2 = {a:[1,,4]};
+assert( __.o.equal( o1, o2 ), "object equal" );
+
+assert( false === __.o.equal( [0],[] ), "zero, undefined" )
+assert( __.o.equal( [],[] ), "undefined, undefined" )
+
+var o1 = {a:1,b:1,c:1};
+var o2 = {a:1,b:2,c:1};
+var ldiff = {o1:[["diff", "b", 1, 2]],o2:[["diff", "b", 2, 1]]};
+assert( false === __.o.equal( o1, o2 ), "simple object, many keys, diff val" );
+assert( __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
+
+var o1 = {a:[1]};
+var o2 = {a:[1]};
+assert( __.o.equal( o1, o2 ), "object equal" );
+
+var o1 = {a:1};
+var o2 = {a:1};
+assert( __.o.equal( o1, o2 ), "simple object equal" );
+var o1 = {a:1};
+var o2 = {a:true};
+assert( false === __.o.equal( o1, o2 ), "simple object diff type" );
+var ldiff = {o1:[["length",null,7,10],["type", "a", 1, true]],o2:[["length",null,7,10],["type", "a", true, 1]]};
+assert( __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
+
+var o1 = {a:1,b:1,c:1};
+var o2 = {a:1,b:1,c:1};
+assert( __.o.equal( o1, o2 ), "simple object, many keys" );
+
+var o1 = {a:1,b:1,c:1};
+var o2 = {a:1,b:2,c:1};
+assert( false === __.o.equal( o1, o2 ), "simple object, many keys, diff val" );
+var ldiff = {o1:[["diff", "b", 1, 2]],o2:[["diff", "b", 2, 1]]};
+assert( __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
+
+var o1 = [1];
+var o2 = [1];
+assert( __.o.equal( o1, o2 ), "simple array" );
+
+var o1 = [1,2,3];
+var o2 = [1,2,3];
+assert( __.o.equal( o1, o2 ), "simple array, multiple elements" );
+
+var o1 = [1,2,3];
+var o2 = [3,1,2];
+assert( __.o.equal( o1, o2 ), "!!simple array, multiple elements unordered" );
+
+var o1 = { a: [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ] };
+var o2 = { a: [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ] };
+assert( __.o.equal( o1, o2 ), "complex object" );
+
+var o1 = [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ];
+var o2 = [ { a:1,b:[1] }, { c:[{u:7,l:[[[4]]]}]} ];
+assert( false === __.o.equal( o1, o2 ), "complex object, wrong value" );
+var ldiff = {o1:[["diff", "1.c.0.l.0.0.0", 5, 4]],o2:[["diff", "1.c.0.l.0.0.0", 4, 5]]};
+assert( __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
+
+var o1 = [ [ {a:1},{a:2},{a:3} ], [ {a:1},{a:2},{a:3} ] ];
+var o2 = [ [ {a:1},{a:2},{a:3} ], [ {a:1},{a:2},{a:3} ] ];
+assert( __.o.equal( o1, o2 ), "multiple objects duplicated in arrays" );
+
+var o1 = [ [ {a:1},{b:2},{a:3} ], [ {a:1},{b:2},{a:3} ] ];
+var o2 = [ [ {a:1},{b:2},{a:3} ], [ {a:1},{b:2},{a:3} ] ];
+assert( __.o.equal( o1, o2 ), "multiple objects in arrays" );
+
+var o1 = { fn:function(){var x=1} };
+var o2 = { fn:function(){var x=1} };
+assert( __.o.equal( o1, o2 ), "functions" );
+
+var o1 = { fn:function(){var x=1} };
+var o2 = { fn:function(){var x=1} };
+assert( __.o.equal( o1, o2 ), "functions with spaces" );
+
+var o1 = { b:new Date(2018,1,1) };
+var o2 = { b:new Date(2018,1,1) };
+assert( __.o.equal( o1, o2 ), "same dates" );
+
+var o1 = { b:new Date(2018,1,1) };
+var o2 = { b:new Date(2018,1,2) };
+assert( false === __.o.equal( o1, o2 ), "different dates" );
+
+assert( false === __.o.equal( {l:[4,3],s:{a:1}}, {l:[3,4],s:[11112]} ), "object with different types" );
+assert( __.o.equal( {l:[4,3],s:{a:1}}, {l:[3,4],s:{a:1}} ), "unordered objects" );
+assert( false === __.o.equal( [null],[0] ), "null, zero" )
+assert( false === __.o.equal( [],[0] ), "undefined, zero" )
+assert( false === __.o.equal( [0],[""] ), "zero, empty string" )
+assert( false === __.o.equal( [],[""] ), "undefined, empty string" )
+assert( false === __.o.equal( [null],[""] ), "null, empty string" )
+assert( false === __.o.equal( [null],[0] ), "null, zero" )
+assert( false === __.o.equal( [null],[] ), "null, undefined" )
+assert( __.o.equal(
+	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
+	, { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
+), "obect various types" );
+assert( false === __.o.equal(
+	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
+	, { a:false,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
+), "object various types, diff values" );
+assert( false === __.o.equal(
+	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
+	, { a:true,b:new Date(2018,1,2),c:-1,d:[[[1]]] }
+), "object various types, diff values 2" );
+assert( false === __.o.equal(
+	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
+	, { a:true,b:new Date(2018,1,1),c:0,d:[[[1]]] }
+), "object various types, diff values 3" );
+assert( false === __.o.equal(
+	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
+	, { a:true,b:new Date(2018,1,1),c:0,d:[[[2]]] }
+), "object various types, diff values 4" );
+assert( __.o.equal(
+	  { a:1,b:{c:{d:{e:1}}}}
+	, { a:1,b:{c:{d:{e:1}}}}
+), "nested objects" );
+o1  = {
+	_ : [ { x:1, y:2 }, { x:1, y:2 }, { x:1, y:2 } ]
+	, a : { a1:true, a2:new Date( 2018,1,1 ), a3:6 }
+	, b : {
+		b1 : [ 6, 1, 7, 2, 3 ]
+		, b2 : {
+			  bb1 : 1
+			, bb2 : 2
+		}
+	}
+	, c : "by"
+	, f : function() { return 'olla' }
+}
+o2  = {
+	_ : [ { x:1, y:2 }, { x:1, y:2 }, { x:1, y:2 } ]
+	, a : { a1:true, a2:new Date( 2018,1,1 ), a3:6 }
+	, b : {
+		b1 : [ 6, 1, 7, 2, 3 ]
+		, b2 : {
+			  bb1 : 1
+			, bb2 : 2
+			, bb3 : 3
+		}
+	}
+	, c : "hi"
+	, f : function() { return 'olla' }
+}
+
+assert( false === __.o.equal( o1, o2 ), "complex object, diff struc" );
+delete o2.b.b2.bb3;
+assert( false === __.o.equal( o1, o2 ) , "complex object, diff struc 2" );
+o2.c = "by";
+assert( __.o.equal( o1, o2 ), "complex object, corrected" );
+assert( "olla" == o1.f(), "test function of complex object" );
+assert( "olla" == o2.f(), "test function of complex object 2" );
+var o1 = {a:["a",-1,true]}
+var o2 = {a:["a",-1,true]}
+assert( __.o.equal( o1, o2 ), "mixed arrays" )
+
+var o1 = {a:[1,true,"a"]}
+var o2 = {a:["a",1,true]}
+var o1 = ["a",1,2,3,"b"]
+var o2 = ["a","b",3,1,2]
+assert( __.o.equal( o1, o2 ), "mixed arrays unordered" )
+
+var o1 = [[[["a",1,2,3,"b"]]]];
+var o2 = [[[["a","b",3,1,2]]]];
+assert( __.o.equal( o1, o2 ), "nested mixed arrays unordered" )
+
+var o1 = {a:[7,2,3,[5,1,2,[8,1,3]]]};
+var o2 = {a:[7,2,3,[5,1,2,[8,1,3]]]};
+assert( __.o.equal( o1, o2 ), "nested arrays" )
+
+var o1 = [7,2,3,[5,1,2,[8,1,3]]];
+var o2 = [7,2,3,[5,1,2,[8,1,3]]];
+assert( __.o.equal( o1, o2 ), "nested arrays 1" )
+
+var o1 = [7,2,[5,4,[8,1]]];
+var o2 = [7,2,[5,4,[8,1]]];
+assert( __.o.equal( o1, o2 ), "nested arrays 2" )
+
+var o1 = {a:[{b:1},[1,2],4,5]}
+var o2 = {a:[{b:1},[1,2],4,5]}
+assert( __.o.equal( o1, o2 ), "nested arrays complex" )
+
+var o1 = {a:[1,3,1,[false,true,{a:1},["g",-1,99,[1]]]]};
+var o2 = {a:[1,3,1,[false,true,{a:1},["g",-1,99,[1]]]]};
+assert( __.o.equal( o1, o2 ), "nested ordered arrays complex 2" )
+
+var o1 = {a:[["g",-1,99,[1,3]],3,1,1,{a:1}]};
+var o2 = {a:[1,3,1,{a:1},[99,-1,"g",[3,1]]]};
+assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 3" )
+
+var o1 = {a:[1,3,1,[false,true,{a:1},[99,-1,"g"]]]};
+var o2 = {a:[1,3,1,[false,true,{a:1},["g",99,-1]]]};
+assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 4" )
+
+var o1 = {a:[1,[true,{a:1},[99,-1,"g"]]]};
+var o2 = {a:[1,[true,{a:1},["g",99,-1]]]};
+assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 5" )
+
+var o1 = {a:[{a:1},[99,-1,"g"]]};
+var o2 = {a:[{a:1},["g",99,-1]]};
+assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 6" )
+
+var o1 = [{a:1},[99,-1,"g"]];
+var o2 = [{a:1},["g",99,-1]];
+assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 7" )
+console.log( "=======", "[OK: " + cOkAssert + "] [ERR: " + cErrAssert + "]", "========" );
+console.log( ">>>>>>>>>>>> __.utils.js" );
+
+</script>
+<!--
+var sjs = __.dn_( "#__" ).value;
+var lsls = sjs.split( "\n" );
+var bComment = false;
+var bExample = false;
+var bResult = false;
+var oTest = {};
+lsls.forEach( function( s ) {
+	if( /\s.*\/\*/.test( s ) ) {
+		bComment = true;
+		bExample = false;
+		bResult = false;
+		oTest = {
+			  lsExample : []
+			, lsResult : []
+		};
+	}	
+	else if( /\s.*\*\//.test( s ) ) {
+		bComment = false;
+	}	
+	else if( /\* @param/.test( s ) ) {
+		bComment = false;
+	}	
+	else if( /\* @returns/.test( s ) ) {
+		bComment = false;
+	}	
+	else if( bComment ) {
+		var ls_o = s.match( /\* @memberof (.*)/ );
+		if( ls_o && ls_o[ 1 ] ) {
+			var so = ls_o[ 1 ];
+			eval( "oTest.o = " + so );
+		}
+		var ls_sfn = s.match( /\* @method (.*)/ );
+		if( ls_sfn && ls_sfn[ 1 ] ) {
+			var sfn = ls_sfn[ 1 ];
+			eval( "oTest.fn = oTest.o[ '" + sfn + "']" );
+		}
+		if( bExample ) {
+			if( ! /\* @.*\b/.test( s ) ) {
+				oTest.lsExample.push( s.replace( /\*/, "" ) );
+			}
+		}
+		if( bResult ) {
+			if( ! /\* @.*\b/.test( s ) ) {
+				oTest.lsResult.push( s.replace( /\*/, "" ) );
+			}
+		}
+		if( /\* @example/.test( s ) ) {
+			s = s.replace( /\* @.*\b/, "" );
+			oTest.lsExample.push( s.replace( /\*/, "" ) );
+			bExample = true;
+			bResult = false;
+		}	
+		if( /\* @result/.test( s ) ) {
+			s = s.replace( /\* @.*\b/, "" );
+			oTest.lsResult.push( s.replace( /\*/, "" ) );
+			bExample = false;
+			bResult = true;
+		}	
+	}
+	if( !bComment && bResult ) {
+		oTest.sjsExample = oTest.lsExample.join( " " ).replace( /\s\s/g, "" );
+console.log( oTest.sjsExample )
+		console.log( "------------" );
+		console.log( oTest );
+		eval( oTest.sjsExample );
+
+
+		oTest.lsResult.forEach( function( s ) {
+			s = s.replace( /\s\s/g, "" ).trim();
+			if( s ) {
+				var ss = "b=(" + s + ")"; 
+				console.log( ss );
+				eval( ss );
+				if( b ) {
+					console.log( "OK" );
+				}
+				else {
+					console.log( "ERROR" );
+				}
+			}
+
+		} );
+		console.log( "------------" );
+		bResult = false;
+	}
+} );
+</script>
+-->
+</body>
+</html>

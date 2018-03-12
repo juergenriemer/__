@@ -1,0 +1,32 @@
+Find contacts
+You have two possibilities to 
+How to filter the contact list
+Note: The field "Front Office" is the only field that cannot be left empty.
+
+How to save a filter for later use
+Note: Any filter you save is accessible to you only
+
+Clear the current filter
+
+Full text search the contact list
+
+
+Remove a contact from the front office' portfolio
+
+Add a contact from a different front office.
+There are other front offices using this application to add their contacts. In some cases you might want
+
+What is a contact portfolio?
+
+
+FAQ
+
+I can't find contacts when searching
+
+Had the contact been added recently?
+I takes up to 15 minutes for the search system to index newly added contacts.
+Wait for 15 minutes and try to search again.
+
+Had the contact already been published?
+Contacts that got added by a different front office can only be seen by other users after it was published.
+Ask the creating front office to publish the contact
