@@ -1,0 +1,81 @@
+<html>
+<script src="__.Event.js"></script>
+<body>
+<h3>Unit tests for __.Event.js</h3>
+<div id="output"></div>
+<script>
+dnOutput = document.getElementById( "output" );
+o1 = {
+	  one : function() {
+		__.Event.trigger(
+			  "one is it"
+			, { sMessage : 1 }
+		);
+	}
+	, two : function() {
+		__.Event.trigger(
+			  "secondOne"
+			, { sMessage : 2 }
+		);
+	}
+	, three : function() {
+		__.Event.trigger(
+			  "third_one"
+			, { sMessage : 3 }
+		);
+	}
+	, four : function() {
+		__.Event.trigger(
+			  "4th one"
+			, { sMessage : 4 }
+		);
+	}
+	, five : function() {
+		__.Event.trigger(
+			  "five"
+		);
+	}
+	, trigger : function() {
+		var that = this;
+		this.five();this.one(); this.two(); this.one(); this.one();
+	}
+};
+o1.trigger();
+
+o2 = {
+	init : function() {
+		__.Event.listen( this, "five", "one is it", "secondOne", "4th one" );
+		dnOutput.innerHTML += "subed,"
+	}
+	, onOneIsIt : function( oEvent ) {
+		dnOutput.innerHTML += oEvent.sMessage + ",";
+	}
+	, onSecondOne : function( oEvent ) {
+		dnOutput.innerHTML += oEvent.sMessage + ",";
+	}
+	, onThird_one : function( oEvent ) {
+		dnOutput.innerHTML += oEvent.sMessage + ",";
+	}
+	, onFive : function() {
+		dnOutput.innerHTML += "5,";
+	}
+};
+o2.init();
+o1.trigger();
+o1.four();
+o2.on4thOne = function( oEvent ) {
+	dnOutput.innerHTML += oEvent.sMessage + ",";
+}
+o1.four();
+var h = dnOutput.innerHTML;
+var eh = "subed,5,1,2,1,1,4,";
+if( h == eh ) {
+	console.log( "OK" );
+}
+else {
+	console.log( "ERR", h, eh );
+}
+</script>
+</body>
+</html>
+

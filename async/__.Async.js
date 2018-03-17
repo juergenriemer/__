@@ -23,8 +23,8 @@ __.Async.fnerr = function( a, b ) {
 __.Async.fnok = function() {}
 __.Async.fnstat = function() {}
 __.Async.stub = {
-	  resolve : function( a ) { __.Async.fnok( a ); }
-	, reject : function( a, b ) { __.Async.fnerr( a, b ); }
+	  resolve : function( a ) { console.log( a ); }
+	, reject : function( oError ) { console.log( oError ); __.Async.fnerr( oError ); }
 };
 __.async = function( args ) {
 	// fetch the promise object from args.__guid_async__
