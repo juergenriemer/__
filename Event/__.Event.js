@@ -1,6 +1,6 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
-// @output_file_name __.min.js
+// @output_file_name __.event.min.js
 // @js_externs var __; __.Event; __.Event.listen; __.Event.trigger;
 // ==/ClosureCompiler==
 // version 1.0
@@ -30,9 +30,20 @@ __.Event = {
 	 * preceded with "on" in order to receive events.
 	 * @memberof __.Event
 	 * @method listen
-	 * @example __.Event.listen( this, "eventOne", "eventTwo" );
+	 * @example o = {
+	 *      init : function() {
+	 *       __.Event.listen( this, "hashchange", "newsLoaded" );
+	 *    }
+	 *    , onHashchange : function( oPageInfo ) {
+	 *       // handle event 
+	 *    }
+	 *    , onNewsLoaded : function( oNews ) {
+	 *       // handle event
+	 *    }
+	 * };
+	 * @example // __.Event.listen( this, "eventOne", "eventTwo" );
 	 * @param {oListener} object that wants to listen
-	 * @param {String} name of events to listen to (one or many)
+	 * @param {String} one or many names of events to listen to
 	 */
 	, listen : function() {
 		var that = this;
@@ -50,10 +61,13 @@ __.Event = {
 	 * Triggers an event with a message object
 	 * @memberof __.Event
 	 * @method trigger
-	 * @example __.Event.trigger( "eventOne" );
+	 * @example window.addEventListener( "hashchange", function() {
+	 *    __.Event.trigger( "hashchange", self.location.hash );
+	 * } );
 	 * // invokes all methods: onEventOne
-	 * @param {String} name of event
-	 * @param {Dynamic} Additional information about the event
+	 * @param {String} sEvent name of event
+	 * @param {Dynamic} [xMessage] Additional information that is sent 
+	 * along with the event, can be of any type
 	 */
 	, trigger : function( sEvent, oMessage ) {
 		sEvent = this.sEvent( sEvent );

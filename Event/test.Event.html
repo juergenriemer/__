@@ -67,14 +67,38 @@ o2.on4thOne = function( oEvent ) {
 	dnOutput.innerHTML += oEvent.sMessage + ",";
 }
 o1.four();
-var h = dnOutput.innerHTML;
-var eh = "subed,5,1,2,1,1,4,";
-if( h == eh ) {
-	console.log( "OK" );
-}
-else {
-	console.log( "ERR", h, eh );
-}
+
+
+o = {
+	init : function() {
+		__.Event.listen( this, "hashchange", "newsLoaded" );
+	}
+	, onHashchange : function( sHash ) {
+		dnOutput.innerHTML += sHash + ",";
+	}
+};
+o.init();
+window.addEventListener( "hashchange", function() {
+	__.Event.trigger( "hashchange", self.location.hash );
+} );
+//url = self.location.href;
+setTimeout( function() {
+	self.location.hash = "8";
+}, 100 );
+setTimeout( function() {
+	self.location.hash = "9";
+}, 200 );
+
+setTimeout( function() {
+	var h = dnOutput.innerHTML;
+	var eh = "subed,5,1,2,1,1,4,#8,#9,";
+	if( h == eh ) {
+		console.log( "OK" );
+	}
+	else {
+		console.log( "ERR", h, eh );
+	}
+}, 500 );
 </script>
 </body>
 </html>
