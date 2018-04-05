@@ -578,7 +578,7 @@ __.SP.Filter = __.Class.extend( {
 			var url = that.createPersonalViewUrl( guid );
 			( new __.Async( {
 				  sLabel : "Save a filter search"
-				, sFile : "__.SP.filter.js:496"
+				, sFile : "__.SP.filter.js"
 				, fnstat: function( a ){
 					if( a.sMsg && that.oModal ) {
 						that.oModal.progress( a.sMsg );
@@ -779,7 +779,7 @@ __.SP.Filter = __.Class.extend( {
 				dn.classList.remove( "hide" );
 			}
 			else {
-				dn.classList.append( "hide" );
+				dn.classList.add( "hide" );
 			}
 		} );
 	}

@@ -234,14 +234,16 @@ __.Async.Promise.prototype = {
 	 * @returns {Object} Promise instance for chaining
 	 * @instance
 	 */
-
+	// REF: unit test different argument structures
 	, then : function( x1, x2, x3, x4 ) {
 		// construct an action's object
 		var ofn = {
 			  ctx : ( typeof x1 == "object" ) ? x1 : this.ctx
 			, sfn : ( typeof x1 == "object" ) ? x2 : x1
 			, args : ( typeof x2 == "string" )
-				? x3
+				? ( typeof x3 == "object" )
+					? x3
+					: {}
 				: ( x2 )
 					? x2
 					: {}
@@ -337,12 +339,13 @@ __.Async.Promise.prototype = {
 			var v = ofn.args[ s ];
 			// if we deal with an arguments lookup we
 			// fetch the value using the key/path string
-			if( typeof v == "object" && v.arg ) {
-					var lk = v.arg.split( "." );	
-					v = this._args;
-					lk.forEach( function( k ) {
-						v = v[ k ];
-					} );
+			console.log( v );
+			if( typeof v == "object" && v && v.arg ) {
+				var lk = v.arg.split( "." );
+				v = this._args;
+				lk.forEach( function( k ) {
+					v = v[ k ];
+				} );
 			}
 			// assign to arg chain
 			this._args[ s ] = v;
