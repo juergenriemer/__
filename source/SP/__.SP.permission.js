@@ -1,7 +1,7 @@
 __.SP.permission = {};
 __.SP.group = {};
 __.SP.group.add = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oWeb = ctx.get_web();
 	var oCreate = new SP.GroupCreationInformation();
@@ -21,7 +21,7 @@ __.SP.group.add = function( args ) {
 	} );
 }
 __.SP.group.addUser = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oGroups = ctx.get_web().get_siteGroups();
 	var oGroup = oGroups.getByName( args.sGroup );
@@ -44,7 +44,7 @@ __.SP.group.addUser = function( args ) {
 }
 
 __.SP.group.addUser = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oUser = ctx.get_web().ensureUser( args.sUser );
 	var oGroup = ctx.get_web().get_siteGroups().getByName( args.sGroup );

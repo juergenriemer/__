@@ -28,12 +28,12 @@ __.SP.Filter = __.Class.extend( {
 			, sFile : "__.SP.filter.js"
 		} ) )
 		//.debug()
-		.wait( 25, function() {
+		.wait( function() {
 			return __.dn_( "#sideNavBox" );
-		}, "wait for side nav box" )
+		}, 25, "wait for side nav box" )
 		.then( function( args ) {
 			var h = "<div id='"+ that.sFilter +"' style='display:none' class='osce-filter'></div>";
-			that.dnRoot = __.dn.add( h, __.dn_( "#sideNavBox" ) );
+			that.dnRoot = __.dn.append( h, __.dn_( "#sideNavBox" ) );
 			that.createButtons();
 			that.dnForm = __.SP.filter.form.create( {
 				  dnRoot : that.dnRoot
@@ -44,13 +44,13 @@ __.SP.Filter = __.Class.extend( {
 			if( that.cbCreate ) {
 				that.cbCreate( that.dnRoot );
 			}
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "create filter" )
 		.then( function( args ) {
 			that.getFilterFields();
 			that.show();
 			__.Event.listen( that, "hashchange" );
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "show and subscribe to broadcaster" )
 		.start();
 	}
@@ -205,7 +205,7 @@ __.SP.Filter = __.Class.extend( {
 			lsxml = xmlQuery.match( /<Where>.*?<\/Where>/ );
 			if( lsxml && lsxml[ 0 ] ) {
 				xmlQuery = lsxml[ 0 ];
-				var dn = __.dn.add( xmlQuery );
+				var dn = __.dn.append( xmlQuery );
 				__.dn_( "FieldRef", dn, function( dn ) {
 					// get necessary attributes from field node
 					var sName = dn.getAttribute( "name" );
@@ -267,7 +267,7 @@ __.SP.Filter = __.Class.extend( {
 				}
 				__.dn.del( dn );
 			}
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "Analyse query" )
 		.start();
 	}
@@ -379,7 +379,7 @@ __.SP.Filter = __.Class.extend( {
 			, sView : sView
 		}, "read current view query" )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			var oFields = that.read();
 			for( var sField in oFields ) {
 				var oField = oFields[ sField ];
@@ -404,7 +404,7 @@ __.SP.Filter = __.Class.extend( {
 				}
 				return null;
 			};
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			var newQuery = that.form2caml();
 			var ls = args.kv.xmlQuery.match( /<Where>.*<\/Where>/ )
 			var oldQuery = ls[ 0 ];
@@ -425,7 +425,7 @@ __.SP.Filter = __.Class.extend( {
 			async.resolve();
 		}, "compare queries" )
 		.then( function( args ) {
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "done" )
 		.start();
 	}
@@ -438,7 +438,7 @@ __.SP.Filter = __.Class.extend( {
 		h += '<span class="menu icon-save" action="save" title="Save this search"></span>';
 		h += '<b><span class="menu icon-clear" action="clear" title="Clear the filter"></span></b>';
 		h += "</div>";
-		__.dn.add( h, this.dnRoot )
+		__.dn.append( h, this.dnRoot )
 			.addEventListener( "click", function( e ) {
 				e.preventDefault();
 				e.stopPropagation();
@@ -481,7 +481,7 @@ __.SP.Filter = __.Class.extend( {
 		//.debug()
 		.then( __.SP.taxonomy, "getTermIds", "get taxonomy term ids" )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			var oFields = that.read();
 			for( var sField in oFields ) {
 				var oField = oFields[ sField ];
@@ -495,14 +495,14 @@ __.SP.Filter = __.Class.extend( {
 		}, "load taxonomies" )
 		.then( function( args ) {
 			xmlQuery += that.form2caml();
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "construct query" )
 		.clear()
 		.then( __.SP.view, "list", {
 			  sList : that.sList
 		}, "get list of views" )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			var sMode = ( __.l.contains( args.lsViews, sName ) ) ? "update" : "add";
 			async.resolve( { sMode : sMode } );
 		}, "decide wether to create or update" )
@@ -523,10 +523,10 @@ __.SP.Filter = __.Class.extend( {
 				xmlSort = lsParts[ 1 ];
 			}
 			xmlQuery = xmlQuery + xmlGroup + xmlSort;
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "extract grouping and sorting" )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			switch( args.sMode ) {
 				case "add" :
 					async.then( __.SP.view, "add", {
@@ -558,7 +558,7 @@ __.SP.Filter = __.Class.extend( {
 		.then( __.SP.view, "read", "read view for guid" )
 		.then( function( args ) {
 			cbfn( args.kv.guid );
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "invoke callback" )
 		.start();
 	}
@@ -599,14 +599,14 @@ __.SP.Filter = __.Class.extend( {
 					xmlcur += "<Eq><FieldRef Name='Title' /><Value Type='Text'>" + sView + "</Value></Eq>";
 					xmlcur += "<Eq><FieldRef Name='sParent' /><Value Type='Text'>" + sParent + "</Value></Eq>";
 					xmlcur += "</And></Where></Query>"
-					__.async( args ).resolve( {
+					__.Async.promise( args ).resolve( {
 						  idParent : idParent
 						, sParent : sParent
 						, xmlQuery : xmlcur
 					} );
 				}
 				else {
-					__.async( args ).reject( { sError: "no box for links" } );
+					__.Async.promise( args ).reject( { sError: "no box for links" } );
 				}
 			}, "construct query to search for duplicate"  )
 			.then( __.SP.list, "read", {
@@ -614,7 +614,7 @@ __.SP.Filter = __.Class.extend( {
 				, lsFields : [ "ID" ]
 			}, "query sidebar for duplicates" )
 			.then( function( args ) {
-				var async = __.async( args );
+				var async = __.Async.promise( args );
 				if( __.l.empty( args.lkv ) ) {
 					async.then( __.SP.item, "create", {
 						  sList : "SideBar"
@@ -627,7 +627,7 @@ __.SP.Filter = __.Class.extend( {
 						}
 					}, "create new entry" )
 					.then( function( args ) {
-						var async = __.async( args );
+						var async = __.Async.promise( args );
 						async.then( __.SP.item, "restrictToUser", {
 							  sList : "SideBar"
 							, id : args.idItem
@@ -644,10 +644,10 @@ __.SP.Filter = __.Class.extend( {
 						__.dn_( "#osce-sidebar h2", function( dn ) {
 							if( dn.textContent == "Saved Filters" ) {
 								var dnBox = dn.nextElementSibling;
-								__.dn.add( h, dnBox );
+								__.dn.append( h, dnBox );
 							}
 						} );
-						__.async( args ).resolve();
+						__.Async.promise( args ).resolve();
 					}, "manually add to sidebar" );
 				}
 				else {
@@ -665,7 +665,7 @@ __.SP.Filter = __.Class.extend( {
 			}, "create or update sidebar" )
 			.then( function( args ) {
 				that.oModal.close();
-				__.async( args ).resolve();
+				__.Async.promise( args ).resolve();
 			}, "Filter successfully saved" )
 			.start();
 		} );
@@ -779,7 +779,7 @@ __.SP.Filter = __.Class.extend( {
 				dn.classList.remove( "hide" );
 			}
 			else {
-				dn.classList.add( "hide" );
+				dn.classList.append( "hide" );
 			}
 		} );
 	}

@@ -34,7 +34,7 @@ __.SP.folder = {
 	 * Create a folder in a list.
 	 */
 	  create : function( args ) { // sList, sFolder
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var path = "";
 		var sFolder = args.sFolder;
@@ -65,7 +65,7 @@ __.SP.folder = {
 		} );
 	}
 	, read : function( args ) { // path, lsFields
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oItem = ctx.get_web().getFolderByServerRelativeUrl( args.path );
 		ctx.load( oItem, "ListItemAllFields" );
@@ -104,7 +104,7 @@ __.SP.folder = {
 // __.SP.site.addColumn( { xml : xml );
 __.SP.site = {};
 __.SP.site.addColumn = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oFields = ctx.get_web().get_fields();
 	oFields.addFieldAsXml( args.xml );
@@ -120,7 +120,7 @@ __.SP.site.addColumn = function( args ) {
 };
 // __.SP.site.readColumn({sColumn:"FrontOffice"})
 __.SP.site.readColumn = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oFields = ctx.get_web().get_fields();
 	var oWeb = ctx.get_site().get_rootWeb();
@@ -144,7 +144,7 @@ __.SP.site.readColumn = function( args ) {
 };
 
 __.SP.site.addCSS = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var ctx = SP.ClientContext.get_current()
 	var oWeb = ctx.get_web();
@@ -170,17 +170,17 @@ __.SP.deploy = {
 		loFields.forEach( function( oField ) {
 			lsFields.push( oField.sName );
 		} );
-		var async = __.async( args )
+		var async = __.Async.promise( args )
 		async
 		//.debug()
 		.then( __.SP.list, "exists", { sList : sList } )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			var bCreate = true;
 			if( args.bExists ) {
 				if( args.bPurge ) {
 					async.then( __.SP.list, "del" );
-					async.wait( 10000 );
+					async.pause( 10000 );
 				}
 				else {
 					bCreate = true;
@@ -196,7 +196,7 @@ __.SP.deploy = {
 		} )
 		.then( __.SP.list, "settings", { kvFeatures : aSettings }, "apply settings to list " + sList )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			for( var sFile in args.oDeploy.jsLinks ) {
 				var jsLink = args.oDeploy.jsLinks[ sFile ];
 				if( ! /\.aspx/.test( sFile ) ) {
@@ -210,7 +210,7 @@ __.SP.deploy = {
 			async.resolve();
 		}, "set js links on views" )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			for( var sView in args.oDeploy.aViews ) {
 				var aView = args.oDeploy.aViews[ sView ];
 				var bDefaultView = ( args.oDeploy.sDefaultView && sView == args.oDeploy.sDefaultView ) ? true : null;
@@ -226,7 +226,7 @@ __.SP.deploy = {
 			async.resolve();
 		}, sList + " - create views" )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			for( var sFile in args.oDeploy.jsLinks ) {
 				var jsLink = args.oDeploy.jsLinks[ sFile ];
 				if( /\.aspx/.test( sFile ) ) {
@@ -246,7 +246,7 @@ __.SP.deploy = {
 		async.then( __.SP.list.field, "reorder", { sList : sList, lsFields : lsFields }, sList + " - reorder fields" )
 		.then( __.SP.list.field, "displays", { loFields : loFields }, sList + " - set field displays" )
 		.then( function( args ) {
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "finished deploying: " + sList )
 		.resolve();
 	}

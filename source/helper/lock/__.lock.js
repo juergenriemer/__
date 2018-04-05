@@ -30,7 +30,7 @@ __.lock = {
 				// because if we prepend and have Hx tags then
 				// because of top padding entire stone gets shifted down
 				
-				dnBag = __.dn.add( hBag, dn );
+				dnBag = __.dn.append( hBag, dn );
 			}
 			// adjust height of blend and show
 			// dy needs to be the outer height with padding
