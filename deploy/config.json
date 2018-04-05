@@ -1,0 +1,14 @@
+{
+    "source": {
+	"include" : [ "/Users/juergenriemer/Documents/GitHub/__2/" ],
+        "includePattern": ".+\\.js(doc|x)?$"
+    },
+    "opts": {
+        "sort": false
+    }
+	, "templates" : {
+		"default" : {
+			"layoutFile" : "custom-layout.tmpl"
+		}
+	}
+}
