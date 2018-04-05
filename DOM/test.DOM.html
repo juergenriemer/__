@@ -1,0 +1,194 @@
+<html>
+<!--script src="D:\jriemer\GitHub\__\__.js"></script-->
+<script src="__.DOM.js"></script>
+
+<body>
+<style>
+.one {
+	color : red;
+}
+</style>
+<h2>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</h2>
+<h2>xxx</h2>
+<h2>xxx</h2>
+<h2>xxx</h2>
+<h2>xxx</h2>
+<h2>xxx</h2>
+<h2>xxx</h2>
+<div id="xxx" style="height:100px;width:400px;overflow:scroll;background:yellow">
+<h2>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</h2>
+<h2>inner</h2>
+<h2>inner</h2>
+<h2>inner</h2>
+<h2>inner</h2>
+<h2>inner</h2>
+<h2>inner</h2>
+
+</div>
+<div id="output"><h1>Unit test __.DOM.js</h1></div>
+
+<script>
+assert = function( h, eh, s ) {
+	if( h === eh ) {
+		console.log( "OK: " + s );
+	}	
+	else {
+		console.warn( "ERR: " + s );
+		console.warn( "actually", h );
+		console.warn( "expected", eh );
+	}
+}
+dnOutput = __.dn_( "#output" );
+h = dnOutput.innerHTML;
+eh = "<h1>Unit test __.DOM.js</h1>";
+assert( h, eh, "__.dn_ (id)" );
+
+dnH1 = __.dn_( "h1" );
+s = dnH1.innerHTML;
+es = "Unit test __.DOM.js";
+assert( s, es, "__.dn_ (tagname)" );
+
+// create
+
+dnAppend = __.dn.append( "<b>append</b>", dnOutput );
+h = dnOutput.innerHTML;
+eh = "<h1>Unit test __.DOM.js</h1><b>append</b>";
+assert( h, eh, "__.dn.append (string)" );
+
+
+dnPrepend = __.dn.prepend( "<b>prepend</b>", dnOutput );
+h = dnOutput.innerHTML;
+eh = "<b>prepend</b><h1>Unit test __.DOM.js</h1><b>append</b>";
+assert( h, eh, "__.dn.prepend (string)" );
+
+dnBefore = __.dn.before( "<i>before</i>", dnH1 );
+h = dnOutput.innerHTML;
+eh = "<b>prepend</b><i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>";
+assert( h, eh, "__.dn.before (string)" );
+
+dnAfter = __.dn.after( '<i class="after">after</i>', dnH1 );
+h = dnOutput.innerHTML;
+eh = '<b>prepend</b><i>before</i><h1>Unit test __.DOM.js</h1><i class="after">after</i><b>append</b>';
+assert( h, eh, "__.dn.after (string)" );
+
+// move 
+dnClass = __.dn_( ".after" );
+s = dnClass.textContent;
+es = "after";
+assert( s, es, "__.dn_ (classname)" );
+
+__.dn.append( dnClass, dnBefore );
+h = dnOutput.innerHTML;
+eh = '<b>prepend</b><i>before<i class="after">after</i></i><h1>Unit test __.DOM.js</h1><b>append</b>';
+assert( h, eh, "__.dn.append (node)" );
+
+__.dn.before( dnClass, dnBefore );
+h = dnOutput.innerHTML;
+eh = '<b>prepend</b><i class="after">after</i><i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>';
+assert( h, eh, "__.dn.before (node)" );
+
+__.dn.prepend( dnClass, dnBefore );
+h = dnOutput.innerHTML;
+eh = '<b>prepend</b><i><i class="after">after</i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>';
+assert( h, eh, "__.dn.prepend (node)" );
+
+__.dn.after( dnClass, dnBefore );
+h = dnOutput.innerHTML;
+eh = '<b>prepend</b><i>before</i><i class="after">after</i><h1>Unit test __.DOM.js</h1><b>append</b>';
+assert( h, eh, "__.dn.after (node)" );
+
+// add to document
+dnOutput_2 = __.dn.append( "<div><h1>output2</h1></div>" );
+s = dnOutput_2.innerHTML;
+es = "<h1>output2</h1>";
+assert( s, es, "__.dn.append (to document)" );
+
+// multiple nodes as string 
+dnH1_2 = __.dn_( "h1", dnOutput_2 );
+dnAppend = __.dn.append( "<b>1</b><i>2</i>", dnH1_2 );
+h = dnOutput_2.innerHTML;
+eh = "<h1>output2<b>1</b><i>2</i></h1>";
+assert( h, eh, "__.dn.append (multiple string)" );
+
+dnPrepend = __.dn.prepend( "<b>3</b><i>4</i>", dnH1_2 );
+h = dnOutput_2.innerHTML;
+eh = "<h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1>";
+assert( h, eh, "__.dn.prepend (multiple string)" );
+
+dnBefore = __.dn.before( "<b>5</b><i>6</i>", dnH1_2 );
+h = dnOutput_2.innerHTML;
+eh = "<b>5</b><i>6</i><h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1>";
+assert( h, eh, "__.dn.before (multiple string)" );
+
+dnAfter = __.dn.after( "<b>7</b><i>8</i>", dnH1_2 );
+h = dnOutput_2.innerHTML;
+eh = "<b>5</b><i>6</i><h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1><b>7</b><i>8</i>";
+assert( h, eh, "__.dn.after (multiple string)" );
+
+__.dn.x = null;
+__.dn.scroll = function( x1, x2, x3 ) { // x1 : dn or pos, x2 : pos, x3 value
+	var dnRoot = ( typeof x1 == "string" ) ? window : x1;
+	var dnElement = ( typeof x1 == "string" ) ? document.body : x1;
+	var sDir = ( typeof x1 == "string" ) ? x1 : x2;
+	var nPos = ( typeof x2 == "number" ) ? x2 : x3;
+	var dy = dnElement.scrollHeight;
+	var dx = dnElement.scrollWidth;
+	switch( sDir ) {
+		case "x" :
+			dnRoot.scrollTo( nPos, dy );
+		break;
+		case "y" :
+			dnRoot.scrollTo( dx, nPos );
+		break;
+		case "bottom" :
+			__.dn.scroll( x1, "y", dy );
+		break;
+		case "top" :
+			__.dn.scroll( x1, "y", 0 );
+		break;
+		case "right" :
+			__.dn.scroll( x1, "x", dx );
+		break;
+		case "right" :
+			__.dn.scroll( x1, "x", 0 );
+		break;
+	}
+};
+__.dn.onScroll = function( dn, fn, msInterval ) {
+	dn = dn || document;
+	msInterval = msInterval || 500;
+	dn.addEventListener( "scroll", function( e ) {
+		dn = ( dn == document ) ? document.body : dn; 
+		if( dn.__hd ) {
+			clearInterval( dn.__hd );
+		}
+		dn.__hd = setTimeout( function() {
+			var xcur = dn.scrollHeight;
+			var x = dn.scrollTop
+			var dx = dn.clientHeight 
+			var ycur = dn.scrollWidth;
+			var y = dn.scrollLeft
+			var dy = dn.clientWidth
+			fn( {
+				  bTop : ( x == 0 )
+				, bBottom : ( xcur == ( x + dx ) )
+				, xcur : xcur
+				, dx : dx
+				, bLeft : ( y == 0 )
+				, bRight : ( ycur == ( y + dy ) )
+				, ycur : ycur
+				, dy : dy
+			} );
+		}, msInterval );
+	} );
+}
+__.dn.onScroll( __.dn_( "#xxx" ), function( aInfo ) {
+	console.log( "xxx", aInfo );
+} );
+__.dn.onScroll( null, function( aInfo ) {
+	console.log( "body", aInfo );
+} );
+__.dn.scroll( "bottom" );
+</script>
+</body>
+</html>

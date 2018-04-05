@@ -6,4 +6,9 @@
     "opts": {
         "sort": false
     }
+	, "templates" : {
+		"default" : {
+			"layoutFile" : "custom-layout.tmpl"
+		}
+	}
 }

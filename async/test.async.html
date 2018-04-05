@@ -11,7 +11,7 @@ window.name = "doing";
 msw1 = 40;
 msw2 = 20;
 waiter = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ms = Math.round( Math.random() * msw1 );
 	setTimeout( function() {
 		var aResult = args && args.aResult;
@@ -28,9 +28,8 @@ waiter = function( args ) {
 		}
 	}, ms );
 }
-
 waiter2 = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ms = Math.round( Math.random() * msw2 );
 	setTimeout( function() {
 		var aResult = args && args.aResult;
@@ -90,14 +89,14 @@ o = {
 		//.debug()
 		.then( that, "getRecords", { idUser : 123 }, "Getting records" )
 		.then( function( args ) {
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		}, "Printing records" )
 		.start();
 	}
 	, getRecords : function( args ) {
 		setTimeout( function() {
 			var hResult = "<b>no records</b>";
-			__.async( args ).resolve( { hResult: hResult } );
+			__.Async.promise( args ).resolve( { hResult: hResult } );
 		}, 2000 ); 
 	}
 }
@@ -106,13 +105,16 @@ o.do()
 var a1 = new __.Async( { fnstat : fnStatus } )
 .then( this, "waiter", { x : 4 }, "a1.1" )
 .then( this, "waiter", "a1.2" )
-.wait( 800, function() {
+.wait( function() {
 	return window.name == "done";
-}, "wait for window name" )
+}, 800, "wait for window name" )
+.wait( function() {
+	return window.name == "done";
+} )
 .then( this, "waiter", { x : 6 }, "a1.3" )
 .then( this, "waiter", { x : 2 }, "a1.4" )
 .then( function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	[1,2,3].forEach( function( n ) {
 		async.then( this, "waiter", { x : n }, "a1.5." + n )
 	} );
@@ -122,11 +124,10 @@ var a1 = new __.Async( { fnstat : fnStatus } )
 .then( this, "waiter", { x : 2 }, "a1.7" )
 .then( function( args ) {
 	assert( "wait and creation in loop", ["w4","w4","w6","w2","w1","w2","w3","w6","w2"], args.aResult );
-	__.async( args ).resolve();
+	__.Async.promise( args ).resolve();
 }, "last msg" )
 .start();
 
-// ************
 
 var a2 = new __.Async()
 //.debug()
@@ -135,21 +136,21 @@ var a2 = new __.Async()
 .then( this, "waiter2", { x : 20 }, "a2.3" )
 .then( this, "waiter2", "a2.4" )
 .then( this, "waiter2", "a2.4" )
-.wait( 400 )
+.pause( 400 )
 .then( function( args ) {
 	window.name = "done";
-	__.async( args ).resolve();
+	__.Async.promise( args ).resolve();
 }, "set window name" )
 .then( this, "waiter2", "a2.4" )
 .then( function( args ) {
 	assert( "simple with wait condition", ["w2_","w2_","w220","w220","w220","w220"], args.aResult );
-	__.async( args ).resolve();
+	__.Async.promise( args ).resolve();
 }, "first last statement" )
 .clear()
 .then( this, "waiter2", "a2.5" )
 .then( function( args ) {
 	assert( "anonymous function as last task", [ "w2_" ], args.aResult );
-	__.async( args ).resolve();
+	__.Async.promise( args ).resolve();
 }, "last statement" )
 .start()
 
@@ -160,21 +161,21 @@ var mixed = new __.Async()
 .then( this, "waiter", "mixed.1"  )
 .then( this, "waiter2", "mixed.2"  )
 .then( function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	async.then( this, "waiter2", "mixed.3"  )
 	async.resolve();
 } )
 .then( this, "waiter", "mixed.4"  )
 .then( function( args ) {
 	assert( "mixed functions", ["w_","w_","w2_","w2_","w_"], args.aResult );
-	__.async( args ).resolve();
+	__.Async.promise( args ).resolve();
 } )
 .start()
 
-// ******** test with objects
+//  test with objects
 obj = {
 	  owaiter : function( args ) {
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ms = Math.round( Math.random() * 300 );
 		setTimeout( function() {
 			var aResult = args && args.aResult;
@@ -187,7 +188,7 @@ obj = {
 		}, ms );
 	}
 	, owaiter2 : function( args ) {
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ms = Math.round( Math.random() * 10 );
 		setTimeout( function() {
 			var aResult = args && args.aResult;
@@ -205,13 +206,13 @@ obj = {
 		.then( this, "owaiter2", "ofirst.1"  )	
 		.then( this, "owaiter2", "ofirst.2"  )	
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			async.then( that, "owaiter2", "ofirst.3"  );
 			async.resolve();
 		} )
 		.then( function( args ) {
 			assert( "object nested", ["ow2_","ow2_","ow2_"], args.aResult );
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 			cbfn();
 		} )
 		.start();
@@ -225,7 +226,7 @@ obj = {
 			.then( that, "owaiter", "oinit.3" )	
 			.then( function( args ) {
 				assert( "inner object nested", ["ow_","ow_","ow_"], args.aResult );
-				__.async( args ).resolve();
+				__.Async.promise( args ).resolve();
 			} )
 			.start();
 		} );	
@@ -235,9 +236,9 @@ obj.init();
 
 // deeply nested
 var laster = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	async.then( function( args ) {
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		async.then( self, "waiter", { x : 341 }, "LASTER1" )
 		async.then( self, "waiter", { x : 342 }, "LASTER1" )
 		async.then( self, "waiter", { x : 343 }, "LASTER1" )
@@ -248,14 +249,14 @@ var laster = function( args ) {
 	async.resolve();
 }
 var taxer = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	async.then( self, "waiter", { x : 3 }, "TAXER1" )
 	async.then( self, "laster", "TAXER -> LAST" )
 	async.then( self, "waiter", { x : 6 }, "TAXER2" )
 	async.resolve();
 }
 var cache = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	async.then( self, "waiter", { x : 2 }, "CACHE7" )
 	async.then( self, "taxer", "CACHE -> TAX" )
 	async.then( self, "waiter", { x : 7 }, "CACHE77" )
@@ -268,7 +269,7 @@ Schacht.then( this, "waiter", { x : 1 } ,"schacht1" )
 .then( this, "waiter", { x : 9 }, "schacht4" )
 .then( function( args ) {
 	assert( "deeply nested", ["w1","w2","w3","w341","w342","w343","w4","w5","w6","w7","w8","w9"], args.aResult );
-	__.async( args ).resolve();
+	__.Async.promise( args ).resolve();
 } )
 .start();
 
@@ -278,7 +279,7 @@ LastLate = new __.Async()
 .then( this, "waiter", { x : 1 } ,"ll1" )
 .then( this, "waiter", { x : 2 }, "ll2" )
 .then( function( args ) {
-	var async = __.async( args )
+	var async = __.Async.promise( args )
 	async.then( self, "waiter", { x : 3 }, "ll3.1" )
 	async.then( self, "waiter", { x : 4 }, "ll3.2" )
 	async.then( self, "waiter", { x : 5 }, "ll3.3" )
@@ -289,7 +290,7 @@ LastLate = new __.Async()
 .then( this, "waiter", { x : 8 }, "ll4" )
 .then( function( args ) {
 	assert( "late arrivals", ["w1", "w2", "w3", "w4", "w5", "w6", "w7", "w8"], args.aResult );
-	__.async( args ).resolve();
+	__.Async.promise( args ).resolve();
 } )
 .start();
 
@@ -298,7 +299,7 @@ Stop = new __.Async()
 //Stop.debug()
 .then( this, "waiter", { x : 1 } ,"stop1" )
 .then( function( args ) {
-	__.async( args ).stop();
+	__.Async.promise( args ).stop();
 	setTimeout( function() {
 		assert( "stop tasks", [ "w1" ], args.aResult );
 		
@@ -308,6 +309,63 @@ Stop = new __.Async()
 .then( this, "waiter", { x : 1 } ,"stop4" )
 .start();
 
+// async call w/o promise
+
+var noprom = function( args ) {
+	var async = __.Async.promise( args );
+	async.then( function( args ) {
+		var async = __.Async.promise( args );
+		async.then( self, "waiter", { x : 341 }, "LASTER1" )
+		async.then( self, "waiter", { x : 342 }, "LASTER2" )
+		async.then( self, "waiter", { x : 343 }, "LASTER3" )
+		async.resolve();	
+	}, "LASTER0" )
+	async.then( self, "waiter", { x : 4 }, "LASTER4" )
+	async.then( self, "waiter", { x : 5 }, "LASTER2" )
+	async.then( function( args ) {
+		__.Async.promise( args ).resolve();
+		assert( "no promise object", ["w341","w342","w343","w4","w5"], args.aResult );
+	} );
+	async.resolve();
+}
+noprom();
+
+( new __.Async() )
+.then( "noprom" )
+.then( function( args ) {
+	__.Async.promise( args ).resolve();
+	assert( "no promise object with promise", ["w341","w342","w343","w4","w5"], args.aResult );
+} )
+.start();
+// test pass on args
+var argstest = function( args ) {
+	var async = __.Async.promise( args );
+	args.aResult.push( "|" + args.y + "|" );
+	if( ! args.laTest ) {
+		args.laTest = [];
+	}
+	args.laTest.push( { "a" : [ args.y, "@" + args.y ] } )
+	async.resolve()
+};
+( new __.Async() )
+//.debug()
+.then( self, "waiter", { x : 1}, "args1" )
+.then( self, "waiter", { x : 2 }, "args2" )
+.then( self, "waiter", { x : 3 }, "args3" )
+.then( function( args ) {
+	__.Async.promise( args ).resolve();
+
+}, "args4" )
+.then( self, "argstest", { y : { arg : "x" } }, "args5!!" )
+.then( self, "waiter", { x : 4}, "args6" )
+.then( self, "waiter", { x : 5 }, "args7" )
+.then( self, "argstest", { y : { arg : "laTest.0.a.1" } }, "args8!!" )
+.then( function( args ) {
+	__.Async.promise( args ).resolve();
+	assert( "late come args 1", ["w1","w2","w3","|3|","w4","w5","|@3|"], args.aResult );
+	assert( "late come args 2", [ {"a":[3, "@3"]},{"a":["@3","@@3"]}], args.laTest );
+} )
+.start();
 
 
 </script>

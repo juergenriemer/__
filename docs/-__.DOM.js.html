@@ -1,7 +1,35 @@
-// ==ClosureCompiler==
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: __.DOM.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: __.DOM.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @output_file_name __.min.js
-// @js_externs var __; __.dn_; __._dn; __.each; __.dn; __.dn.del; __.dn._move; __.dn.move; __.dn.move_; __.dn.add; __.dn._add; __.dn.add_; __.dn._add_; __.dn.show; __.dn.hide; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.dn.fade_; __.dn._fade; __.dn.css; __.css.h; __.s; __.s.o; __.o.empty; __.o.camelcase; __.o.tokenize; __.n; __.n.within; __.l; __.l.del; __.l.contains; __.l.equal; __.l.empty; __.l.kSort; __.l.remove; __.o; __.o.s; __.o.k; __.o.kk; __.o.add; __.o.kRename; __.o.c; __.o.copy; __.o.equal; __.o.empty; __.e; __.e.stop; __.css; __.b; __.b.mail; __.b.url; __.dt; __.dt.date; __.cookie; __.cookie.get; __.cookie.set; __.cookie.del; __.url; __.url.oParams; __.misc; __.misc.isIE; __.win; __.win.dx; __.win.dy; 
+// @js_externs var __; __.dn_; __._dn; __.each; __.dn; __.dn.del; __.dn._move; __.dn.move; __.dn.move_; __.dn.append; __.dn._append; __.dn.shift; __.dn.shift_; __.dn._add_; __.dn.show; __.dn.hide; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.dn.fade_; __.dn._fade; __.dn.css; __.css.h; __.s; __.s.o; __.o.empty; __.o.camelcase; __.o.tokenize; __.n; __.n.within; __.l; __.l.del; __.l.contains; __.l.equal; __.l.empty; __.l.kSort; __.l.remove; __.o; __.o.s; __.o.k; __.o.kk; __.o.add; __.o.kRename; __.o.c; __.o.copy; __.o.equal; __.o.empty; __.e; __.e.stop; __.css; __.b; __.b.mail; __.b.url; __.dt; __.dt.date; __.cookie; __.cookie.get; __.cookie.set; __.cookie.del; __.url; __.url.oParams; __.misc; __.misc.isIE; __.win; __.win.dx; __.win.dy; 
 // ==/ClosureCompiler==
 // version 1.5
 /**
@@ -14,7 +42,7 @@ if( typeof __ == "undefined" ) {
 }
 
 /**
- * <pre>
+ * &lt;pre>
  * Takes a CSS selector string and queries the DOM for matching nodes.
  * It returns a single DOM node if just one node was found.
  * It returns a list of DOM nodes if multiple were found.
@@ -22,7 +50,7 @@ if( typeof __ == "undefined" ) {
  * An optional DOM node as starting point can be passed on otherwise [document] is used.
  * An optional callback function to be applied on returned nodes can be passed on which
  * will be invoked with two parameters: the single node and its index of the array.
- * </pre>
+ * &lt;/pre>
  * @memberof __
  * @method dn_
  * @example var dnMenu = __.dn_( "#menu" );
@@ -78,13 +106,13 @@ __.dn_ = function( s, x1, x2 ) {
 };
 
 /**
- * <pre>
+ * &lt;pre>
  * Takes a CSS selector string and queries the DOM for the closest matching parent node.
  * It returns a DOM node.
  * It will return [null] in case nothing was found.
  * An optional callback function to be applied on the returned node. It will be invoked with
  * one parameter: the single node
- * </pre>
+ * &lt;/pre>
  * @memberof __
  * @method _dn
  * @example var dnInput = __.dn_( "[name='email']" );
@@ -107,12 +135,12 @@ __._dn = function( s, dn, fn ) {
 };
 
 /**
- * <pre>
+ * &lt;pre>
  * Receives either an element or an array and a callback function.
  * In case of an array it iterates and invokes the callback on each element.
  * In case an element it invokes the callback directly.
  * The callback is invoked with two parameters: the element and its index.
- * </pre>
+ * &lt;/pre>
  * @memberof __
  * @method each
  * @example var ls = [ "one", "two", "three" ];
@@ -137,7 +165,7 @@ __.each = function( xdn, fn ) {
 	if( xdn ) {
 		var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
 		var c = ldn.length;
-		for( var ix=0; ix<c; ix++ ) {
+		for( var ix=0; ix&lt;c; ix++ ) {
 			fn( ldn[ ix ], ix );
 		}
 	}
@@ -222,21 +250,21 @@ __.dn = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Takes an HTML string, converts it into DOM node(s) and writes inside of an existing DOM node.
 	 * It returns a single DOM node if HTML string has one root tag.
 	 * It returns a list of DOM nodes if HTML string has multiple root tags.
 	 * An optional DOM node as target DOM node can be passed on otherwise [document] is used.
 	 * An optional callback function to be applied on created nodes can be passed on which will be
 	 * invoked with two parameters: the single node and its index of the array
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
-	 * @method add
-	 * @example var dnUL = __.dn.add( "<ul class='colors'></ul>" );
-	 * @example var h = "<li>red</li>";
-	 * var lnLI = __.dn.add( h, dnUL );
-	 * @example var h = "<li>red</li>";
-	 * var lnLI = __.dn.add( h, dnUL, function( dn, ix ) {
+	 * @method append
+	 * @example var dnUL = __.dn.append( "&lt;ul class='colors'>&lt;/ul>" );
+	 * @example var h = "&lt;li>red&lt;/li>";
+	 * var lnLI = __.dn.append( h, dnUL );
+	 * @example var h = "&lt;li>red&lt;/li>";
+	 * var lnLI = __.dn.append( h, dnUL, function( dn, ix ) {
 	 *     dn.style.color = dn.textContent;
 	 *     dn.textContent = ix + ". " + dn.textContent;
 	 * } );
@@ -245,48 +273,77 @@ __.dn = {
 	 * @param {Function} [x2] callback function
 	 * @returns {Element|Array} A DOM node or a list of DOM nodes
 	 */
-	, add : function( h, x1, x2 ) {
+	, append : function( h, x1, x2 ) {
 		return __.dn._add_( h, x1, x2, "move" );
 	}
+	/**
+	 * &lt;pre>
+	 * xxxxxxTakes an HTML string, converts it into DOM node(s) and writes inside of an existing DOM node.
+	 * It returns a single DOM node if HTML string has one root tag.
+	 * It returns a list of DOM nodes if HTML string has multiple root tags.
+	 * An optional DOM node as target DOM node can be passed on otherwise [document] is used.
+	 * An optional callback function to be applied on created nodes can be passed on which will be
+	 * invoked with two parameters: the single node and its index of the array
+	 * &lt;/pre>
+	 * @memberof __.dn
+	 * @method prepend
+	 * @param {String} h String of valid HTML.
+	 * @param {Element|Function} [x1] target node or callback function
+	 * @param {Function} [x2] callback function
+	 * @returns {Element|Array} A DOM node or a list of DOM nodes
+	 */
+	, prepend : function( dnMove, dnTarget ) {
+		if( dnTarget.firstChild ) {
+			this.before( dnMove, dnTarget.firstChild );
+		}
+		else {
+			this.append( dnMove, dnTarget );
+		}
+	  }
 	/**
 	 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM
 	 * node but right in front of it.
 	 * @memberof __.dn
-	 * @method _add
+	 * @method before
 	 * @example var dnLogin = __.dn_( "[name='login']" );
-	 * var h = "<div>At least 8 characters</div>";
-	 * var dnRule = __.dn._add( h, dnLogin );
+	 * var h = "&lt;div>At least 8 characters&lt;/div>";
+	 * var dnRule = __.dn.before( h, dnLogin );
 	 * @param {String} h String of valid HTML.
 	 * @param {Element|Function} [x1] target node or callback function
 	 * @param {Function} [x2] callback function
 	 * @returns {Element|Array} A DOM node or a list of DOM nodes
 	 */
-	, _add : function( h, x1, x2 ) {
+	, before : function( h, x1, x2 ) {
 		return __.dn._add_( h, x1, x2, "_move" );
 	}
 	/**
-	 * Same as [add] with the difference that the DOM node(s) are not inserted into the existing DOM
+	 * xxxxSame as [append] with the difference that the DOM node(s) are not inserted into the existing DOM
 	 * node but right after of it.
 	 * @memberof __.dn
-	 * @method add_
+	 * @method after
 	 * @example var dnComment = __.dn_( "[name='comment']" );
-	 * var h = "<a href='#clear'>clear</a>";
-	 * var dnRule = __.dn.add_( h, dnComment );
+	 * var h = "&lt;a href='#clear'>clear&lt;/a>";
+	 * var dnRule = __.dn.after( h, dnComment );
 	 * @param {String} h String of valid HTML.
 	 * @param {Element|Function} [x1] target node or callback function
 	 * @param {Function} [x2] callback function
 	 * @returns {Element|Array} A DOM node or a list of DOM nodes
 	 */
-	, add_ : function( h, x1, x2 ) {
+	, after : function( h, x1, x2 ) {
 		return __.dn._add_( h, x1, x2, "move_" );
 	}
 	, _add_ : function( h, x1, x2, sfn ) {
 		var dnRoot = ( typeof x1 == "object" ) ? x1 : document.body;
 		var fn = ( typeof x1 == "function" ) ? x1 : x2;
 		var dn = document.createElement( "div" );
-		dn.innerHTML = h;
+		if( typeof h == "string" ) {
+			dn.innerHTML = h;
+		}	
+		else {
+			dn.appendChild( h );
+		}
 		var xdn = [].slice.call( dn.children );
-		xdn = ( xdn instanceof Array && xdn.length == 1 ) ? xdn[ 0 ] : xdn;
+		xdn = ( xdn instanceof Array &amp;&amp; xdn.length == 1 ) ? xdn[ 0 ] : xdn;
 		if( fn ) {
 			__.each( xdn, fn );
 		}
@@ -294,10 +351,10 @@ __.dn = {
 		return xdn;
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Shows a DOM node.
 	 * It sets the display attribute of a DOM node to "block" or "inline" depending on its original state.
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method show
 	 * @example __.dn.show( dnInline );
@@ -310,10 +367,10 @@ __.dn = {
 		dn.style.display = sDisplay;
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Hides a DOM node.
 	 * It sets the display attribute of a DOM node to "none" preserving the previous value.
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method hide
 	 * @example __.dn.hide( dnInline );
@@ -328,9 +385,9 @@ __.dn = {
 		dn.style.display = "none";
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Returns the index of a DOM node in its parent's children list.
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method ix 
 	 * @example __.dn.ix( dnLI );
@@ -344,9 +401,9 @@ __.dn = {
 		return ix;
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Gets or sets the x-position of a DOM element
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method x 
 	 * @example __.dn.x( dn, 300 );
@@ -364,9 +421,9 @@ __.dn = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Gets or sets the y-position of a DOM element
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method y 
 	 * @example __.dn.x( dn, 300 );
@@ -384,9 +441,9 @@ __.dn = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Gets or sets the width of a DOM element
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method dx 
 	 * @example __.dn.dx( dn, 300 );
@@ -404,9 +461,9 @@ __.dn = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Gets or sets the height of a DOM element
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method dy 
 	 * @example __.dn.dy( dn, 300 );
@@ -424,9 +481,9 @@ __.dn = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Lets an element fade out
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method fade_
 	 * @example __.dn.fade_( dn );
@@ -443,7 +500,7 @@ __.dn = {
 		var nStep = 25 / ms;
 		dn.style.opacity = dn.style.opacity || 1;
 		( function fader() {
-			if( ( dn.style.opacity -= nStep) < 0 ) {
+			if( ( dn.style.opacity -= nStep) &lt; 0 ) {
 				__.dn.hide( dn );
 				if( fn ) {
 					fn();
@@ -455,9 +512,9 @@ __.dn = {
 		} )();
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Lets an element fade in
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method _fade
 	 * @example __.dn._fade( dn );
@@ -487,9 +544,9 @@ __.dn = {
 		} )();
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Gets or sets a css attribute
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method css
 	 * @example __.dn.css( dn, "color", "red" );
@@ -506,13 +563,13 @@ __.dn = {
 		dn.style[ k ] = v;
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Securely writes HTML into a DOM element.
 	 * It strips off the following tags: "script", "link", "iframe", "html", "body", "meta", "embed"
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.dn
 	 * @method h
-	 * @example __.dn.h( dn, "<h1>Hi Mom</h1><iframe></iframe>" );
+	 * @example __.dn.h( dn, "&lt;h1>Hi Mom&lt;/h1>&lt;iframe>&lt;/iframe>" );
 	 * @param {Element} dn DOM node
 	 * @param {String} h HTML string
 	 * REF: improve this and text with non-closing tags
@@ -521,7 +578,7 @@ __.dn = {
 		h = h.toString();
 		var lsForbidden = [ "script", "link", "iframe", "html", "body", "meta", "embed" ];
 		lsForbidden.forEach( function( s ) {
-			var srx = "<" + s + ".*>.*?<\/" + s + ">"; 
+			var srx = "&lt;" + s + ".*>.*?&lt;\/" + s + ">"; 
 			var rx = new RegExp( srx, "ig" );
 			h = h.replace( rx, "" );
 		} );
@@ -537,10 +594,10 @@ __.dn = {
  */
 __.s = {
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Converts a string into an object.
 	 * It will return [null] if it fails.
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.s
 	 * @method o
 	 * @example var s = "{'sName':'John','nAge':44}";
@@ -557,9 +614,9 @@ __.s = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Checks whether a string is empty after stripping of whitespaces
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.s
 	 * @method empty
 	 * @example var s = "  ";
@@ -571,9 +628,9 @@ __.s = {
 		return ( s.trim() == "" );
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Uppercases the first character of a word
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.s
 	 * @method camelcase
 	 * @example var s = __.s.camelcase( "hi mom" );
@@ -588,9 +645,9 @@ __.s = {
 		return ( ls.join( " " ) );
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Splits camelcase string into words separated by spaces
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.s
 	 * @method unCamelCase
 	 * @example var s = __.s.unCamelCase( "HiMom" );
@@ -604,10 +661,10 @@ __.s = {
 		return s.trim();
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Tokenize a string to certain levels:
 	 * simple: remove spaces, quotes, newlines an lowercase
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.s
 	 * @method tokenize
 	 * @example var s = __.s.tokenize( "Hi 'Mom'" ); // himom
@@ -634,11 +691,11 @@ __.s = {
  */
 __.n = {
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Receives a number and an array of min and max value
 	 * and returns the value of the number or either min or
 	 * max value if the number lies outside those boundaries
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.n
 	 * @method within 
 	 * @example var n = __.n.within( 1, [ 5, 9 ] ); // 1
@@ -647,7 +704,7 @@ __.n = {
 	 * @returns {Number} value of number within boundaries
 	 */
 	  within : function( n, ln ) {
-		n = ( n < ln[ 0 ] ) ? ln[ 0 ] : n;
+		n = ( n &lt; ln[ 0 ] ) ? ln[ 0 ] : n;
 		n = ( n > ln[ 1 ] ) ? ln[ 1 ] : n;
 		return n;
 	}
@@ -661,9 +718,9 @@ __.n = {
  */
 __.l = {
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Remove an element from a list
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.l
 	 * @method del
 	 * @example var l = [ 1, 3, 7 ];
@@ -680,9 +737,9 @@ __.l = {
 		return l;
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Checks whether a list contains an element
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.l
 	 * @method contains
 	 * @example
@@ -698,9 +755,9 @@ __.l = {
 		return ( l.indexOf( x ) > -1 );
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Check if two arrays contain exactly the same data
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.l
 	 * @method equal
 	 * @example var l1 = [ 1, 2, 3 ];
@@ -714,9 +771,9 @@ __.l = {
 		return ( l1.join( "-" ) == l2.join( "-" ) );
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Checks whether a list is empty
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.l
 	 * @method empty
 	 * @example var l = [];
@@ -726,12 +783,12 @@ __.l = {
 	 */
 	, empty : function( l ) {
 		var c = l.length;
-		return ! ( ! isNaN( c ) && c > 0 ); 
+		return ! ( ! isNaN( c ) &amp;&amp; c > 0 ); 
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Sorts an array of objects by an object's key
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.l
 	 * @method empty
 	 * @example var lo = [ { v : 12 }, { x : 11 }, { s : "x" }, { v : 2 } ];
@@ -745,7 +802,7 @@ __.l = {
 		return lo.sort( function( a, b ) {
 			var x = a[ k ] || null;
 			var y = b[ k ] || null;
-			return ( (x < y )
+			return ( (x &lt; y )
 				? -1
 				: ( (x > y )
 					? 1
@@ -762,9 +819,9 @@ __.l = {
  */
 __.o = {
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Converts an object into a string
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method s
 	 * @example var o = { sName : "John", nAge : 44 }
@@ -781,9 +838,9 @@ __.o = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Return key of an assoc 
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method k
 	 * @example var mp = { "key" : "value" }
@@ -798,9 +855,9 @@ __.o = {
 		return null;
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Return keys of an object.
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method k
 	 * @example var o = { sName : "John", nAge : 44 }
@@ -821,9 +878,9 @@ __.o = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Adds an object to an existing object.
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method add
 	 * @example var oOrig = { sName : "John", nAge : 44 }
@@ -833,16 +890,16 @@ __.o = {
 	 * @param {Object} onew object to be added
 	 */
 	, add : function( ocur, onew ) {
-		if( ocur && onew ) {
+		if( ocur &amp;&amp; onew ) {
 			for( var s in onew ) {
 				ocur[ s ] = onew[ s ];
 			} 
 		} 
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Rename a key of an object.
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method kRename
 	 * @example var oOrig = { sName : "John", nAge : 44 }
@@ -861,9 +918,9 @@ __.o = {
 		delete o[ kold ];
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Counts first level elements of an object
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method c 
 	 * @example var o = { sName : "John", nAge : 44 }
@@ -881,9 +938,9 @@ __.o = {
 		return c;
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Create a copy of an object
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method copy 
 	 * @example var oOrig = { sName : "John", nAge : 44 }
@@ -900,11 +957,11 @@ __.o = {
 		}
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Retrieve the structure of an object including its string size
 	 * array of arrays containing key paths as string and a sorted 
 	 * copy of the object passed on
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method struc 
 	 * @example var o1 = { sName : "John", nAge : 44 };
@@ -918,20 +975,20 @@ __.o = {
 	 */
 	, struc : function( o ) {
 		var presort = function( a, b ) {
-			var _a = ( a && a.sort ) ? a.sort() : a;
-			var _b = ( b && b.sort ) ? b.sort() : b;
+			var _a = ( a &amp;&amp; a.sort ) ? a.sort() : a;
+			var _b = ( b &amp;&amp; b.sort ) ? b.sort() : b;
 			return _a > _b;
 		};
 		var s = __.o.s( o );
 		var nLength = s.length;
 		var _o = __.s.o( s );	
-		if( _o && _o.sort ) {
+		if( _o &amp;&amp; _o.sort ) {
 			_o.sort( presort ).sort();
 		}
 		var ls = [];
 		function fnCrawl( _o, path ) {
 			for( var k in _o ) {
-				if( _o[k] && _o[k].sort ) {
+				if( _o[k] &amp;&amp; _o[k].sort ) {
 					_o[k].sort( presort ).sort();
 				}
 				if( _o.hasOwnProperty( k ) ) {
@@ -951,9 +1008,9 @@ __.o = {
 		};
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Check if two objects contain the same data
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method equal
 	 * @example var o1 = { sName : "John", nAge : 44 };
@@ -967,9 +1024,9 @@ __.o = {
 		return __.o._compare_( o1, o2 ).b; 
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Compare two objects and retrieve their differences
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method diff
 	 * @example var o1 = { sName : "John", nAge : 44 };
@@ -1004,7 +1061,7 @@ __.o = {
 			var x1 = oStruc1.o;
 			var x2 = oStruc2.o;
 			var lsParts = s.split( "." );
-			for( var ix=0; ix<lsParts.length; ix++ ) {
+			for( var ix=0; ix&lt;lsParts.length; ix++ ) {
 				x1 = ( x1 ) ? x1[ lsParts[ ix ] ] : x1;
 				x2 = ( x2 ) ? x2[ lsParts[ ix ] ] : x2;
 				if( typeof x1 !== typeof x2 ) {
@@ -1035,9 +1092,9 @@ __.o = {
 		};
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Checks whether an object is empty
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.o
 	 * @method empty
 	 * @example var o = {};
@@ -1062,10 +1119,10 @@ __.o = {
  */
 __.e = {
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Simply stops event propagation and prevents default
 	 * behaviour for an event object
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.e
 	 * @method stop
 	 * @example __.stop( e );
@@ -1078,9 +1135,9 @@ __.e = {
 };
 
 /**
- * <pre>
+ * &lt;pre>
  * Add a stylesheet rule to the page.
- * </pre>
+ * &lt;/pre>
  * @memberof __
  * @method css
  * @example __.css( "a.footer { color: red; padding : 0 }" );
@@ -1101,9 +1158,9 @@ __.css = function( sStyle ) {
  */
 __.b = {
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Checks whether a string is a valid email
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.b
 	 * @method mail
 	 * @example var bMail = __.b.mail( "john@example.com" );
@@ -1114,9 +1171,9 @@ __.b = {
 		return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[\.]{1}[a-zA-Z]{2,4}$/.test( s );
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Checks whether a string is a valid URL 
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.b
 	 * @method url 
 	 * @example var bUrl = __.b.url( "http://example.com" );
@@ -1124,7 +1181,7 @@ __.b = {
 	 * @returns {Booelan} Result of the check
 	 */
 	, url : function( s ) {
-		return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test( v );
+		return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&amp;//=]*)/.test( v );
 	}
 };
 
@@ -1136,9 +1193,9 @@ __.b = {
  */
 __.cookie = {
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Gets a cookie by name
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.cookie
 	 * @method get
 	 * @example var sCookie = __.cookie.get( "pref" );
@@ -1150,9 +1207,9 @@ __.cookie = {
 		return v ? v[ 2 ] : null;
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Sets a cookie by name
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.cookie
 	 * @method set
 	 * @example var sCookie = __.cookie.get( "pref", "red", 365 );
@@ -1166,9 +1223,9 @@ __.cookie = {
 		document.cookie = k + "=" + v + ";path=/;expires=" + d.toGMTString();
 	}
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Removes a cookie by name
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.cookie
 	 * @method del
 	 * @example __.cookie.del( "pref" );
@@ -1188,9 +1245,9 @@ __.cookie = {
 // REF: move to win
 __.url = {
 	/**
-	 * <pre>
+	 * &lt;pre>
 	 * Reads parameters store from the URL or a string if passed on as argument
-	 * </pre>
+	 * &lt;/pre>
 	 * @memberof __.url
 	 * @method oParams
 	 * @param {String} [url] URL string
@@ -1200,7 +1257,7 @@ __.url = {
 		var o = {};
 		var s = ( url ) ? url : window.location.href;
 		s.replace(
-			/[?&]+([^=&]+)=([^&]*)/gi,
+			/[?&amp;]+([^=&amp;]+)=([^&amp;]*)/gi,
 			function( m, k, v ) {
 				o[ k ] = v;
 			}
@@ -1247,7 +1304,7 @@ __.misc = {
 
 /* *** Polyfills *** */
 /* matches */
-this.Element && function( oPrototype ) {
+this.Element &amp;&amp; function( oPrototype ) {
 	oPrototype.matches = oPrototype.matches ||
 	oPrototype.matchesSelector ||
 	oPrototype.webkitMatchesSelector ||
@@ -1256,7 +1313,7 @@ this.Element && function( oPrototype ) {
 		var dn = this;
 		var ldn = ( dn.parentNode || dn.document ).querySelectorAll( sCSS );
 		var ix = -1;
-		while( ldn[ ++ix ] && ldn[ ix ] != dn ){
+		while( ldn[ ++ix ] &amp;&amp; ldn[ ix ] != dn ){
 			// just loop until hit the end
 		};
 		return ( ldn[ ix ] ) ? true : false;
@@ -1264,10 +1321,10 @@ this.Element && function( oPrototype ) {
 }( Element.prototype );
 
 /* closest */
-this.Element && function( oPrototype ) {
+this.Element &amp;&amp; function( oPrototype ) {
 	oPrototype.closest = oPrototype.closest || function( sCSS ) {
 		var dn = this;
-		while( dn.matches && ! dn.matches( sCSS ) ) {
+		while( dn.matches &amp;&amp; ! dn.matches( sCSS ) ) {
 			dn = dn.parentNode;
 		}
 		return ( dn.matches ) ? dn : null;
@@ -1303,3 +1360,26 @@ __.win = {
 	}
 };
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.b.html">b</a></li><li><a href="-__.cookie.html">cookie</a></li><li><a href="-__.dn.html">dn</a></li><li><a href="-__.e.html">e</a></li><li><a href="-__.l.html">l</a></li><li><a href="-__.n.html">n</a></li><li><a href="-__.o.html">o</a></li><li><a href="-__.s.html">s</a></li><li><a href="-__.url.html">url</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Mar 29 2018 16:12:13 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
