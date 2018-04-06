@@ -1,6 +1,6 @@
 {
     "source": {
-	"include" : [ "/Users/juergenriemer/Documents/GitHub/__2/" ],
+	"include" : [ "/Users/juergenriemer/Documents/GitHub/__2/source/SP/__.SP.js" ],
         "includePattern": ".+\\.js(doc|x)?$"
     },
     "opts": {
