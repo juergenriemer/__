@@ -2,7 +2,7 @@ __.SP.webpart = {
 	/** 
 	 */
 	  settings : function( args ) { // path, ixWP, kv
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var path = _spPageContextInfo.webServerRelativeUrl + args.path;
 		var oFile = ctx.get_web().getFileByServerRelativeUrl( path );

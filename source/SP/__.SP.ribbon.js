@@ -10,7 +10,7 @@ __.SP.ribbon = {
 		// sRibbon: https://msdn.microsoft.com/en-us/library/office/bb802730.aspx
 		// sSegment: https://msdn.microsoft.com/en-us/library/ee537543(office.14).aspx
 		// or: to get the segment use browser inspector and check the ID of the segement in UI
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oIcon = oList.get_userCustomActions().add();
@@ -57,7 +57,7 @@ __.SP.ribbon = {
 		} );
 	}
 	, dmiep : function( args ) {
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oIcon = oList.get_userCustomActions().add();

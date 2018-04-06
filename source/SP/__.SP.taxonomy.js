@@ -16,12 +16,12 @@ __.SP.taxonomy.setTermInForm = function( args ) { // sField, sTerm, guid
 		h += 'title="The term is not a valid term">' + args.sTerm + '</span>';
 	}
 	__.dn_( "#" + args.sField + "_\\$containereditableRegion" ).innerHTML = h;
-	__.async( args ).resolve();
+	__.Async.promise( args ).resolve();
 }
 
 
 __.SP.taxonomy.getTermIds = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	if( __.SP.taxonomy.oTermInfo ) {
 		console.log( 'fresh from cache' );
 		async.resolve();
@@ -41,7 +41,7 @@ __.SP.taxonomy.getTermIds = function( args ) {
 				, guid : kv.IdForTerm
 			};
 		} );
-		__.async( args ).resolve();
+		__.Async.promise( args ).resolve();
 	}, "Extract term id data" )
 	async.resolve();
 }
@@ -72,7 +72,7 @@ __.SP.taxonomy.termInfo = function( x ) { // x can be either of the follow three
 // __.SP.taxonomy.load( { sTermSet : O$C3.Tax.guidTermSet.MainCategory } )
 // cons it:  __.SP.taxonomy.aTerms[ O$C3.Tax.guidTermSet.MainCategory ] );
 __.SP.taxonomy.load = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	// first check if we already loaded the taxonomy
 	var oTerms = __.SP.taxonomy.aTerms[ args.sTermSet ];
 	if( oTerms ) {

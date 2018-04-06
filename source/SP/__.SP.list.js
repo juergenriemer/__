@@ -21,7 +21,7 @@ __.SP.list = {
 	 */
 	// __.SP.list.read( { sList : "OSCE Contacts", lsFields : [ "Title", "ID" ], xmlQuery : "<Query><Where><In><FieldRef Name='ID' /><Values><Value Type='Number'>37</Value><Value Type='Number'>38</Value></Values></In></Where></Query>" } );
 	, read : function( args ) { // sList, lsFields, xmlQuery, pathSearch (to limit to subfolder)
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		// get context
 		var ctx = __.SP.ctx( args.sSite );
 		// get list
@@ -95,7 +95,7 @@ __.SP.list = {
 			, sView : args.sView
 		} )
 		.then( function( args ) {
-			var async = __.async( args );
+			var async = __.Async.promise( args );
 			async.then( __.SP.list, "read", {
 				  sList : args.sList
 				, lsFields : lsFields
@@ -104,12 +104,12 @@ __.SP.list = {
 		} )
 		.then( function( args ) {
 			cb( args );
-			__.async( args ).resolve();
+			__.Async.promise( args ).resolve();
 		} )
 		.start();
 	}
 	, exists : function( args ) {
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		ctx.load( oList, 'Id' );
@@ -124,7 +124,7 @@ __.SP.list = {
 	}
 };
 __.SP.list.id = function( args ) { // sList
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	ctx.load( oList, 'Id' );
@@ -148,7 +148,7 @@ __.SP.list.settings = function( args ) { // kvFeatures
 	 * set_majorVersionLimit
 	 * set_majorWithMinorVersionsLimit
 	 */
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	for( var k in args.kvFeatures ) {
@@ -171,7 +171,7 @@ __.SP.list.create = function( args ) { // sList, sType, sDescription
 	/* sType:
 	 * discussionBoard, documentLibrary, announcements, contacts, events
 	 */
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oWeb = ctx.get_web();
 	var oInfo = new SP.ListCreationInformation();
@@ -193,7 +193,7 @@ __.SP.list.create = function( args ) { // sList, sType, sDescription
 }
 
 __.SP.list.del = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	oList.deleteObject();
@@ -270,7 +270,7 @@ __.SP.list.oFieldType = function( args ) {
 };
 
 __.SP.list.addFields = function( args ) { // sList, loFields
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	if( args.loFields ) {
@@ -318,7 +318,7 @@ __.SP.list.addFields = function( args ) { // sList, loFields
 }
 // change the sDisplayName afterwards!!!! REF
 __.SP.list.setLookup = function( args ) { // oField, idList, sField ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oField = args.oField;
 	oField.set_lookupList( "{" + args.idList + "}" );
@@ -336,7 +336,7 @@ __.SP.list.setLookup = function( args ) { // oField, idList, sField ) {
 }
 
 __.SP.list.setLookups = function( args ) { // oList, loFields ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	args.loFields.forEach( function( o ) {
 		if( o.aLookup ) {
 			async.then( __.SP.list, "id", {
@@ -353,7 +353,7 @@ __.SP.list.setLookups = function( args ) { // oList, loFields ) {
 
 // __.SP.list.setColumn( { sList : "FrontOfficeAssignments", sColumn : "FrontOffice"} )
 __.SP.list.setColumn = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oColumn = ctx.get_web().get_fields().getByInternalNameOrTitle( args.sColumn );
 	var oList = __.SP.list.get( ctx, args.sList );
@@ -374,7 +374,7 @@ __.SP.list.setColumn = function( args ) {
 }
 
 __.SP.list.setColumns = function( args ) { // oList, loFields ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	args.loFields.forEach( function( o ) {
 		if( o.sColumn ) {
 			async.then( __.SP.list, "setColumn", {
@@ -387,7 +387,7 @@ __.SP.list.setColumns = function( args ) { // oList, loFields ) {
 }
 //__.SP.list.nameByGuid( { guid : "b5ffd424-8b37-4bb8-b070-d32e4d638740" } );
 __.SP.list.nameByGuid = function( args ) { // guid
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = ctx.get_web().get_lists().getById( args.guid );
 	ctx.load( oList, "Title" );
@@ -405,7 +405,7 @@ __.SP.list.nameByGuid = function( args ) { // guid
 
 //__.SP.list.fields( { sList : "OSCE Contacts" } );
 __.SP.list.fields = function( args ) { // sList
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oFields = oList.get_fields();
@@ -437,7 +437,7 @@ __.SP.list.field = {};
 
 /* sets the following attributes of a field: display name, required or not, where to show */
 __.SP.list.field.display = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oField = oList.get_fields().getByInternalNameOrTitle( args.sField );
@@ -469,7 +469,7 @@ __.SP.list.field.display = function( args ) {
 
 
 __.SP.list.field.displays = function( args ) { // oList, loFields ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	args.loFields.forEach( function( oField ) {
 		if( oField.sCAMLType !== "choice" ) {
 			async.then( __.SP.list.field, "display", {
@@ -492,7 +492,7 @@ __.SP.list.field.displays = function( args ) { // oList, loFields ) {
 // var lsFields = ["FirstName", "Title", "Gender", "AcademicTitle", "Salutation", "JobTitle", "ol_Department", "WorkPhone", "CellPhone", "WorkAddress", "WorkCity", "WebPage", "Company", "WorkCountry", "AddressCountry", "DateOfEntry", "SpouseName", "AssistantsName", "Country", "CountryCategory", "MainCategory", "AreaOfExpertise", "ExecutiveStructure", "InternationalOrganization", "Comments", "FrontOffice", "DossierFile", "bDossier", "Published", "Log", "WorkState", "WorkZip", "FullName"];
 // lsFields = ["FirstName","Gender"];__.SP.list.field.reorder( { sList : "OSCE Contacts", lsFields : lsFields } );
 __.SP.list.field.reorder = function( args ) { // sList, lsFields
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oCTs = oList.get_contentTypes();
@@ -519,7 +519,7 @@ __.SP.list.field.reorder = function( args ) { // sList, lsFields
 };
 
 __.SP.list.field.setJsLink= function( args ) { // sList, [sField], urlJsLink
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var sField = args.sField || "jsLink";

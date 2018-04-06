@@ -1,7 +1,7 @@
 __.SP.filter.form = {};
 __.SP.filter.form.create = function( args ) {
 	var h = "<form class='osce-form'></form>";
-	var dn = __.dn.add( h, args.dnRoot );
+	var dn = __.dn.append( h, args.dnRoot );
 	args.loFields.forEach( function( oField ) {
 		oField.dnRoot = dn;
 		oField.idFilter = args.idFilter;
@@ -104,7 +104,7 @@ __.SP.filter.form.field.text = {
 		var h = __.SP.filter.form.field.hHeader( args );
 		h += "<input class='osce-v'></input>";
 		h += "</div>";
-		__.dn.add( h, args.dnRoot );
+		__.dn.append( h, args.dnRoot );
 	}
 	, get : function( dn ) {
 		var v = __.dn_( ".osce-v", dn ).value;
@@ -132,7 +132,7 @@ __.SP.filter.form.field.lookupdate = {
 		h += ' frameborder="0" scrolling="no" style="display:none; position:absolute; width:200px; z-index:101;" ';
 		h += ' title="Select a date from the calendar."></iframe>';
 		h += "</div>";
-		__.dn.add( h, args.dnRoot );
+		__.dn.append( h, args.dnRoot );
 	}
 	, get : function( dn ) {
 		var v = __.dn_( ".osce-v", dn ).value;
@@ -173,11 +173,11 @@ __.SP.filter.form.field.autocomplete = {
 				if( cbfn ) {
 					cbfn( args.lkv );
 				}
-				__.async( args ).resolve();
+				__.Async.promise( args ).resolve();
 			} )
 			.start();
 		};
-		var dnLookup = __.dn.add( h, args.dnRoot );
+		var dnLookup = __.dn.append( h, args.dnRoot );
 		__.autocomplete.init( {
 			  dn : __.dn_( "input", dnLookup )
 			, sField : args.sLookupField
@@ -207,7 +207,7 @@ __.SP.filter.form.field.checkbox = {
 			h += "<option value='No'>No</option>";
 		h += "</select>";
 		h += "</div>";
-		__.dn.add( h, args.dnRoot );
+		__.dn.append( h, args.dnRoot );
 	}
 	, get : function( dn ) {
 		var v = __.dn_( ".osce-v", dn ).value;
@@ -230,7 +230,7 @@ __.SP.filter.form.field.choice = {
 		} );
 		h += "</select>";
 		h += "</div>";
-		__.dn.add( h, args.dnRoot );
+		__.dn.append( h, args.dnRoot );
 	}
 	, get : function( dn ) {
 		var v = __.dn_( ".osce-v", dn ).value;
@@ -255,7 +255,7 @@ __.SP.filter.form.field.taxonomy = {
 		h += '<div id="' + sidPicker + '" class="ms-taxonomy">';
 		h += '</div>';
 		h += "</div>";
-		var dn = __.dn.add( h, args.dnRoot );
+		var dn = __.dn.append( h, args.dnRoot );
 		var sspId = O$C3.Tax.guidTermStore;
 		var url = _spPageContextInfo.webServerRelativeUrl;
 		url += '\u002f_vti_bin\u002fTaxonomyInternalService.json';

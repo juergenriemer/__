@@ -1,7 +1,7 @@
 __.SP.view = {};
 // __.SP.view.list( { sList:"OSCE Contacts"} );
 __.SP.view.list = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oViews = oList.get_views();
@@ -25,7 +25,7 @@ __.SP.view.list = function( args ) {
 // __.SP.view.read( { sList : "OSCE Contacts", sView : "OSG Contacts" } );
 // sends back guid, fields, url, rows, query
 __.SP.view.read = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sView );
@@ -67,7 +67,7 @@ __.SP.view.read = function( args ) {
 
 // __.SP.view.deleteFields( { sList : "OSCE Contacts", sView : "All contacts", lsFields : ["Company"] } );
 __.SP.view.deleteFields = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sView );
@@ -102,7 +102,7 @@ __.SP.view.deleteFields = function( args ) {
 }
 // __.SP.view.add( { sList:"OSCE Contacts",sView:"test_me",lsFields:["Title","Country","Company"],xmlQuery:'<OrderBy><FieldRef Name="Title" /></OrderBy><Where><Eq><FieldRef Name="FrontOffice" /><Value Type="Text">OCEEA</Value></Eq></Where>'} );
 __.SP.view.add = function( args ) { // sList, sView, xmlQuery, bPublic, jsLink, lsFields
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oViews = oList.get_views();
@@ -184,7 +184,7 @@ __.SP.view.add = function( args ) { // sList, sView, xmlQuery, bPublic, jsLink, 
 
 // __.SP.view.del( { sList : "OSCE Contacts", sView : "test_me" } );
 __.SP.view.del = function( args ) {
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sView );
@@ -208,7 +208,7 @@ __.SP.view.del = function( args ) {
 
 // __.SP.view.update({ sList:"OSCE Contacts", sView: "b", jsLink : "~sitecollection/SiteAssets/list_view.js?v=1" } )
 __.SP.view.update = function( args ) { // sList, sView, [jsLink], xmlQuery, lsfields, sTotal
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sView );
@@ -270,7 +270,7 @@ __.SP.view.update = function( args ) { // sList, sView, [jsLink], xmlQuery, lsfi
 
 // __.SP.view.copy({ sList:"OSCE Contacts", sOldView: "OSG Contacts", sNewView : "xxx" } );
 __.SP.view.copy = function( args ) { // sList, sOldView, sNewView
-	var async = __.async( args );
+	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sOldView );

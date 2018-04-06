@@ -8,7 +8,7 @@ __.SP.user = {
 	 */
 	, current : function( args ) {
 		var that = this;
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		if( this.aInfo ) {
 			async.resolve( { aUserInfo : this.aInfo } );
 			console.log( 'fresh from cache' );

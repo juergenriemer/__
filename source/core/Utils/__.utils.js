@@ -112,6 +112,20 @@ __.s = {
 		}
 		return s;
 	}
+	/**
+	 * <pre>
+	 * Sanitizes a string by removing tags only
+	 * </pre>
+	 * @memberof __.s
+	 * @method sanitize
+	 * @example var s = __.s.sanitize( "Hi 'Mom'" ); // himom
+	 * @param {String} s string we want to sanitize
+	 * @returns {String} sanitized string
+	 */
+	// REF: unit test this
+	, sanitize : function( s ) {
+		return s.replace( /<(?:.|\n)*?>/gm, "" );
+	}
 };
 
 /**

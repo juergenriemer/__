@@ -15,7 +15,7 @@ __.SP.modal = {
 		};
 		var dnModal = SP.UI.ModalDialog.showModalDialog( kv );
 		( new __.Async() )
-		.wait( 50, function() {
+		.wait( function() {
 			if( dnModal && dnModal.$e_0 ) {
 				if( args.fnLoad ) {
 					args.fnLoad( dnModal.$e_0 );
@@ -23,7 +23,7 @@ __.SP.modal = {
 				return true;
 			}
 			return false;
-		} )
+		}, 50 )
 		.start();
 		return this;
 	}
@@ -37,7 +37,7 @@ __.SP.modal = {
 		h += "<p class='separator'></p>";
 		h += this.buttons( args );
 		h += "</div>";
-		this.dn = __.dn.add( h );
+		this.dn = __.dn.append( h );
 		this.behaviour( this.dn, args );
 		var kv = {
 			  title : args.sTitle

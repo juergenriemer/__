@@ -8,7 +8,7 @@ __.SP.webservice( {
 */
 __.SP.webservice = {
 	  call : function( args ) { // sService, sEndpoint, oPayload, aHeaders
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var that = this;
 		var sPayload = __.o.s( args.oPayload );
 		var oAjax = window.XMLHttpRequest ?

@@ -3,7 +3,7 @@ __.SP.item = {
 	 * Create an item.
 	 */
 	  create : function( args ) { // sList, kv
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		// get context
 		var ctx = __.SP.ctx();
 		// get list
@@ -45,7 +45,7 @@ __.SP.item = {
 	 * Update fields of an item.
 	 */
 	, update : function( args ) { // sList, id, kv
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		// get context
 		var ctx = __.SP.ctx();
 		// get list
@@ -92,7 +92,7 @@ __.SP.item = {
 	 * Read fields from an item.
 	 */
 	, read : function( args ) { // sList, id, lsFields
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		// get context
 		var ctx = __.SP.ctx();
 		// get list
@@ -161,7 +161,7 @@ __.SP.item = {
 	}
 //	__.SP.item.breakInheritance( { sList : "DossierInfos", id: 6 } ) 
 	, breakInheritance : function( args ) { // sList, id
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
@@ -178,7 +178,7 @@ __.SP.item = {
 	}
 //	__.SP.item.resetInheritance( { sList : "DossierInfos", id: 12 } ) 
 	, resetInheritance : function( args ) { // sList, id
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
@@ -196,7 +196,7 @@ __.SP.item = {
 //	__.SP.item.addGroup( { sList : "DossierInfos", id: 7, sGroup: O$C3.FOUser.oSettings.sFrontOffice, sRole: "Read"  } ) 
 	, addGroup : function( args ) { // sList, id, sGroup, sPermission
 		/* sRole: Contribute,Custom Levelname,Read,Edit */
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
@@ -219,7 +219,7 @@ __.SP.item = {
 	// __.SP.item.restrictToGroup( { sList : "DossierInfos", id: 7, sGroup: O$C3.FOUser.oSettings.sFrontOffice, sRole: "Read"  } ) 
 	, restrictToGroup : function( args ) { // sList, id, sGroup, sRole
 		/* sRole: Contribute,Custom Levelname,Read,Edit */
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
@@ -246,7 +246,7 @@ __.SP.item = {
 	, restrictToUser : function( args ) { // sList, id, xUser, sRole
 		/* sRole: Contribute,Custom Levelname,Read,Edit */
 		/* xUser: either id or email or login name osce\\jriemer */
-		var async = __.async( args );
+		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
