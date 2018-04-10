@@ -31,6 +31,10 @@ h4.name span.signature {
 h4.name span {
 	font-size : 50%;
 }
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
 </style>
 <body>
 
@@ -63,9 +67,6 @@ h4.name span {
 
 <dl class="details">
 
-    
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>1.0</li></ul></dd>
     
 
     
@@ -123,7 +124,16 @@ h4.name span {
         <h3 class="subsection-title">Namespaces</h3>
 
         <dl>
+            <dt><a href="-__.SP.caml.html">caml</a></dt>
+            <dd></dd>
+        
             <dt><a href="-__.SP.folder.html">folder</a></dt>
+            <dd></dd>
+        
+            <dt><a href="-__.SP.grid.html">grid</a></dt>
+            <dd></dd>
+        
+            <dt><a href="-__.SP.list.html">list</a></dt>
             <dd></dd>
         </dl>
     
@@ -147,9 +157,7 @@ h4.name span {
 
 
 <div class="description">
-    <pre>
-Checks if a value is of form of a GUID
-</pre>
+    Checks if a value is of form of a GUID
 </div>
 
 
@@ -242,7 +250,7 @@ Checks if a value is of form of a GUID
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line80">line 80</a>
+        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line78">line 78</a>
     </li></ul></dd>
     
 
@@ -315,10 +323,8 @@ Checks if a value is of form of a GUID
 
 
 <div class="description">
-    <pre>
-Gets a SharePoint context of the current site or a site you
-indicate as absolute Url
-</pre>
+    Gets a SharePoint context of the current site or a site you
+indicate via absolute Url
 </div>
 
 
@@ -423,7 +429,7 @@ indicate as absolute Url
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line23">line 23</a>
+        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line22">line 22</a>
     </li></ul></dd>
     
 
@@ -486,7 +492,7 @@ indicate as absolute Url
     
 
     
-    <h4 class="name" id=".exec"><span class="type-signature">(static) </span>exec<span class="signature">(ctx, o, fn)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".exec"><span class="type-signature">(static) </span>exec<span class="signature">(ctx, oLoad, cb)</span><span class="type-signature"></span></h4>
     
 
     
@@ -494,10 +500,11 @@ indicate as absolute Url
 
 
 <div class="description">
-    <pre>
-Executes an asynchronous call against the server.
-indicate as absolute Url
-</pre>
+    Executes an asynchronous call against the server.
+<br />
+It expects a SharePoint object to be loaded. Optionally you can indicate
+a callback function that will be invoked by the returned object or 
+an error message and stack in case of failure.
 </div>
 
 
@@ -556,7 +563,7 @@ indicate as absolute Url
 
         <tr>
             
-                <td class="name"><code>o</code></td>
+                <td class="name"><code>oLoad</code></td>
             
 
             <td class="type">
@@ -579,7 +586,7 @@ indicate as absolute Url
 
         <tr>
             
-                <td class="name"><code>fn</code></td>
+                <td class="name"><code>cb</code></td>
             
 
             <td class="type">
@@ -636,7 +643,7 @@ indicate as absolute Url
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line40">line 40</a>
+        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line37">line 37</a>
     </li></ul></dd>
     
 
@@ -694,16 +701,61 @@ indicate as absolute Url
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.folder.html">folder</a></li></ul>
+	<h3><a href="../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
+<script>
+var dnNav = document.querySelector( "nav" );
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	dn.textContent = lsParts[ 1 ];
+}
 
+var dnMethods = document.getElementById( "methods" );
+var dnMethodCount = document.getElementById( "method-count" );
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+</script>
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 06 2018 07:11:02 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 10 2018 07:24:42 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
+<script src="custom.js"> </script>
 </body>
 </html>

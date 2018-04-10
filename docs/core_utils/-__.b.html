@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: folder</title>
+    <title>JSDoc: Namespace: b</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -31,12 +31,16 @@ h4.name span.signature {
 h4.name span {
 	font-size : 50%;
 }
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
 </style>
 <body>
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: folder</h1>
+    <h1 class="page-title">Namespace: b</h1>
 
     
 
@@ -48,7 +52,7 @@ h4.name span {
 <header>
     
         <h2>
-            <span class="ancestors"><a href="-__.html">__</a><a href="-__.SP.html">.SP</a>.</span>folder</h2>
+            <span class="ancestors"><a href="-__.html">__</a>.</span>b</h2>
         
     
 </header>
@@ -56,6 +60,8 @@ h4.name span {
 <article>
     <div class="container-overview">
     
+        
+            <div class="description">Provides methods that check states</div>
         
 
         
@@ -90,7 +96,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line97">line 97</a>
+        <a href="-__.Utils.js.html">__.Utils.js</a>, <a href="-__.Utils.js.html#line605">line 605</a>
     </li></ul></dd>
     
 
@@ -129,7 +135,7 @@ h4.name span {
     
 
     
-    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(args)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".mail"><span class="type-signature">(static) </span>mail<span class="signature">(s)</span><span class="type-signature"> &rarr; {Booelan}</span></h4>
     
 
     
@@ -138,7 +144,7 @@ h4.name span {
 
 <div class="description">
     <pre>
-Creates a folder in a document library
+Checks whether a string is a valid email
 </pre>
 </div>
 
@@ -175,49 +181,7 @@ Creates a folder in a document library
 
         <tr>
             
-                <td class="name"><code>args</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">a parameter object holding the following values
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>sList</code></td>
+                <td class="name"><code>s</code></td>
             
 
             <td class="type">
@@ -233,37 +197,7 @@ Creates a folder in a document library
 
             
 
-            <td class="description last">name of the list</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sFolder</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">name of the folder</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last">String representing an email address</td>
         </tr>
 
     
@@ -304,7 +238,7 @@ Creates a folder in a document library
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line102">line 102</a>
+        <a href="-__.Utils.js.html">__.Utils.js</a>, <a href="-__.Utils.js.html#line612">line 612</a>
     </li></ul></dd>
     
 
@@ -331,11 +265,7 @@ Creates a folder in a document library
 
         
 <div class="param-desc">
-    Resolved promise holding the following values 
-<pre>
-oFolder  | (Object) | context of the newly created folder
-idFolder | (Number) | item ID of the newly created folder
-</pre>
+    Result of the check
 </div>
 
 
@@ -346,7 +276,7 @@ idFolder | (Number) | item ID of the newly created folder
     </dt>
     <dd>
         
-<span class="param-type">Object</span>
+<span class="param-type">Booelan</span>
 
 
     </dd>
@@ -359,10 +289,7 @@ idFolder | (Number) | item ID of the newly created folder
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.folder.create( {
-	  sList : "Shared Documents"
-	, sFolder "test folder"
-} );</code></pre>
+    <pre class="prettyprint"><code>var bMail = __.b.mail( "john@example.com" );</code></pre>
 
 
 
@@ -372,7 +299,7 @@ idFolder | (Number) | item ID of the newly created folder
     
 
     
-    <h4 class="name" id=".read"><span class="type-signature">(static) </span>read<span class="signature">(path)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".url"><span class="type-signature">(static) </span>url<span class="signature">(s)</span><span class="type-signature"> &rarr; {Booelan}</span></h4>
     
 
     
@@ -381,7 +308,7 @@ idFolder | (Number) | item ID of the newly created folder
 
 <div class="description">
     <pre>
-Reads information of a folder
+Checks whether a string is a valid URL 
 </pre>
 </div>
 
@@ -418,7 +345,7 @@ Reads information of a folder
 
         <tr>
             
-                <td class="name"><code>path</code></td>
+                <td class="name"><code>s</code></td>
             
 
             <td class="type">
@@ -434,7 +361,7 @@ Reads information of a folder
 
             
 
-            <td class="description last">path of the folder</td>
+            <td class="description last">String representing a URL</td>
         </tr>
 
     
@@ -475,7 +402,7 @@ Reads information of a folder
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line152">line 152</a>
+        <a href="-__.Utils.js.html">__.Utils.js</a>, <a href="-__.Utils.js.html#line625">line 625</a>
     </li></ul></dd>
     
 
@@ -502,11 +429,7 @@ Reads information of a folder
 
         
 <div class="param-desc">
-    Resolved promise holding the following values 
-<pre>
-oFolder | (Object) | context of the newly created folder
-aProps  | (Object) | associate array holding properties of the folder
-</pre>
+    Result of the check
 </div>
 
 
@@ -517,7 +440,7 @@ aProps  | (Object) | associate array holding properties of the folder
     </dt>
     <dd>
         
-<span class="param-type">Object</span>
+<span class="param-type">Booelan</span>
 
 
     </dd>
@@ -530,9 +453,7 @@ aProps  | (Object) | associate array holding properties of the folder
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.folder.read( {
-	  path : "/Lists/Shared Documents/test folder"
-} );</code></pre>
+    <pre class="prettyprint"><code>var bUrl = __.b.url( "http://example.com" );</code></pre>
 
 
 
@@ -552,16 +473,61 @@ aProps  | (Object) | associate array holding properties of the folder
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.folder.html">folder</a></li></ul>
+	<h3><a href="../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.b.html">b</a></li><li><a href="-__.cookie.html">cookie</a></li><li><a href="-__.e.html">e</a></li><li><a href="-__.l.html">l</a></li><li><a href="-__.n.html">n</a></li><li><a href="-__.o.html">o</a></li><li><a href="-__.s.html">s</a></li><li><a href="-__.url.html">url</a></li></ul>
 </nav>
+<script>
+var dnNav = document.querySelector( "nav" );
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	dn.textContent = lsParts[ 1 ];
+}
 
+var dnMethods = document.getElementById( "methods" );
+var dnMethodCount = document.getElementById( "method-count" );
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+</script>
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 06 2018 07:11:02 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 10 2018 07:24:37 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
+<script src="custom.js"> </script>
 </body>
 </html>

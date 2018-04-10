@@ -11,26 +11,9 @@
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="jsdoc-custom-styles.css">
 </head>
 <style>
-.prettyprint {
-	width : 100%;
-}
-h1 {
-	font-size : 2em;
-}
-h4.name {
-	margin-top : 2em;
-	font-size : 1.7em;
-	border-bottom : 1px dashed #c0c0c0;
-}
-h4.name span.signature {
-	font-size : 70%;
-	padding : 5px;
-}
-h4.name span {
-	font-size : 50%;
-}
 </style>
 <body>
 
@@ -42,9 +25,13 @@ h4.name span {
 </div>
 
 <nav>
-    <?js= this.nav ?>
+	<!-- custom HTML to show Home link to index page and all methods -->
+	<h3><a href="../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+	<!-- custom HTML -->
+	<?js= this.nav ?>
 </nav>
-
 <br clear="both">
 
 <footer>
@@ -53,5 +40,6 @@ h4.name span {
 
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
+<script src="jsdoc-custom-scripts.js"> </script>
 </body>
 </html>

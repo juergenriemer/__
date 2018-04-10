@@ -1,25 +1,66 @@
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @output_file_name __.sp.list.min.js
+// @js_externs var __; __.SP; __.SP.ctx
+// ==/ClosureCompiler==
+
+
+/**
+ * @namespace __.SP.list
+ * @memberof __.SP
+ */
+
 __.SP.list = {
-	/** 
-	 * Gets a list by name or GUID.
+	/**
+	 * <pre>
+	 * Gets a list context by name or guid
+	 * </pre>
+	 * @memberof __.SP.list
+	 * @method get
+	 * @todo use arguments object
+	 * @todo improve error capturing
+	 * @example __.SP.folder.get( ctx, "Shared Documents" );
+	 * @param {Object} ctx SharePoint site context
+	 * @param {String} x either name of the list or its guid in curly brackets
+	 * @returns {Object} context of the list
 	 */
-	  get : function( ctx, sList ) {
+	  get : function( ctx, x ) {
 		var oList = null;
 		var oLists = ctx.get_web().get_lists();
-		if( /^{/.test( sList ) ) {
-			var ls = sList.match( /{(.*)}/ );
+		if( /^{/.test( x ) ) {
+			var ls = x.match( /{(.*)}/ );
 			if( ls.length == 2 ) {
 				oList = oLists.getById( ls[ 1 ] );
 			}
 		}
 		else {
-			oList = oLists.getByTitle( sList );
+			oList = oLists.getByTitle( x );
 		}
 		return ( oList ) ? oList : null;
 	}
 	/**
-	 * Reads fields from entire list
+	 * <pre>
+	 * Reads list items
+	 * </pre>
+	 * @memberof __.SP.list
+	 * @method read
+	 * @example
+	 * __.SP.list.read( {
+	 * 	  sList : "Shared Documents"
+	 *	, lsFields : [ "Title", "ID" ]
+	 *	, xmlQuery : "<Query><Where><FieldRef Name='ID' /><Lt><Value Type='Number'>5</Value></Lt></Where></Query>"
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Array} args.lsFields array of field names to be returned
+	 * @param {String} [args.sSite] Url of a site (defaults to current)
+	 * @param {String} [args.pathSearch] folder path to start search from
+	 * @param {String} [args.xmlQuery] optional CAML query otherwise entire list is returned
+	 * @returns {Object} Resolved promise holding the following values 
+	 * <pre class='return-object'>
+	 * lkv | (Object) | array of key value pairs
+	 * </pre>
 	 */
-	// __.SP.list.read( { sList : "OSCE Contacts", lsFields : [ "Title", "ID" ], xmlQuery : "<Query><Where><In><FieldRef Name='ID' /><Values><Value Type='Number'>37</Value><Value Type='Number'>38</Value></Values></In></Where></Query>" } );
 	, read : function( args ) { // sList, lsFields, xmlQuery, pathSearch (to limit to subfolder)
 		var async = __.Async.promise( args );
 		// get context
@@ -83,8 +124,9 @@ __.SP.list = {
 		}
 	}
 	/**
-	 * Reads fields from list view
+	 * OBSOLTE Reads fields from list view
 	 */
+	// REF: remove 
 	// __.SP.list.readView ( {sList : "OSCE Contacts", sView : 111, lsFields : [ "Title", "Country" ], cb : function( a ) {	do( a.kv ); } ); } } )
 	, readView : function( args ) { // sList, sView, lsFields, cb
 		var cb = args.cb;
@@ -108,6 +150,23 @@ __.SP.list = {
 		} )
 		.start();
 	}
+/**
+ * <pre>
+ * Check if a list exists
+ * </pre>
+ * @memberof __.SP.list
+ * @method exists
+ * @example
+ * __.SP.list.exists( {
+ * 	  sList : "Shared Documents"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * bExists | (Boolean) | true if list exists otherwise false
+ * </pre>
+ */
 	, exists : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
@@ -123,7 +182,24 @@ __.SP.list = {
 		} );
 	}
 };
-__.SP.list.id = function( args ) { // sList
+/**
+ * <pre>
+ * Get guid of a list for a given name
+ * </pre>
+ * @memberof __.SP.list
+ * @method id
+ * @example
+ * __.SP.list.id( {
+ * 	  sList : "Shared Documents"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name of a list
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * idList | (String) | guid of a list
+ * </pre>
+ */
+__.SP.list.id = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
@@ -138,16 +214,34 @@ __.SP.list.id = function( args ) { // sList
 	} );
 }
 
-__.SP.list.settings = function( args ) { // kvFeatures
-	/* kvFeatures:
-	 * set_documentTemplateUrl
-	 * set_contentTypesEnabled
-	 * set_enableMinorVersions
-	 * set_enableVersioning
-	 * set_onQuickLaunch
-	 * set_majorVersionLimit
-	 * set_majorWithMinorVersionsLimit
-	 */
+/**
+ * <pre>
+ * Updates the settings of a list. Available properties are:
+ * - documentTemplateUrl
+ * - contentTypesEnabled
+ * - enableMinorVersions
+ * - enableVersioning
+ * - onQuickLaunch
+ * - majorVersionLimit
+ * - majorWithMinorVersionsLimit
+ * </pre>
+ * @todo prefix "set_" to avoid inidcation in argument
+ * @todo rename kvFeatures to aSettings
+ * @memberof __.SP.list
+ * @method settings
+ * @example
+ * __.SP.list.settings( {
+ * 	  sList : "Shared Documents"
+ *	, kvFeatures : {
+ * 		  set_enableVersioning : true
+ *		, set_onQuickLaunch : false
+ * 	}
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name of a list
+ * @param {Object} args.kvFeatures key value pair of settings
+ */
+__.SP.list.settings = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
@@ -167,10 +261,37 @@ __.SP.list.settings = function( args ) { // kvFeatures
 	} );
 };
 
-__.SP.list.create = function( args ) { // sList, sType, sDescription
-	/* sType:
-	 * discussionBoard, documentLibrary, announcements, contacts, events
-	 */
+
+/**
+ * <pre>
+ * Creates a list of a give type
+ * Available types:
+ * - genericList
+ * - discussionBoard
+ * - documentLibrary
+ * - announcements
+ * - contacts
+ * - events
+ * - REF: more?
+ * </pre>
+ * @memberof __.SP.list
+ * @method create
+ * @example
+ * __.SP.list.create( {
+ * 	  sList : "simple list"
+ *	, sType : "genericList"
+ * 	, sDescription : "This is a simple list"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name of the list
+ * @param {String} args.sType type of the list
+ * @param {String} [args.sDescription] description of the list
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * oList | (Object) | context of the list
+ * </pre>
+ */
+__.SP.list.create = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oWeb = ctx.get_web();
@@ -192,6 +313,19 @@ __.SP.list.create = function( args ) { // sList, sType, sDescription
 	} );
 }
 
+/**
+ * <pre>
+ * Deletes a list
+ * </pre>
+ * @memberof __.SP.list
+ * @method del
+ * @example
+ * __.SP.list.del( {
+ * 	  sList : "simple list"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name of the list
+ */
 __.SP.list.del = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -269,6 +403,30 @@ __.SP.list.oFieldType = function( args ) {
 	return mp[ args.sCAMLType ];
 };
 
+/**
+ * @typedef oField
+ * @property {String} sName internal name of a field
+ * @property {String} sDisplayName display name of a field
+ */
+/**
+ * <pre>
+ * Adds fields to a list
+ * </pre>
+ * @memberof __.SP.list
+ * @method addFields
+ * @async 
+ * @instance
+ * @todo move to namespace __.SP.list.fields
+ * @todo check need of return value loFields
+ * @example
+ * __.SP.list.addFields( {
+ * 	  sList : "simple list"
+ *	, loFields : loFields
+ * } );
+ * @param {Object} args 
+ * @param {String} args.sList name of the list
+ * @param {oField} args.loFields an array of list field objects "oField"
+ */
 __.SP.list.addFields = function( args ) { // sList, loFields
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -298,8 +456,6 @@ __.SP.list.addFields = function( args ) { // sList, loFields
 					a.aLookup.oField = oField;
 				}
 				if( a.vDefault ) {
-					console.log( "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" );
-					console.log( a.vDefault );
 					oField.set_defaultValue( a.vDefault );
 				}
 				oField.update();
@@ -316,8 +472,27 @@ __.SP.list.addFields = function( args ) { // sList, loFields
 		} );
 	}
 }
-// change the sDisplayName afterwards!!!! REF
-__.SP.list.setLookup = function( args ) { // oField, idList, sField ) {
+
+/**
+ * <pre>
+ * Sets up a field as lookup
+ * @todo move to field namespace or merge with field.update
+ * @todo automatically get guid of list by name
+ * </pre>
+ * @memberof __.SP.list
+ * @method setLookup
+ * @example
+ * __.SP.list.setLookup( {
+ * 	  oField : oField
+ *	, idList : "12345678-asdf-zxcv-qwwe-1234567890ab"
+ * 	, sField : "Title"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {Object} args.oField context of list field
+ * @param {idList} args.idList guid of lookup list
+ * @param {sField} args.sField name of main lookup list field to display
+ */
+__.SP.list.setLookup = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oField = args.oField;
@@ -335,7 +510,20 @@ __.SP.list.setLookup = function( args ) { // oField, idList, sField ) {
 	} );
 }
 
-__.SP.list.setLookups = function( args ) { // oList, loFields ) {
+/**
+ * <pre>
+ * Sets up fields as lookup using a an array of {oFields}
+ * @todo move to field namespace or merge with field.update
+ * @todo check possibility to merge with {__.SP.field.setLookup}
+ * </pre>
+ * @memberof __.SP.list
+ * @method setLookups
+ * @example
+ * __.SP.list.setLookups( { loFields : loFields } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {Array|of|oField} args.loFields array of oField objects
+ */
+__.SP.list.setLookups = function( args ) {
 	var async = __.Async.promise( args );
 	args.loFields.forEach( function( o ) {
 		if( o.aLookup ) {
@@ -352,6 +540,23 @@ __.SP.list.setLookups = function( args ) { // oList, loFields ) {
 }
 
 // __.SP.list.setColumn( { sList : "FrontOfficeAssignments", sColumn : "FrontOffice"} )
+/**
+ * <pre>
+ * Adds a site column to a list
+ * @todo move to field namespace or merge with field.update
+ * @todo check if we can merge with setColumns
+ * </pre>
+ * @memberof __.SP.list
+ * @method setColumn
+ * @example
+ * __.SP.list.setColumn( {
+ * 	  sList : "test list"
+ *	, sColumn : "Email"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of list
+ * @param {String} args.sColumn internal name of site column
+ */
 __.SP.list.setColumn = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -373,6 +578,19 @@ __.SP.list.setColumn = function( args ) {
 	} );
 }
 
+/**
+ * <pre>
+ * Adds columns to a list using a an array of {oFields}
+ * @todo move to field namespace or merge with field.update
+ * @todo check possibility to merge with {__.SP.field.setColumn}
+ * </pre>
+ * @memberof __.SP.setColumns
+ * @method setColumns
+ * @example
+ * __.SP.list.setColumns( { loFields : loFields } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {Array|of|oField} args.loFields array of oField objects
+ */
 __.SP.list.setColumns = function( args ) { // oList, loFields ) {
 	var async = __.Async.promise( args );
 	args.loFields.forEach( function( o ) {
@@ -385,8 +603,24 @@ __.SP.list.setColumns = function( args ) { // oList, loFields ) {
 	} );
 	async.resolve();
 }
-//__.SP.list.nameByGuid( { guid : "b5ffd424-8b37-4bb8-b070-d32e4d638740" } );
-__.SP.list.nameByGuid = function( args ) { // guid
+
+/**
+ * <pre>
+ * Returns the name of a list for a given guid
+ * </pre>
+ * @memberof __.SP.list
+ * @method nameByGuid
+ * @example __.SP.list.nameByGuid( {
+ *     guid : "b5ffd424-8b37-4bb8-b070-d32e4d638740"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.guid guid of a list
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * sName | (String) | name of the list
+ * </pre>
+ */
+__.SP.list.nameByGuid = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = ctx.get_web().get_lists().getById( args.guid );
@@ -403,8 +637,22 @@ __.SP.list.nameByGuid = function( args ) { // guid
 	} );
 };
 
-//__.SP.list.fields( { sList : "OSCE Contacts" } );
-__.SP.list.fields = function( args ) { // sList
+/**
+ * <pre>
+ * Returns two objects mapping a lists internal field names against their display names and vice versa.
+ * </pre>
+ * @memberof __.SP.list
+ * @method fields
+ * @example __.SP.list.fields( { sList : "test list" } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name of the list
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * mpIntNames | (Object) | maps internal names against display names
+ * mpDispNames | (Object) | maps display names against internal names
+ * </pre>
+ */
+__.SP.list.fields = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
@@ -432,10 +680,41 @@ __.SP.list.fields = function( args ) { // sList
 	} );
 };
 
-__.SP.list.field = {};
-//__.SP.list.field.display( { sList : "OSCE Contacts", sField : "Spouse/Domestic Partner", sTitle : "Spouse" } );
+/**
+ * @namespace __.SP.list.field
+ * @memberof __.SP.list
+ */
 
-/* sets the following attributes of a field: display name, required or not, where to show */
+__.SP.list.field = {};
+
+/**
+ * <pre>
+ * Updates a list field with the following information
+ * - display name
+ * - flag to be required
+ * - flag to be hidden
+ * - flags in which forms to be shown
+ * </pre>
+ * @memberof __.SP.list.field
+ * @method display
+ * @example
+ * __.SP.list.field.display( {
+ * 	  sList : "test list"
+ *	, idList : ""12345678-asdf-zxcv-qwwe-1234567890ab"
+ * 	, sField : "Title"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of the list
+ * @param {String} args.sField internal name of the field
+ * @param {String} args.sTitle new display name of the field
+ * @param {Boolean} args.bRequired flag whether a field is required
+ * @param {Boolean} args.bHidden flag whether to hide a field
+ * @param {Boolean} args.bNew flag whether to not load in new form
+ * @param {Boolean} args.bEdit flag whether to not load in edit form
+ * @param {Boolean} args.bDisp flag whether to not load in view form
+ */
+// REF: rename sTitle to sDisplayName
+// REF: think of merging with setLookup, setColumn and reanme method to update?
 __.SP.list.field.display = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -468,7 +747,24 @@ __.SP.list.field.display = function( args ) {
 }
 
 
-__.SP.list.field.displays = function( args ) { // oList, loFields ) {
+/**
+ * <pre>
+ * Adds columns to a list using a an array of {oFields}
+ * @todo check possibility to merge with {__.SP.field.display}
+ * @todo investigate error we get with "choice" fields
+ * </pre>
+ * @memberof __.SP.list.field
+ * @method displays
+ * @example
+ * __.SP.list.displays( {
+ *        sList : "test list"
+ *      , loFields : loFields
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {Array|of|oField} args.loFields array of oField objects
+ */
+__.SP.list.field.displays = function( args ) {
 	var async = __.Async.promise( args );
 	args.loFields.forEach( function( oField ) {
 		if( oField.sCAMLType !== "choice" ) {
@@ -488,10 +784,22 @@ __.SP.list.field.displays = function( args ) { // oList, loFields ) {
 	async.resolve();
 }
 
-
-// var lsFields = ["FirstName", "Title", "Gender", "AcademicTitle", "Salutation", "JobTitle", "ol_Department", "WorkPhone", "CellPhone", "WorkAddress", "WorkCity", "WebPage", "Company", "WorkCountry", "AddressCountry", "DateOfEntry", "SpouseName", "AssistantsName", "Country", "CountryCategory", "MainCategory", "AreaOfExpertise", "ExecutiveStructure", "InternationalOrganization", "Comments", "FrontOffice", "DossierFile", "bDossier", "Published", "Log", "WorkState", "WorkZip", "FullName"];
-// lsFields = ["FirstName","Gender"];__.SP.list.field.reorder( { sList : "OSCE Contacts", lsFields : lsFields } );
-__.SP.list.field.reorder = function( args ) { // sList, lsFields
+/**
+ * <pre>
+ * Reorders fields of a list by an array of field names.
+ * </pre>
+ * @memberof __.SP.list.field
+ * @method reorder
+ * @example
+ * __.SP.list.field.reorder( {
+ *        sList : "test list"
+ *      , lsFields : [ "Email", "CustomField", "Title" ]
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {Array} args.lsFields array of internal field names
+ */
+__.SP.list.field.reorder = function( args ) { 
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );

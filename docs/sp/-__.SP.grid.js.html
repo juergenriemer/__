@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: __.SP.grid.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<style>
+.prettyprint {
+	width : 100%;
+}
+h1 {
+	font-size : 2em;
+}
+h4.name {
+	margin-top : 2em;
+	font-size : 1.7em;
+	border-bottom : 1px dashed #c0c0c0;
+}
+h4.name span.signature {
+	font-size : 70%;
+	padding : 5px;
+}
+h4.name span {
+	font-size : 50%;
+}
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
+</style>
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: __.SP.grid.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Collection of methods dealing with functionality around list views of SharePoint lists.
+ * @namespace __.SP.grid
+ * @memberof __.SP
+ */
+
+__.SP.grid = {
+	/**
+	 * &lt;pre>
+	 * Returns item data of the current list view.
+	 * Includes only data displayed in the view.
+	 * &lt;/pre>
+	 * @memberof __.SP.grid
+	 * @method oData
+	 * @todo rename to aListData or aData
+	 * @todo test return example
+	 * @example __.SP.grid.oData();
+	 * @returns {Object} object of item data arranged by item IDs
+	 * Example:
+	 * &lt;pre>
+	 * {
+	 *     11 : { ID : 11, Title : "title 1", Email : "test1@abc.com" }
+	 *   , 13 : { ID : 13, Title : "title 2", Email : "test2@abc.com" }
+	 * }
+	 * &lt;/pre>
+	 */
+	  oData : function() {
+		var o = {};
+		ctx.ListData.Row.forEach( function( oData ) {
+			o[ oData.ID ] = oData;
+		} );
+		return o;
+	}
+	/**
+	 * &lt;pre>
+	 * Returns DOM node of the list webpart
+	 * &lt;/pre>
+	 * @memberof __.SP.grid
+	 * @method dnWebpart
+	 * @example var dnWebpart = __.SP.grid.dnWebpart();
+	 * @returns {Node} DOM node of the list webpart
+	 */
+	, dnWebpart : function() {
+		return __.dn_( "#scriptWPQ2" );
+	}
+	/**
+	 * &lt;pre>
+	 * Returns DOM node of the list webpart's main table
+	 * &lt;/pre>
+	 * @memberof __.SP.grid
+	 * @method dnGrid
+	 * @example var dnGrid = __.SP.grid.dnGrid();
+	 * @returns {Node} DOM node of the main table
+	 */
+	, dnGrid : function() {
+		return __.dn_( "table[summary]" );
+	}
+	/**
+	 * &lt;pre>
+	 * Returns item data of the currently selected items.
+	 * Includes only data displayed in the view.
+	 * &lt;/pre>
+	 * @memberof __.SP.grid
+	 * @method selection
+	 * @todo test return example
+	 * @example __.SP.grid.selection();
+	 * @returns {Object} object of item data arranged by item IDs
+	 * Example:
+	 * &lt;pre>
+	 * {
+	 *     11 : { ID : 11, Title : "title 1", Email : "test1@abc.com" }
+	 * }
+	 */
+	, selection : function() {
+		var oData = __.SP.grid.oData();
+		var loItems = SP.ListOperation.Selection.getSelectedItems();
+		loItems.forEach( function( oItem ) {
+			__.o.add( oItem, oData[ oItem.id ] );
+		} );
+		return loItems;
+	}
+
+	/**
+	 * &lt;pre>
+	 * Clears current selection of items in list.
+	 * &lt;/pre>
+	 * @memberof __.SP.grid
+	 * @method clearSelection 
+	 * @example __.SP.grid.clearSelection();
+	 */
+	, clearSelection : function() {
+		__.dn_( ".s4-itm-selected", function( dn, ix ) {
+			setTimeout( function() {
+				__.dn_( ".ms-selectitem-span", dn ).click();
+			}, ix );
+		} );
+	}
+
+	/**
+	 * &lt;pre>
+	 * Locks the list webpart by greying it out and preventing any
+	 * user interactions with the list.
+	 * &lt;/pre>
+	 * @memberof __.SP.grid
+	 * @method lock
+	 * @example __.SP.grid.lock();
+	 */
+	, lock : function() {
+		var dnWebpart = this.dnWebpart();
+		if( dnWebpart ) {
+			__.lock.up( dnWebpart );
+		}
+	}
+
+	/**
+	 * &lt;pre>
+	 * Unlocks the webpart enabling user interactions again.
+	 * &lt;/pre>
+	 * @memberof __.SP.grid
+	 * @method unlock
+	 * @example __.SP.grid.unlock();
+	 */
+	, unlock : function() {
+		var dnWebpart = this.dnWebpart();
+		if( dnWebpart ) {
+			__.lock.un( dnWebpart );
+		}
+	}
+
+	/**
+	 * &lt;pre>
+	 * Refreshes the list view without reloading the entire page. 
+	 * &lt;/pre>
+	 * @memberof __.SP.grid
+	 * @method reload
+	 * @todo test replacing return false in catch with page reload?
+	 * @example __.SP.grid.unlock();
+	 */
+	, reload : function() {
+		var dn = __.dn_( "#ManualRefresh" );
+		if( dn ) {
+			dn.click();
+		}
+		else {
+			try {
+				var idList = SP.ListOperation.Selection.getSelectedList();
+				idList = idList.toLowerCase().replace( "-", "_" ).replace( "{", "" ).replace( "}", "" );
+				__doPostBack( "ctl00$m$g_" + idList + "$ctl02", "cancel" );
+			} catch( e ) {
+				return false;
+			}
+		}
+		return true;
+	}
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+	<h3><a href="../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+<script>
+var dnNav = document.querySelector( "nav" );
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	dn.textContent = lsParts[ 1 ];
+}
+
+var dnMethods = document.getElementById( "methods" );
+var dnMethodCount = document.getElementById( "method-count" );
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+</script>
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 10 2018 07:24:42 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+<script src="custom.js"> </script>
+</body>
+</html>

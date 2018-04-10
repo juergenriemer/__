@@ -5,7 +5,7 @@
 // ==/ClosureCompiler==
 
 /**
- * @version 1.0
+ * @version 1.0.0
  * @namespace __
  */
 if( typeof __ == "undefined" ) {
@@ -13,7 +13,6 @@ if( typeof __ == "undefined" ) {
 }
 
 /**
- * @version 1.0
  * @namespace __.SP
  * @memberof __
  */
@@ -21,10 +20,8 @@ if( typeof __ == "undefined" ) {
 
 __.SP = {
 	/**
-	 * <pre>
 	 * Gets a SharePoint context of the current site or a site you
-	 * indicate as absolute Url
-	 * </pre>
+	 * indicate via absolute Url
 	 * @memberof __.SP
 	 * @method ctx
 	 * @example var ctx = __.SP.ctx();
@@ -38,10 +35,11 @@ __.SP = {
 			: new SP.ClientContext.get_current();
 	}
 	/**
-	 * <pre>
 	 * Executes an asynchronous call against the server.
-	 * indicate as absolute Url
-	 * </pre>
+	 * <br />
+	 * It expects a SharePoint object to be loaded. Optionally you can indicate
+	 * a callback function that will be invoked by the returned object or 
+	 * an error message and stack in case of failure.
 	 * @memberof __.SP
 	 * @method exec
 	 * @example __.SP.exec( ctx, oItem, function( oItem ) {
@@ -55,32 +53,30 @@ __.SP = {
 	 * 	}
 	 * } );
 	 * @param {Object} ctx SharePoint site context
-	 * @param {Object} o Loaded object to be sent to server
-	 * @param {Function} fn Callback function that handles success and error
+	 * @param {Object} oLoad Loaded object to be sent to server
+	 * @param {Function} cb Callback function that handles success and error
 	 */
-	, exec : function( ctx, o, fn ) {
-		var fnok = function() {
-			if( fn ) {
-				fn( o );
+	, exec : function( ctx, oLoad, cb ) {
+		var cbok = function() {
+			if( cb ) {
+				cb( oLoad );
 			}
 		}
-		var fnerr = function( sender, args ) {
-			if( fn ) {
-				fn( {
+		var cberr = function( sender, args ) {
+			if( cb ) {
+				cb( {
 					  sError : args.get_message()
 					, sInfo: args.get_stackTrace()
 				} );
 			}
 		}
 		ctx.executeQueryAsync(
-			  Function.createDelegate( this, fnok )
-			, Function.createDelegate( this, fnerr )
+			  Function.createDelegate( this, cbok )
+			, Function.createDelegate( this, cberr )
 		);
 	}
 	/**
-	 * <pre>
 	 * Checks if a value is of form of a GUID
-	 * </pre>
 	 * @memberof __.SP
 	 * @method bGuid 
 	 * @example __.SP.bGuid( "12345678-asdf-zxcv-qwwe-1234567890ab" ) // true
@@ -100,9 +96,7 @@ __.SP = {
  */
 __.SP.folder = {
 	/**
-	 * <pre>
 	 * Creates a folder in a document library
-	 * </pre>
 	 * @memberof __.SP.folder
 	 * @method create
 	 * @example __.SP.folder.create( {
@@ -150,9 +144,7 @@ __.SP.folder = {
 		} );
 	}
 	/**
-	 * <pre>
 	 * Reads information of a folder
-	 * </pre>
 	 * @memberof __.SP.folder
 	 * @method read
 	 * @example // stand alone
@@ -163,9 +155,10 @@ __.SP.folder = {
 	 * .then( __.SP.folder, "read", {
 	 * 	  path : "/Lists/Shared Documents/test folder"
 	 * } );
+	 * @param {Object} args a parameter object holding the following values
 	 * @param {String} path path of the folder
 	 * @returns {Object} Resolved promise holding the following values 
-	 * <pre>
+	 * <pre class='return-object'>
 	 * oFolder | (Object) | context of the newly created folder
 	 * aProps  | (Object) | associate array holding properties of the folder
 	 * </pre>

@@ -1,14 +1,13 @@
 {
     "source": {
-	"include" : [ "/Users/juergenriemer/Documents/GitHub/__2/source/SP/__.SP.js" ],
-        "includePattern": ".+\\.js(doc|x)?$"
+       "includePattern": ".+\\.js(doc|x)?$"
     },
     "opts": {
         "sort": false
     }
 	, "templates" : {
 		"default" : {
-			"layoutFile" : "custom-layout.tmpl"
+			"layoutFile" : "jsdocs-custom-layout.tmpl"
 		}
 	}
 }

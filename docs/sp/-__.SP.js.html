@@ -31,6 +31,10 @@ h4.name span.signature {
 h4.name span {
 	font-size : 50%;
 }
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
 </style>
 <body>
 
@@ -52,7 +56,7 @@ h4.name span {
 // ==/ClosureCompiler==
 
 /**
- * @version 1.0
+ * @version 1.0.0
  * @namespace __
  */
 if( typeof __ == "undefined" ) {
@@ -60,7 +64,6 @@ if( typeof __ == "undefined" ) {
 }
 
 /**
- * @version 1.0
  * @namespace __.SP
  * @memberof __
  */
@@ -68,10 +71,8 @@ if( typeof __ == "undefined" ) {
 
 __.SP = {
 	/**
-	 * &lt;pre>
 	 * Gets a SharePoint context of the current site or a site you
-	 * indicate as absolute Url
-	 * &lt;/pre>
+	 * indicate via absolute Url
 	 * @memberof __.SP
 	 * @method ctx
 	 * @example var ctx = __.SP.ctx();
@@ -85,10 +86,11 @@ __.SP = {
 			: new SP.ClientContext.get_current();
 	}
 	/**
-	 * &lt;pre>
 	 * Executes an asynchronous call against the server.
-	 * indicate as absolute Url
-	 * &lt;/pre>
+	 * &lt;br />
+	 * It expects a SharePoint object to be loaded. Optionally you can indicate
+	 * a callback function that will be invoked by the returned object or 
+	 * an error message and stack in case of failure.
 	 * @memberof __.SP
 	 * @method exec
 	 * @example __.SP.exec( ctx, oItem, function( oItem ) {
@@ -102,32 +104,30 @@ __.SP = {
 	 * 	}
 	 * } );
 	 * @param {Object} ctx SharePoint site context
-	 * @param {Object} o Loaded object to be sent to server
-	 * @param {Function} fn Callback function that handles success and error
+	 * @param {Object} oLoad Loaded object to be sent to server
+	 * @param {Function} cb Callback function that handles success and error
 	 */
-	, exec : function( ctx, o, fn ) {
-		var fnok = function() {
-			if( fn ) {
-				fn( o );
+	, exec : function( ctx, oLoad, cb ) {
+		var cbok = function() {
+			if( cb ) {
+				cb( oLoad );
 			}
 		}
-		var fnerr = function( sender, args ) {
-			if( fn ) {
-				fn( {
+		var cberr = function( sender, args ) {
+			if( cb ) {
+				cb( {
 					  sError : args.get_message()
 					, sInfo: args.get_stackTrace()
 				} );
 			}
 		}
 		ctx.executeQueryAsync(
-			  Function.createDelegate( this, fnok )
-			, Function.createDelegate( this, fnerr )
+			  Function.createDelegate( this, cbok )
+			, Function.createDelegate( this, cberr )
 		);
 	}
 	/**
-	 * &lt;pre>
 	 * Checks if a value is of form of a GUID
-	 * &lt;/pre>
 	 * @memberof __.SP
 	 * @method bGuid 
 	 * @example __.SP.bGuid( "12345678-asdf-zxcv-qwwe-1234567890ab" ) // true
@@ -147,9 +147,7 @@ __.SP = {
  */
 __.SP.folder = {
 	/**
-	 * &lt;pre>
 	 * Creates a folder in a document library
-	 * &lt;/pre>
 	 * @memberof __.SP.folder
 	 * @method create
 	 * @example __.SP.folder.create( {
@@ -197,17 +195,21 @@ __.SP.folder = {
 		} );
 	}
 	/**
-	 * &lt;pre>
 	 * Reads information of a folder
-	 * &lt;/pre>
 	 * @memberof __.SP.folder
 	 * @method read
-	 * @example __.SP.folder.read( {
+	 * @example // stand alone
+	 * __.SP.folder.read( {
 	 * 	  path : "/Lists/Shared Documents/test folder"
 	 * } );
+	 * @example // as promise
+	 * .then( __.SP.folder, "read", {
+	 * 	  path : "/Lists/Shared Documents/test folder"
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
 	 * @param {String} path path of the folder
 	 * @returns {Object} Resolved promise holding the following values 
-	 * &lt;pre>
+	 * &lt;pre class='return-object'>
 	 * oFolder | (Object) | context of the newly created folder
 	 * aProps  | (Object) | associate array holding properties of the folder
 	 * &lt;/pre>
@@ -450,16 +452,61 @@ if( self == top ) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.folder.html">folder</a></li></ul>
+	<h3><a href="../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
+<script>
+var dnNav = document.querySelector( "nav" );
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	dn.textContent = lsParts[ 1 ];
+}
 
+var dnMethods = document.getElementById( "methods" );
+var dnMethodCount = document.getElementById( "method-count" );
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+</script>
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 06 2018 07:11:02 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 10 2018 07:24:42 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
+<script src="custom.js"> </script>
 </body>
 </html>
