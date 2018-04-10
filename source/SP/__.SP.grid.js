@@ -153,3 +153,18 @@ __.SP.grid = {
 		return true;
 	}
 };
+
+__.SP.icon = {
+	mp : {
+		  "default" : "/_layouts/15/images/Osce/danger.png"
+		, dirty : "/_layouts/15/images/Osce/danger.png"
+		, closed : "/_layouts/15/images/lockoverlay.png"
+		, record : "/_layouts/15/images/lockoverlay.png"
+		, unmarked : "/_layouts/15/images/Osce/lockoverlay-green.png"
+		, yearlyFolder : "/_layouts/15/images/Osce/YF.png"
+		, obsolete : "/_layouts/15/images/Osce/overlay-SO.png"
+		, smallDanger : "/_layouts/15/images/Osce/danger-small.png"
+		, bigDanger : "/_layouts/15/images/warning70by70.gif"
+		, loading : "/_layouts/15/images/Osce/fancytree-loading.gif"
+	}
+};
