@@ -367,7 +367,22 @@ var argstest = function( args ) {
 } )
 .start();
 
-
+// then arguments handling
+func = function( args ) {
+	var async = __.Async.promise( args );
+	var sMsg = args.sMsg || "na";
+	async.resolve( args );
+};
+( new __.Async() )
+.debug()
+.then( self, "func", { sMsg : "one" }, "args2_1" )
+.then( self, "func", "args2_2" )
+.then( self, "func", { sMsg : "three" }, "args2_3" )
+.then( function( args ) {
+	__.Async.promise( args ).resolve();
+	assert( "log message", {__guid_async__: "Async14", sMsg: "three"}, args );
+}, "args2_4" )
+.start();
 </script>
 
 </body>

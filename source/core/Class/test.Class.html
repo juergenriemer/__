@@ -1,0 +1,252 @@
+<html>
+<script src="__.Class.js"></script>
+<body>
+<h3>Unit tests for __.Class.js</h3>
+<div id="output"></div>
+<script>
+
+var assert = function( x1, x2, s ) {
+	var dn = document.getElementById( "output" );
+	var b = true;
+	if( typeof x1 == "object" && typeof s == "string" ) {
+		if( __.o.diff( x1, x2 ) ) {
+			s = '[ERR] ' + s;
+			console.warn( 'ERR: ' + s );
+			console.warn( "expected:", x2 );
+			console.warn( "result:", x1 );
+		}
+		else {
+			s = '[OK] ' + s;
+		}
+	}
+	else if( typeof x1 == "object" && typeof x2 == "string" ) {
+		console.log( '>> single true' );
+	}
+	else {
+		if( x1 !== x2 ) {
+			s = '[ERR] ' + s;
+			console.warn( 'ERR: ' + s );
+			console.warn( "expected:", x2 );
+			console.warn( "result:", x1 );
+		}
+		else {
+			s = '[OK] ' + s;
+		}
+	}
+	dn.innerHTML += s + "<br>";
+}
+var test = { x : 4 }
+var Person = __.Class
+.extend( {
+	  sName : null
+	, init : function( args ) {
+		this.sName = args.sName;	
+		Person.c++;
+	}
+	, sneeze : function() {
+		return "Hatshou!";
+	}
+	, greet : function( sMsg ) {
+		return "Hi, I am " + this.sName;	
+	}
+} )
+
+Person.c = 0;
+Person.report = function() {
+	return "We are " + Person.c + " people";
+}
+
+var Officer = Person.extend( {
+	  sRank : null
+	, init : function( args ) {
+		this._super( "init" );
+		this.sRank = this.sRank || args.sRank;
+	}
+	, greet : function( sMsg ) {
+		var sGreet = this._super( "greet" );
+		sGreet += ", " + this.sRank + " " + this.sName; 
+		return sGreet;
+	}
+	, salute : function() {
+		return "Salute!";
+	}
+} );
+
+var General = Officer.extend( {
+	  nStars : null
+	, sRank : "General"
+	, init : function( args ) {
+		this._super( "init" );
+		this.nStars = args.nStars || 1;
+		General.c++;
+	}	
+	, greet : function( sMsg ) {
+		var sGreet = "Hi, I am " + this.sName;
+		sGreet += ", " + this.stars() + this.sRank;
+		sGreet += this.stars() + " " + this.sName; 
+		return sGreet;
+	}
+	, stars : function() {
+		var sStars = "";
+		for( var ix=0; ix<this.nStars; ix++ ) {
+			sStars += "*";
+		}	
+		return sStars;
+	}
+} );
+General.c = 0;
+General.report = function() {
+	return "We are " + General.c + " general ranks";
+}
+
+var Minecraft = {
+	  craft : function() {
+		return "wooden pickaxe"
+	}
+};
+
+var English = {
+	  sLanguage : "english"
+	, say : function() {
+		var sSay = "Hi, my name is " + this.sName;
+		sSay += ", I speak " + this.sLanguage;
+		return sSay;
+	}
+};
+var MincraftEnglishGeneral = General
+.mixin( Minecraft, English )
+.extend( {
+	  sRank : "Admiral"
+	, report : function() {
+		return Person.report() + General.report();
+	}
+} );
+
+var tim = __.Class.instantiate( MincraftEnglishGeneral, { sName : "Tim" } );
+var bob = __.Class.instantiate( Person, { sName : "Bob" } );
+assert( bob.greet(), "Hi, I am Bob", "base class method" );
+assert( bob.sneeze(), "Hatshou!", "base class method 2" );
+var alice = __.Class.instantiate( Officer, { sName : "Alice", sRank : "Major" } );
+assert( Person.report(), "We are 3 people", "static method 1" )
+assert( alice.greet(), "Hi, I am Alice, Major Alice", "extended class overridden method" );
+assert( alice.sneeze(), "Hatshou!", "extended class inherited mehtod" );
+assert( alice.salute(), "Salute!", "extended class new mehtod" );
+sue = __.Class.instantiate( General, { sName : "Sue", nStars : 3 } );
+assert( sue.greet(), "Hi, I am Sue, ***General*** Sue", "2nd lvl extended class overridden method" );
+assert( sue.sneeze(), "Hatshou!", "2nd lvl extended class double inherited mehtod");
+assert( sue.salute(), "Salute!", "2nd lvl extended class inherited mehtod" );
+assert( tim.say(), "Hi, my name is Tim, I speak english", "mixin on 2nd lvl extended class mixin mehtod" );
+assert( tim.sLanguage, "english", "mixin on 2nd lvl extended class mixin attr" );
+assert( tim.craft(), "wooden pickaxe", "mixin on 2nd lvl extended class mixin method 2" );
+assert( tim.greet(), "Hi, I am Tim, *Admiral* Tim", "2nd lvl extended class overridden method with mixins" );
+assert( Person.c, 4, "static attribute" ); 
+assert( Person.report(), "We are 4 people", "static method 2" )
+assert( General.report(), "We are 2 general ranks", "static method 3" )
+assert( tim.report(), "We are 4 peopleWe are 2 general ranks", "static method 3" )
+
+var Person = __.Class.extend( {
+	sName : null
+     , init : function( sName ) {
+          this.sName = sName;
+     }
+     , say : function() {
+        return "My name is " + this.sName;
+     }
+  } );
+var Soldier = Person.extend( {
+     salute : function() {
+        return this.say() + " Sir";
+     }
+  } );
+var tom = __.Class.instantiate( Soldier, "Tom" );
+assert( tom.salute(), "My name is Tom Sir", "jsdoc example 1" );
+
+Person = __.Class.extend( {
+     sName : null
+   , init : function( args ) {
+      this.sName = args.sName;
+}
+   , say : function() {
+      return "Hi, I am " + this.sName;
+   }
+} );
+tim = __.Class.instantiate( Person, { sName : "Tim" } );
+tim.say(); // Hi, I am Tim
+assert( tim.say(), "Hi, I am Tim", "jsdoc instantiate examle" );
+
+
+var Minecraft = {
+      say : function() {
+        return "Mojang";
+    }
+    , craft : function() {
+        return "wooden sword";
+    }
+};
+var Ingress = {
+      say : function() {
+        return "Ingress";
+    }
+    , capture : function() {
+        return "portal green";
+    }
+};
+var Player = __.Class.extend( {
+    say : function() {
+       return "Hi";
+    }
+}).mixin( Minecraft, Ingress );
+var player = __.Class.instantiate( Player );
+assert( player.say(), "Hi", "jsdoc mixin examle 1" );
+assert( player.craft(), "wooden sword", "jsdoc mixin examle 2" );
+assert( player.capture(), "portal green", "jsdoc mixin examle 3" );
+
+var Person = __.Class.extend( {
+    say : function() {
+       return "Hi";
+    }
+} );
+var Player = Person.extend( {
+    say : function() {
+       return this._super( "say" ) + ", Teammate";
+    }
+} );
+var player = __.Class.instantiate( Player );
+assert( player.say(), "Hi, Teammate", "jsdoc _super example 1" );
+
+
+// a base class
+var Person = __.Class.extend( {
+     sName : null
+   , init : function( args ) {
+        this.sName = args.sName;
+        Person.cPerson++;
+   }
+   , say : function() {
+      return "My name is " + this.sName;
+   }
+} );
+// static attribute
+Person.cPerson = 0
+// static function
+Person.report = function() {
+    return Person.cPerson + " person(s) created";
+}
+var tom = __.Class.instantiate( Person, { sName : "Tom" } );
+assert( tom.say(), "My name is Tom", "jsdoc class example 1" );
+assert( Person.report(), "1 person(s) created", "jsdocs class static 1" );
+
+// an extended class
+var Soldier = Person.extend( {
+   salute : function() {
+      return this.say() + ", Sir";
+   }
+} );
+var tom = __.Class.instantiate( Soldier, { sName : "Major Tom" } );
+assert( tom.salute(), "My name is Major Tom, Sir", "jsdoc class example 2" );
+assert( Person.report(), "2 person(s) created", "jsdocs class static 2" );
+
+</script>
+</body>
+</html>
+

@@ -3,9 +3,7 @@
 // @output_file_name __.async.min.js
 // @js_externs var __; __.Async; __.Async.ix; __.Async.store; __.Async.fnerr; __.Async.fnstat; __.Async.stub; __.Async.resolve; __.Async.reject; __.Async.Promise; __.Async.Promise.debug; __.Async.Promise.clear; __.Async.Promise.wait; __.Async.Promise.then; __.Async.Promise.start; __.Async.Promise.resolve; __.Async.Promise.stop; __.Async.Promise.reject; __.Async.Promise.ctx; __.Async.Promise.fnerr; __.Async.Promise.fnstat; __.Async.Promise._next; __.Async.promise; __.Async.Promise.__guid_async__; __.Async.__guid_async__;
 // ==/ClosureCompiler==
-// version 1.5
 /**
- * @version 1.0
  * @namespace __
  */
 
@@ -68,16 +66,14 @@ __.Async.fnerr = function( a, b ) {
 __.Async.fnstat = function() {}
 
 /**
- * <pre>
  * Returns a promise object by its guid passed on as arguments object
  * If no guid is passed on it will create a new instance of Promise
- * </pre>
  * @memberof __.Async
  * @method promise
  * @static
- * @param {Object} [args] Arguments passed on as object 
+ * @param {Object} [args] arguments passed on as object 
  * @example function( args ) {
- *     var async = __.async( args );
+ *     var async = __.Async.promise( args );
  * }
  * @returns {Object} Promise instance for chaining
  */
@@ -116,11 +112,8 @@ __.Async.Promise.prototype = {
 		this._bDebug = true;
 		return this;
 	}
-
 	 /**
-	 * <pre>
 	 * clears the arguments chain of an Async stack
-	 * </pre>
 	 * @memberof __.Async
 	 * @method clear
 	 * @example async.clear()
@@ -141,9 +134,7 @@ __.Async.Promise.prototype = {
 			
 	}
 	 /**
-	 * <pre>
 	 * Pauses the execution of a task chain for given milliseconds.
-	 * </pre>
 	 * @memberof __.Async
 	 * @method pause
 	 * @example async.pause( 1000, "pause a second" )
@@ -168,11 +159,9 @@ __.Async.Promise.prototype = {
 		return this;
 	}
 	 /**
-	 * <pre>
 	 * Pauses the execution of a task chain until a certain condition
 	 * occurs. This condition is indicated as function that is polled
 	 * every 25 milliseconds if not indicated otherwise.
-	 * </pre>
 	 * @memberof __.Async
 	 * @method wait
 	 * @example async.wait( function() {
@@ -216,17 +205,36 @@ __.Async.Promise.prototype = {
 		return this;
 	}
 	/**
-	 * <pre>
-	 * Registers a method to the task chain
+	 * Registers a method to the task chain.
+	 * <br />
+	 * We can either register an existing method by indicating
+	 * its parent object and method name or we register an anonymous function.
+	 * In the first case the method needs to be "promisable" and invoke eitherresolve or reject.  
+	 * The latter
+	 * we usually choose to operate on results of previous task and/or we want
+	 * fork the task chain base on conditions.
+	 * <br />
+	 * For debugging or showing progress we can add an additional message.
+	 * <br />
+	 * In order to use arguments from previous tasks use "args"
 	 * </pre>
 	 * @memberof __.Async
 	 * @method then
 	 * @example
-	 * async.then( that, "getRecords", { idUser : 123 }, "Getting records" )
+	 * // oUser = class intance of User
+	 * ( new __.Async() )
+	 * .then( oUser, "getRecords", { idUser : 123 }, "Getting records" )
 	 * .then( function( args ) {
-	 *     __.dn_( "#output" ).innerHTML = args.hResult;
-	 *     __.async( args ).resolve();
-	 * }, "Printing records" )
+	 *     var async = __.Async.promise( args );
+	 *     if( args.hResults ) {
+	 *         __.dn_( "#output" ).innerHTML = args.hResult;
+	 *     }
+	 *     else {
+	 *         async.then( oUser, "delete", { idUser : 123 } );
+	 *     }
+	 *     async.resolve();
+	 * }, "Printing records or deleting user" )
+	 * .start();
 	 * @param {Object|Function} x1 Either an anonymous function or parent object of a method
 	 * @param {String|String} [x2] Either string of method name or a logging message
 	 * @param {String|String} [x3] Either arguments passed on as object or string or a logging message
@@ -240,6 +248,7 @@ __.Async.Promise.prototype = {
 		var ofn = {
 			  ctx : ( typeof x1 == "object" ) ? x1 : this.ctx
 			, sfn : ( typeof x1 == "object" ) ? x2 : x1
+			, args : ( typeof x2 == "string" )
 			, args : ( typeof x2 == "string" )
 				? ( typeof x3 == "object" )
 					? x3
@@ -339,7 +348,7 @@ __.Async.Promise.prototype = {
 			var v = ofn.args[ s ];
 			// if we deal with an arguments lookup we
 			// fetch the value using the key/path string
-			console.log( v );
+			// console.log( v );
 			if( typeof v == "object" && v && v.arg ) {
 				var lk = v.arg.split( "." );
 				v = this._args;

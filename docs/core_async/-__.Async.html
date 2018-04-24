@@ -263,7 +263,7 @@ __.Async handles asynchronous calls in JavaScript.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line16">line 16</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -348,10 +348,8 @@ __.Async handles asynchronous calls in JavaScript.
 
 
 <div class="description">
-    <pre>
-Returns a promise object by its guid passed on as arguments object
+    Returns a promise object by its guid passed on as arguments object
 If no guid is passed on it will create a new instance of Promise
-</pre>
 </div>
 
 
@@ -415,7 +413,7 @@ If no guid is passed on it will create a new instance of Promise
 
             
 
-            <td class="description last">Arguments passed on as object</td>
+            <td class="description last">arguments passed on as object</td>
         </tr>
 
     
@@ -456,7 +454,7 @@ If no guid is passed on it will create a new instance of Promise
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line70">line 70</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -508,7 +506,7 @@ If no guid is passed on it will create a new instance of Promise
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>function( args ) {
-    var async = __.async( args );
+    var async = __.Async.promise( args );
 }</code></pre>
 
 
@@ -527,9 +525,7 @@ If no guid is passed on it will create a new instance of Promise
 
 
 <div class="description">
-    <pre>
-clears the arguments chain of an Async stack
-</pre>
+    clears the arguments chain of an Async stack
 </div>
 
 
@@ -573,7 +569,7 @@ clears the arguments chain of an Async stack
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line120">line 120</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line115">line 115</a>
     </li></ul></dd>
     
 
@@ -620,9 +616,7 @@ clears the arguments chain of an Async stack
 
 
 <div class="description">
-    <pre>
-Pauses the execution of a task chain for given milliseconds.
-</pre>
+    Pauses the execution of a task chain for given milliseconds.
 </div>
 
 
@@ -758,7 +752,7 @@ Pauses the execution of a task chain for given milliseconds.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line143">line 143</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line136">line 136</a>
     </li></ul></dd>
     
 
@@ -941,7 +935,7 @@ error condition</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line435">line 435</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line444">line 444</a>
     </li></ul></dd>
     
 
@@ -1085,7 +1079,7 @@ the current task chain.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line386">line 386</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line395">line 395</a>
     </li></ul></dd>
     
 
@@ -1180,7 +1174,7 @@ Starts an asynchronous task chain
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line367">line 367</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line376">line 376</a>
     </li></ul></dd>
     
 
@@ -1295,7 +1289,7 @@ Stops the execution of the current task chain.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line422">line 422</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line431">line 431</a>
     </li></ul></dd>
     
 
@@ -1342,8 +1336,18 @@ Stops the execution of the current task chain.
 
 
 <div class="description">
-    <pre>
-Registers a method to the task chain
+    Registers a method to the task chain.
+<br />
+We can either register an existing method by indicating
+its parent object and method name or we register an anonymous function.
+In the first case the method needs to be "promisable" and invoke eitherresolve or reject.  
+The latter
+we usually choose to operate on results of previous task and/or we want
+fork the task chain base on conditions.
+<br />
+For debugging or showing progress we can add an additional message.
+<br />
+In order to use arguments from previous tasks use "args"
 </pre>
 </div>
 
@@ -1555,7 +1559,7 @@ Registers a method to the task chain
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line218">line 218</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line207">line 207</a>
     </li></ul></dd>
     
 
@@ -1606,11 +1610,20 @@ Registers a method to the task chain
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>async.then( that, "getRecords", { idUser : 123 }, "Getting records" )
+    <pre class="prettyprint"><code>// oUser = class intance of User
+( new __.Async() )
+.then( oUser, "getRecords", { idUser : 123 }, "Getting records" )
 .then( function( args ) {
-    __.dn_( "#output" ).innerHTML = args.hResult;
-    __.async( args ).resolve();
-}, "Printing records" )</code></pre>
+    var async = __.Async.promise( args );
+    if( args.hResults ) {
+        __.dn_( "#output" ).innerHTML = args.hResult;
+    }
+    else {
+        async.then( oUser, "delete", { idUser : 123 } );
+    }
+    async.resolve();
+}, "Printing records or deleting user" )
+.start();</code></pre>
 
 
 
@@ -1628,11 +1641,9 @@ Registers a method to the task chain
 
 
 <div class="description">
-    <pre>
-Pauses the execution of a task chain until a certain condition
+    Pauses the execution of a task chain until a certain condition
 occurs. This condition is indicated as function that is polled
 every 25 milliseconds if not indicated otherwise.
-</pre>
 </div>
 
 
@@ -1806,7 +1817,7 @@ condition or log message</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line170">line 170</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line161">line 161</a>
     </li></ul></dd>
     
 
@@ -1933,7 +1944,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 10 2018 07:24:37 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 20 2018 17:38:52 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

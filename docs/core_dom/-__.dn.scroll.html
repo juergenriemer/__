@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: __</title>
+    <title>JSDoc: Namespace: scroll</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -40,7 +40,7 @@ h4.name span {
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: __</h1>
+    <h1 class="page-title">Namespace: scroll</h1>
 
     
 
@@ -51,7 +51,8 @@ h4.name span {
 
 <header>
     
-        <h2>__</h2>
+        <h2>
+            <span class="ancestors"><a href="-__.html">__</a><a href="-__.dn.html">.dn</a>.</span>scroll</h2>
         
     
 </header>
@@ -66,9 +67,6 @@ h4.name span {
 
 <dl class="details">
 
-    
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>1.0</li></ul></dd>
     
 
     
@@ -96,7 +94,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.DOM.js.html">__.DOM.js</a>, <a href="-__.DOM.js.html#line7">line 7</a>
+        <a href="-__.DOM.js.html">__.DOM.js</a>, <a href="-__.DOM.js.html#line541">line 541</a>
     </li></ul></dd>
     
 
@@ -123,13 +121,6 @@ h4.name span {
     
 
     
-        <h3 class="subsection-title">Namespaces</h3>
-
-        <dl>
-            <dt><a href="-__.dn.html">dn</a></dt>
-            <dd></dd>
-        </dl>
-    
 
     
 
@@ -142,7 +133,7 @@ h4.name span {
     
 
     
-    <h4 class="name" id="._dn"><span class="type-signature">(static) </span>_dn<span class="signature">(s, dn, fn<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Element}</span></h4>
+    <h4 class="name" id=".off"><span class="type-signature">(static) </span>off<span class="signature">(dn<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -150,12 +141,8 @@ h4.name span {
 
 
 <div class="description">
-    Takes a CSS selector string and queries the DOM for the closest matching parent node.
+    Unregisters from a scroll event of either a DOM node or the entire page.
 <br>
-It returns a DOM node. It will return [null] in case nothing was found.
-<br>
-An optional callback function to be applied on the returned node. It
-will be invoked with one parameter: the single node
 </div>
 
 
@@ -189,37 +176,6 @@ will be invoked with one parameter: the single node
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>s</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">CSS selector string</td>
-        </tr>
-
     
 
         <tr>
@@ -239,37 +195,6 @@ will be invoked with one parameter: the single node
             
                 <td class="attributes">
                 
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">starting node</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fn</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
                     &lt;optional><br>
                 
 
@@ -281,7 +206,7 @@ will be invoked with one parameter: the single node
 
             
 
-            <td class="description last">callback function</td>
+            <td class="description last">A DOM node for which we no longer want to get notified. (if no DOM node is passed on the entire window is selected)</td>
         </tr>
 
     
@@ -322,7 +247,7 @@ will be invoked with one parameter: the single node
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.DOM.js.html">__.DOM.js</a>, <a href="-__.DOM.js.html#line83">line 83</a>
+        <a href="-__.DOM.js.html">__.DOM.js</a>, <a href="-__.DOM.js.html#line657">line 657</a>
     </li></ul></dd>
     
 
@@ -345,41 +270,15 @@ will be invoked with one parameter: the single node
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    A DOM node or null if CSS selector could not be found
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Element</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
 
     <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>var dnInput = __.dn_( "[name='email']" );
-var dnForm = __._dn( "form", dnInput );</code></pre>
+    <pre class="prettyprint"><code>__.dn.scroll.off( dnMenu );</code></pre>
 
-    <pre class="prettyprint"><code>__._dn( "div.the-form", dnInput, function( dn ) {
-    dn.style.border = "1px solid red";
-    dn.style.padding = "1em";
-} );</code></pre>
+    <pre class="prettyprint"><code>__.dn.scroll.off();</code></pre>
 
 
 
@@ -389,7 +288,7 @@ var dnForm = __._dn( "form", dnInput );</code></pre>
     
 
     
-    <h4 class="name" id=".dn_"><span class="type-signature">(static) </span>dn_<span class="signature">(s, x1<span class="signature-attributes">opt</span>, x2<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Element|Array}</span></h4>
+    <h4 class="name" id=".on"><span class="type-signature">(static) </span>on<span class="signature">(dn_or_cb, cb_or_ms, ms<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -397,18 +296,11 @@ var dnForm = __._dn( "form", dnInput );</code></pre>
 
 
 <div class="description">
-    Takes a CSS selector string and queries the DOM for matching nodes.
+    Registers to the scroll event of either a DOM node or the entire page.
 <br>
-It returns a single DOM node if just one node was found.
-<br>
-It returns a list of DOM nodes if multiple were found.
-<br>
-It will return [null] in case nothing was found.
-<br>
-An optional DOM node as starting point can be passed on otherwise [document] is used.
-<br>
-An optional callback function to be applied on returned nodes can be passed on which
-will be invoked with two parameters: the single node and its index of the array.
+A callback function is invoked with a data object providing information
+about the current position which is, if not manually set, called every
+300 milliseconds.
 </div>
 
 
@@ -446,12 +338,15 @@ will be invoked with two parameters: the single node and its index of the array.
 
         <tr>
             
-                <td class="name"><code>s</code></td>
+                <td class="name"><code>dn_or_cb</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">Element</span>
+|
+
 <span class="param-type">String</span>
 
 
@@ -470,23 +365,23 @@ will be invoked with two parameters: the single node and its index of the array.
 
             
 
-            <td class="description last">CSS selector string</td>
+            <td class="description last">Either a DOM node or a callback function (if no DOM node is passed on the entire window is selected)</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>x1</code></td>
+                <td class="name"><code>cb_or_ms</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Element</span>
+<span class="param-type">String</span>
 |
 
-<span class="param-type">function</span>
+<span class="param-type">Number</span>
 
 
             
@@ -494,8 +389,6 @@ will be invoked with two parameters: the single node and its index of the array.
 
             
                 <td class="attributes">
-                
-                    &lt;optional><br>
                 
 
                 
@@ -506,20 +399,20 @@ will be invoked with two parameters: the single node and its index of the array.
 
             
 
-            <td class="description last">starting node or callback function</td>
+            <td class="description last">Either a callback function or a custom notification delay in milliseconds</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>x2</code></td>
+                <td class="name"><code>ms</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">Number</span>
 
 
             
@@ -539,7 +432,7 @@ will be invoked with two parameters: the single node and its index of the array.
 
             
 
-            <td class="description last">callback function</td>
+            <td class="description last">A notification delay in milliseconds</td>
         </tr>
 
     
@@ -580,7 +473,7 @@ will be invoked with two parameters: the single node and its index of the array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.DOM.js.html">__.DOM.js</a>, <a href="-__.DOM.js.html#line16">line 16</a>
+        <a href="-__.DOM.js.html">__.DOM.js</a>, <a href="-__.DOM.js.html#line585">line 585</a>
     </li></ul></dd>
     
 
@@ -607,7 +500,17 @@ will be invoked with two parameters: the single node and its index of the array.
 
         
 <div class="param-desc">
-    A DOM node or a list of DOM nodes or null if CSS selector could not be found
+    Information about the current position
+<pre class='return-object'>
+x | (Number) | current x position
+y | (Number) | current y position
+dx | (Number) | current width
+dy | (Number) | current height
+bTop | (Boolean) | flag to indicate whether scrolled to top
+bBottom | (Boolean) | flag to indicate whether scrolled to bottom
+bLeft | (Boolean) | flag to indicate whether scrolled to left 
+bRigth | (Boolean) | flag to indicate whether scrolled to right
+</pre>
 </div>
 
 
@@ -618,10 +521,7 @@ will be invoked with two parameters: the single node and its index of the array.
     </dt>
     <dd>
         
-<span class="param-type">Element</span>
-|
-
-<span class="param-type">Array</span>
+<span class="param-type">Object</span>
 
 
     </dd>
@@ -634,18 +534,239 @@ will be invoked with two parameters: the single node and its index of the array.
 
     <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>var dnMenu = __.dn_( "#menu" );</code></pre>
+    <pre class="prettyprint"><code>__.dn.scroll.on( dnMenu, function( aInfo ) {
+    if( aInfo.bBottom ) {
+        alert( "scrolled to bottom" );
+    }
+} );</code></pre>
 
-    <pre class="prettyprint"><code>var ldnLinks = __.dn_( "a.footer", dnMenu );</code></pre>
+    <pre class="prettyprint"><code>__.dn.scroll.on( function() {
+    positionMenu();
+}, 1000 );</code></pre>
 
-    <pre class="prettyprint"><code>__.dn_( "a.footer", dnMenu, function( dn, ix ) {
-      dn.style.color = "red";
-      dn.style.border = ix + "px solid green";
- } );</code></pre>
 
-    <pre class="prettyprint"><code>__.dn_( "[href]", function( dn ) {
-      dn.setAttribute( "href", "#" );
- } );</code></pre>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".to"><span class="type-signature">(static) </span>to<span class="signature">(dn_or_pos, pos_or_px, px<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Scrolls the page or a DOM node to a specific x or y position or 
+directly to the top, left, bottom or right.
+<br>Expected positions: x, y, top, left, bottom, right
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dn_or_pos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+|
+
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Either a DOM node or a position (if no DOM node is passed on the entire window is selected)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pos_or_px</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Either a position or a position value in pixels</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>px</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">A position value in pixels</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.DOM.js.html">__.DOM.js</a>, <a href="-__.DOM.js.html#line547">line 547</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>__.dn.scroll.to( "bottom" ); // scroll page to bottom</code></pre>
+
+    <pre class="prettyprint"><code>__.dn.scroll.to( dnMenu, "x", 100 ); // scroll menu node 100 px to the right</code></pre>
 
 
 
