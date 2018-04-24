@@ -60,6 +60,7 @@ __.SP.view.read = function( args ) {
 				, sTotal : sTotal
 				, xmlQuery : oView.get_viewQuery()
 			};
+			console.log( kv );
 			async.resolve( { kv : kv } );
 		}
 	} );

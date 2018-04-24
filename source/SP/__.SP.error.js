@@ -1,8 +1,8 @@
 __.Async.fnerr = function( oError ) {
-	__.SP.Error.show( oError );
+	top.__.SP.Error.show( oError );
 };
 
-__.SP.Error = __.Class.extend( {
+top.__.SP.Error = __.Class.extend( {
 	  dnWindow : null
 	, oError : {}
 	, createErrorData : function( args ) {
@@ -28,7 +28,7 @@ __.SP.Error = __.Class.extend( {
 			  sTitle : args.sTitle || "System Message"
 			, sError : sError
 			, sDescription : sDescription
-			, sUser : __.SP.user.aInfo.sLogin
+			, sUser : top.__.SP.user.aInfo.sLogin
 			, dt : dt
 			, sInfo : args.sInfo || null
 			, sStack : args.sStack || null
@@ -52,7 +52,7 @@ __.SP.Error = __.Class.extend( {
 		console.warn( oPayload );
 		console.warn( "<<<<<<ACTIVATE LOG<<<<<<<" );
 		return;
-		__.SP.webservice.call( {
+		top.__.SP.webservice.call( {
 			  sService : "midtier"
 			, sEndpoint : "Log4NetExternal"
 			, oPayload : oPayload
@@ -110,7 +110,7 @@ __.SP.Error = __.Class.extend( {
 		this.createErrorData( args );
 		var hMessage = this.hMessage( this.oError );
 		if( hMessage ) {
-			this.dnWindow = __.SP.modal.open( {
+			this.dnWindow = top.__.SP.modal.open( {
 				  sTitle : that.oError.sTitle
 				, hContent : hMessage
 				, sOk : "Report"
@@ -137,6 +137,7 @@ __.SP.Error = __.Class.extend( {
 	}
 } );
 
-__.SP.Error.show = function( args ) {
-	return __.Class.instantiate( __.SP.Error, args );
+top.__.SP.Error.show = function( args ) {
+	return __.Class.instantiate( top.__.SP.Error, args );
 };
+

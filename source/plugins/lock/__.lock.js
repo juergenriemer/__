@@ -61,4 +61,3 @@ __.lock = {
 	}
 };
 
-console.log( __.lock.up );

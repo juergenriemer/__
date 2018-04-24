@@ -157,10 +157,11 @@ __.SP.folder = {
 	 * } );
 	 * @param {Object} args a parameter object holding the following values
 	 * @param {String} path path of the folder
+	 * @param {Array} lsFields array of internal field names to return
 	 * @returns {Object} Resolved promise holding the following values 
 	 * <pre class='return-object'>
 	 * oFolder | (Object) | context of the newly created folder
-	 * aProps  | (Object) | associate array holding properties of the folder
+	 * aResult  | (Object) | associate array holding properties of the folder
 	 * </pre>
 	 */
 	, read : function( args ) {
@@ -174,20 +175,20 @@ __.SP.folder = {
 			}
 			else {
 				oFolder = oFolder.get_listItemAllFields();
-				var aProps = {};
+				var aResult = {};
 				args.lsFields.forEach( function( sField ) {
 					var oField = oFolder.get_item( sField );
 					if( oField ) {
 						if( oField.get_lookupId ) {
-							aProps[ sField ] = oField.get_lookupValue();
-							aProps[ "id" + sField ] = oField.get_lookupId();
+							aResult[ sField ] = oField.get_lookupValue();
+							aResult[ "id" + sField ] = oField.get_lookupId();
 						}
 						else {
-							aProps[ sField ] = oField;
+							aResult[ sField ] = oField;
 						}
 					}
 				} );
-				async.resolve( { oFolder : oFolder, aProps : aProps } );
+				async.resolve( { oFolder : oFolder, aResult : aResult } );
 			}
 		} );
 	}
@@ -270,7 +271,7 @@ __.SP.deploy = {
 		} );
 		var async = __.Async.promise( args )
 		async
-		//.debug()
+		.debug()
 		.then( __.SP.list, "exists", { sList : sList } )
 		.then( function( args ) {
 			var async = __.Async.promise( args );
@@ -280,12 +281,12 @@ __.SP.deploy = {
 					async.then( __.SP.list, "del" );
 				}
 				else {
-					bCreate = true;
+					bCreate = false;
 				}
 			}
 			if( bCreate ) {
 				async.then( __.SP.list, "create", { sType : sType }, "create list " + sList )
-				async.then( __.SP.list, "setColumns", { sList : sList, loFields, loFields}, "set columns in list " + sList )
+				async.then( __.SP.list, "setColumns", { sList : sList, loFields : loFields}, "set columns in list " + sList )
 				async.then( __.SP.list, "addFields", { sList : sList, loFields : loFields }, "add fields to list " + sList )
 				async.then( __.SP.list, "setLookups", {}, "setup lookups in list " + sList )
 			}
@@ -349,6 +350,8 @@ __.SP.deploy = {
 	}
 }
 
+__.SP.sprvPage = null;
+__.SP.scurPage = null;
 
 if( self == top ) {
 	__.SP.scurPage = null;

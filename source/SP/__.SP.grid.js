@@ -136,21 +136,25 @@ __.SP.grid = {
 	 * @todo test replacing return false in catch with page reload?
 	 * @example __.SP.grid.unlock();
 	 */
-	, reload : function() {
-		var dn = __.dn_( "#ManualRefresh" );
-		if( dn ) {
-			dn.click();
-		}
-		else {
-			try {
-				var idList = SP.ListOperation.Selection.getSelectedList();
-				idList = idList.toLowerCase().replace( "-", "_" ).replace( "{", "" ).replace( "}", "" );
-				__doPostBack( "ctl00$m$g_" + idList + "$ctl02", "cancel" );
-			} catch( e ) {
-				return false;
+	, reload : function( ms ) {
+		ms = ms || 0;
+		console.log( ">>>>>>>>>>>" + ms );
+		setTimeout( function() {
+			var dn = __.dn_( "#ManualRefresh" );
+			if( dn ) {
+				dn.click();
 			}
-		}
-		return true;
+			else {
+				try {
+					var idList = SP.ListOperation.Selection.getSelectedList();
+					idList = idList.toLowerCase().replace( "-", "_" ).replace( "{", "" ).replace( "}", "" );
+					__doPostBack( "ctl00$m$g_" + idList + "$ctl02", "cancel" );
+				} catch( e ) {
+					return false;
+				}
+			}
+			return true;
+		}, ms );
 	}
 };
 

@@ -343,7 +343,6 @@ __.SP.list.del = function( args ) {
 };
 
 __.SP.list.xmlFields = function( args ) {
-	console.log( args );
 	var mp = {
 		  taxonomy : "TaxonomyFieldType"
 		, lookup : "Lookup"
@@ -369,7 +368,18 @@ __.SP.list.xmlFields = function( args ) {
 			: sType += "Multi";
 		xml += ' Mult="TRUE" ';
 	}
-	xml += ' Type="' + sType + '">';
+	if( args.aCalculation ) {
+		xml += ' ReadOnly="TRUE" Type="Calculated">';
+		xml += "<Formula>" + args.aCalculation.sFormular + "</Formula>";
+		xml += "<FieldRefs>";
+		args.aCalculation.lsFields.forEach( function( sField ) {
+			xml += "<FieldRef Name=\"" + sField + "\" />";
+		} );
+		xml += "</FieldRefs>";
+	}
+	else {
+		xml += ' Type="' + sType + '">';
+	}
 	if( sType == "TaxonomyFieldType" ) {
 		// REF: move this to __.SP.taxonomy
 		var guidTermStore = O$C3.Tax.guidTermStore;
@@ -385,8 +395,6 @@ __.SP.list.xmlFields = function( args ) {
 		xml += '<Default>' + args.vDefault + '</Default>';
 	}
 	xml += '</Field>';
-	console.log( args );
-	console.log( xml );
 	return xml;
 };
 __.SP.list.oFieldType = function( args ) {
@@ -418,6 +426,7 @@ __.SP.list.oFieldType = function( args ) {
  * @instance
  * @todo move to namespace __.SP.list.fields
  * @todo check need of return value loFields
+ * @todo check if single updates prevent calulated fields from erroring out
  * @example
  * __.SP.list.addFields( {
  * 	  sList : "simple list"
@@ -434,6 +443,7 @@ __.SP.list.addFields = function( args ) { // sList, loFields
 	if( args.loFields ) {
 		var oFields = oList.get_fields();
 		args.loFields.forEach( function( a ) {
+			console.log( ">>>>>>>" +  a.sName );
 			if( a.sCAMLType !== "column" && a.sName !== "Title" ) {
 				var oField = ctx.castTo(
 					  oFields.addFieldAsXml(
@@ -464,10 +474,18 @@ __.SP.list.addFields = function( args ) { // sList, loFields
 		} );
 		__.SP.exec( ctx, oFields, function( oFields ) {
 			if( oFields.sError ) {
-				async.reject( oFields.sError );
+				console.log( oFields.sError );
+				if( /Cannot complete this action/.test( oFields.sError ) ) {
+					console.log( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" );
+					async.resolve();
+				}
+				else {
+					console.log( "<<<<<<<<<<<<<<<<<<<<<" );
+					async.reject( oFields.sError );
+				}
 			}
 			else {
-				async.resolve( { loFields : args.loFields } );
+				async.resolve();
 			}
 		} );
 	}

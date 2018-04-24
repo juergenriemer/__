@@ -27,10 +27,11 @@ __.SP.Filter = __.Class.extend( {
 			  sLabel : "Create a filter for search or saving"
 			, sFile : "__.SP.filter.js"
 		} ) )
-		//.debug()
+		/*
 		.wait( function() {
 			return __.dn_( "#sideNavBox" );
 		}, 25, "wait for side nav box" )
+		*/
 		.then( function( args ) {
 			var h = "<div id='"+ that.sFilter +"' style='display:none' class='osce-filter'></div>";
 			that.dnRoot = __.dn.append( h, __.dn_( "#sideNavBox" ) );
@@ -155,12 +156,13 @@ __.SP.Filter = __.Class.extend( {
 	, loadDefaultView : function() {
 		var url = _spPageContextInfo.webServerRelativeUrl;
 		url += "/_layouts/15/start.aspx#/Lists/" + ctx.ListTitle +"/";
-		url += this.sdftView +".aspx?r=" + Math.random();
+		url += O$C3.User.sUnit + " Contacts.aspx?r=" + Math.random();
+//		url += this.sdftView +".aspx?r=" + Math.random();
 		self.location.href = url;
 	}
 	, loadPersonalView : function( guid ) {
 		self.location.href = this.createPersonalViewUrl( guid );
-		__.SP.grid.reload();
+		__.SP.grid.reload( 500 );
 	}
 	, form2hash : function() {
 		var kv = this.read();
@@ -192,11 +194,40 @@ __.SP.Filter = __.Class.extend( {
 			  sLabel : "Update form with query"
 			, sFile : "__.SP.filter.js"
 		} ) )
-		//.debug()
 		.then( __.SP.view, "read", {
 			  sList : ctx.ListTitle
 			, sView : sView
 		}, "read current view" )
+		// REF: extract xml query reading in method for we need parts again further down the code
+		.then( function( args ) {
+			var async = __.Async.promise( args )
+			var xmlQuery = args.kv.xmlQuery;
+			lsxml = xmlQuery.match( /<Where>.*?<\/Where>/ );
+			if( lsxml && lsxml[ 0 ] ) {
+				xmlQuery = lsxml[ 0 ];
+				var dn = __.dn.append( xmlQuery );
+				__.dn_( "FieldRef", dn, function( dn ) {
+					// get necessary attributes from field node
+					var sName = dn.getAttribute( "name" );
+					var sOperator = dn.parentNode.tagName;
+					// create sid of field
+					var sid = __.s.tokenize( that.sFilter + sOperator + sName );
+					// get the corresponding field in our filter
+					var dnField = __.dn_( "[sid='" + sid + "']", dnForm );
+					// skip unknown fields (e.g. for custom queries such as cherry picks)
+					if( ! dnField ) {
+						return;
+					}
+					var sFormType = dnField.getAttribute( "sFormType" );
+					if( sFormType == "taxonomy" ) {
+						async.then( __.SP.taxonomy, "load", {
+							  sTermSet : O$C3.Tax.guidTermSet[ sName ]
+						}, "load " + sName )
+					}
+				} );
+			}
+			async.resolve();
+		}, "load taxonomies" )
 		.then( __.SP.taxonomy, "getTermIds", {}, "get taxonomy term ids" )
 		.then( function( args ) {
 			var bTaxTerms = false;
@@ -371,7 +402,6 @@ __.SP.Filter = __.Class.extend( {
 			  sLabel : "compare loaded queries"
 			, sFile : "__.SP.filter.js"
 		} ) )
-		//.debug()
 		.then( __.SP.taxonomy, "getTermIds", "get taxonomy term ids" )
 		.clear()
 		.then( __.SP.view, "read", {
@@ -478,7 +508,6 @@ __.SP.Filter = __.Class.extend( {
 			  sLabel : "create a view"
 			, sFile : "__.SP.filter.js"
 		} ) )
-		//.debug()
 		.then( __.SP.taxonomy, "getTermIds", "get taxonomy term ids" )
 		.then( function( args ) {
 			var async = __.Async.promise( args );
@@ -567,6 +596,7 @@ __.SP.Filter = __.Class.extend( {
 		var sView = that.sFilterName;
 		this.lock();
 		this.createView( sView, function( guid ) {
+			console.log( guid );
 			that.guidFilter = guid;
 			that.loadPersonalView( guid );
 		} );
@@ -576,6 +606,8 @@ __.SP.Filter = __.Class.extend( {
 		var that = this;
 		this.createView( sView, function( guid ) {
 			var url = that.createPersonalViewUrl( guid );
+			self.location.href = url;
+			/*
 			( new __.Async( {
 				  sLabel : "Save a filter search"
 				, sFile : "__.SP.filter.js"
@@ -585,6 +617,14 @@ __.SP.Filter = __.Class.extend( {
 					}
 				}
 			} ) )
+			.then( function( args ) {
+				that.oModal.close();
+				__.SP.grid.reload();
+				__.Async.promise( args ).resolve();
+			}, "Filter successfully saved" )
+			.start();
+			*/
+			/*
 			.then( __.SP.list, "read", {
 				  sList : "SideBar"
 				, lsFields : [ "ID", "Title" ]
@@ -663,11 +703,7 @@ __.SP.Filter = __.Class.extend( {
 				}
 				async.resolve();
 			}, "create or update sidebar" )
-			.then( function( args ) {
-				that.oModal.close();
-				__.Async.promise( args ).resolve();
-			}, "Filter successfully saved" )
-			.start();
+			*/
 		} );
 	}
 	, bDuplicateFilterName : function( sName ) {
@@ -710,24 +746,31 @@ __.SP.Filter = __.Class.extend( {
 				var dnValue = __.dn_( "[name='sName']", that.oModal.dn );
 				var sName = __.s.sanitize( dnValue.value );
 				if( sName  ) {
-					if( that.bDuplicateFilterName( sName ) ) {
-						var d = __.SP.modal.confirm( {
-							  sTitle : "Confirm this action"
-							, sQuestion : O$C3.Lang.saved_filter_name_exists_overwrite
-							, fnAnswer : function( b ) {
-								if( b ) {
-									that.save( sName );
-								}
-								else {
+					( new __.Async( { sLabel : "check duplicate filter" } ) )
+					.then( __.SP.view, "list", {
+						  sList : O$C3.OSCEContacts.sList
+					}, "get list of views" )
+					.then( function( args ) {
+						var async = __.Async.promise( args );
+						if( __.l.contains( args.lsViews, sName ) ) {
+							var d = __.SP.modal.confirm( {
+								  sTitle : "Confirm this action"
+								, sQuestion : O$C3.Lang.saved_filter_name_exists_overwrite
+								, fnAnswer : function( b ) {
 									that.oModal.close();
-									that.openSaveWindow();
+									if( b ) {
+										that.save( sName );
+									}
 								}
-							}
-						} );
-					}
-					else {
-						that.save( sName );
-					}
+							} );
+						}
+						else {
+							that.oModal.close();
+							that.save( sName );
+						}
+						async.resolve();
+					}, "check if view already exists" )
+					.start();
 				}
 				else {
 					// REF: do we overwrite the loading gif here? i.e. after entering name no loading gif?
@@ -810,6 +853,7 @@ __.SP.Filter = __.Class.extend( {
 		localStorage.setItem( this.sFilterFieldStore, __.o.s( this.lsFilterFields ) );
 	}
 } );
+
 
 
 

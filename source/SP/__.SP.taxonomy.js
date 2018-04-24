@@ -177,6 +177,29 @@ __.SP.taxonomy.children = function( args ) { // idTermSet, idParent
 	return lid;
 };
 
+//__.SP.taxonomy.addTerm( { lsTerms : [ "Neverland", "Oz" ] ,  sTermSet : O$C3.Tax.guidTermSet.Country } )
+__.SP.taxonomy.addTerm = function( args ) {
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx();
+	var sTermStore = args.sTermStore || "Managed Metadata Service";
+	var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
+	var oStore = oTax.get_termStores().getByName( sTermStore );
+	var oSet = oStore.getTermSet( args.sTermSet );
+	args.lsTerms.forEach( function( sTerm ) {
+		oSet.createTerm( sTerm, 1033, SP.Guid.newGuid().toString() );
+	} );
+	ctx.load( oSet );
+	__.SP.exec( ctx, oSet, function( oSet ) {
+		console.log( oSet );
+		if( oSet.sError ) {
+			async.reject( oSet.sError );
+		}
+		else {
+			async.resolve();
+		}
+	} );
+}
+
 __.SP.taxonomy.search = function( args ) {
 };
 

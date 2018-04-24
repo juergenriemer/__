@@ -11,13 +11,11 @@ __.SP.user = {
 		var async = __.Async.promise( args );
 		if( this.aInfo ) {
 			async.resolve( { aUserInfo : this.aInfo } );
-			console.log( 'fresh from cache' );
 			return;
 		}
 
 SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
    SP.SOD.executeFunc('userprofile', 'SP.UserProfiles.PeopleManager', function() {
-console.log( 'ulla' );
 		var ctx = __.SP.ctx();
 		var oUser = ctx.get_web().get_currentUser();
 		var oGroups = oUser.get_groups();
