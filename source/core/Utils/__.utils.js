@@ -252,7 +252,7 @@ __.l = {
 			else if( ! b.hasOwnProperty( k ) ) {
 				return 0;
 			} 
-			return ( a[ k ] > b[ k ] );
+			return ( a[ k ] - b[ k ] );
 		} );
 	}
 };
