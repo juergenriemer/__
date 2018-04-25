@@ -394,3 +394,41 @@ if( self == top ) {
 	} );
 }
 
+
+O$C3.Urls = {
+	aaurl : {
+		  prod : {
+			rso : 'https://rso.osce.org/',
+			docin : 'https://docin.osce.org/',
+			sharepoint : 'https://sharepoint.osce.org/',
+			mySite : 'https://sp-selfservice.osce.org/',
+			midtier : 'https://ws-sharepoint.osce.org/WebService.asmx/'
+		}
+		, test : {
+			rso : 'https://test-rso.osce.org/',
+			docin : 'https://test-docin.osce.org/',
+			sharepoint : 'https://test-jarvis.osce.org/',
+			mySite : 'https://test-sp-selfservice.osce.org/',
+			midtier : 'https://test-ws-sharepoint.osce.org/WebService.asmx/'
+		}
+		, dev : {
+			rso : 'https://dev-rso.osce.org/',
+			docin : 'https://dev-docin.osce.org/',
+			sharepoint : 'https://dev-sharepoint.osce.org/',
+			mySite : 'https://dev-sp-selfservice.osce.org/',
+			midtier : 'https://dev-ws-sharepoint.osce.org/WebService.asmx/'
+		}
+	}
+	, get : function( sDomain ) {
+		var sEnv = "prod";
+			if( /^https:\/\/test/.test( self.location.href ) ) {
+			sEnv = "test";
+		}
+		else if( /^https:\/\/dev/.test( self.location.href ) ) {
+			sEnv = "dev";
+		}
+		var url = this.aaurl[ sEnv ][ sDomain ];
+		return url;
+	}
+};
+

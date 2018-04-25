@@ -70,9 +70,10 @@ type ^
 	%pathBuild%__.core_1.0.0.min.js ^
 	%pathBuild%__.helper_1.0.0.min.js ^
 	%pathBuild%__.sp_1.0.0.min.js ^
-	> %pathBuild%___1.0.0.min.js
+	> %pathBuild%__.1.0.0.min.js
 
 echo "copy to hive"
 
-SET pathHive=C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\15\TEMPLATE\LAYOUTS\osce\__\
-copy "%pathBuild%___1.0.0.min.js" "%pathHive%___1.0.0.min.js"
+SET pathHive=C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\15\TEMPLATE\LAYOUTS\osce\
+copy "%pathBuild%__.1.0.0.min.js" "%pathHive%__.1.0.0.min.js"
+

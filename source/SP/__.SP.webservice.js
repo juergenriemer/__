@@ -1,3 +1,42 @@
+__.Common = {};
+__.Common.Urls = {
+	aaurl : {
+		  prod : {
+			rso : 'https://rso.osce.org/',
+			docin : 'https://docin.osce.org/',
+			sharepoint : 'https://sharepoint.osce.org/',
+			mySite : 'https://sp-selfservice.osce.org/',
+			midtier : 'https://ws-sharepoint.osce.org/WebService.asmx/'
+		}
+		, test : {
+			rso : 'https://test-rso.osce.org/',
+			docin : 'https://test-docin.osce.org/',
+			sharepoint : 'https://test-jarvis.osce.org/',
+			mySite : 'https://test-sp-selfservice.osce.org/',
+			midtier : 'https://test-ws-sharepoint.osce.org/WebService.asmx/'
+		}
+		, dev : {
+			rso : 'https://dev-rso.osce.org/',
+			docin : 'https://dev-docin.osce.org/',
+			sharepoint : 'https://dev-sharepoint.osce.org/',
+			mySite : 'https://dev-sp-selfservice.osce.org/',
+			midtier : 'https://dev-ws-sharepoint.osce.org/WebService.asmx/'
+		}
+	}
+	, get : function( sDomain ) {
+		var sEnv = "prod";
+			if( /^https:\/\/test/.test( self.location.href ) ) {
+			sEnv = "test";
+		}
+		else if( /^https:\/\/dev/.test( self.location.href ) ) {
+			sEnv = "dev";
+		}
+		var url = this.aaurl[ sEnv ][ sDomain ];
+		return url;
+	}
+};
+//
+//
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @js_externs var __; __.SP; __.SP.webservice; __.SP.webservice.call;
@@ -17,10 +56,15 @@ __.SP.webservice = {
 	 * @example // standalone
 	 * __.SP.webservice.call( {
 	 * 	  sService : "midtier"
-	 *	, sEndpoint : "MySiteReadList"
+	 * 	, sEndpoint : "SPMySiteListRead"
 	 * 	, oPayload : {
-	 *		sList : "MyBookmarks" 		
-	 *	}
+	 * 		  listName : "MyBookMarks"
+	 * 		, fields : __.o.s( ["Title","Url","LinkType"] )
+	 * 	}
+	 * 	, cb : function( oResult ) {
+	 * 		var msResponse = __.s.o( oResult.oResponse.responseText );
+	 * 		console.log( __.s.o( msResponse.d ) );
+	 * 	}
 	 * } );
 	 * @param {Object} args a parameter object holding the following values
 	 * @param {String} args.sService name of the webservice which is looked up in the O$C3.Url mapping object.
@@ -45,7 +89,7 @@ __.SP.webservice = {
 		var oAjax = window.XMLHttpRequest ?
 			new XMLHttpRequest() :
 			new ActiveXObject( 'Microsoft.XMLHTTP' );
-		var url = O$C3.Urls.get( args.sService ) + args.sEndpoint + "?";
+		var url = __.Common.Urls.get( args.sService ) + args.sEndpoint + "?";
 		oAjax.open( sMethod, url, true );
 		oAjax.withCredentials = true;
 		oAjax.onreadystatechange = function() {
