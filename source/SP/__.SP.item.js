@@ -1,4 +1,36 @@
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @js_externs var __; __.SP; __.SP.item; 
+// ==/ClosureCompiler==
+
+
+/**
+ * @namespace __.SP.item
+ * @memberof __.SP
+ */
+
 __.SP.item = {
+	/**
+	 * Creates an item in a list
+	 * @memberof __.SP.item
+	 * @method create
+	 * @example
+	 * __.SP.item.create( {
+	 * 	  sList : "Shared Documents"
+	 *	, lsFields : [ "Title", "ID" ]
+	 *	, xmlQuery : "<Query><Where><FieldRef Name='ID' /><Lt><Value Type='Number'>5</Value></Lt></Where></Query>"
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Array} args.lsFields array of field names to be returned
+	 * @param {String} [args.sSite] Url of a site (defaults to current)
+	 * @param {String} [args.pathSearch] folder path to start search from
+	 * @param {String} [args.xmlQuery] optional CAML query otherwise entire list is returned
+	 * @returns {Object} Resolved promise holding the following values 
+	 * <pre class='return-object'>
+	 * lkv | (Object) | array of key value pairs
+	 * </pre>
+	 */
 	/** 
 	 * Create an item.
 	 */

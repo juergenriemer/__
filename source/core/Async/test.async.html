@@ -55,13 +55,13 @@ assert = function( s, o1, o2 ) {
 	}
 	dn.innerHTML += s + "<br>";
 }
+
 // error async
 Error = new __.Async({
 	fnerr : function( oError ) {
 		assert( "error message", 'label:[Async1] file:[na] task:[error2] args:({"__guid_async__":"Async1","x":"error","aResult":["w1"]}) xError:({"sError":"an error happend"})', oError.sStack );
 	}
 })
-//.debug()
 .then( this, "waiter", { x : 1 }, "error1" )
 .then( this, "waiter", { x : "error" }, "error2" )
 .then( this, "waiter", { x : 1 }, "error3" )
@@ -76,7 +76,6 @@ Error = new __.Async({
 		assert( "error message 2", 'label:[test error] file:[test.async.html:290] task:[error2] args:({"sLabel":"test error","sFile":"test.async.html:290","__guid_async__":"Async2","x":"error","aResult":["w1"]}) xError:({"sError":"an error happend"})', oError.sStack );
 	}
 })
-//.debug()
 .then( this, "waiter", { x : 1 }, "error1" )
 .then( this, "waiter", { x : "error" }, "error2" )
 .then( this, "waiter", { x : 1 }, "error3" )
@@ -86,7 +85,6 @@ o = {
 	do : function() {
 		var that = this;
 		( new __.Async() )
-		//.debug()
 		.then( that, "getRecords", { idUser : 123 }, "Getting records" )
 		.then( function( args ) {
 			__.Async.promise( args ).resolve();
@@ -130,7 +128,6 @@ var a1 = new __.Async( { fnstat : fnStatus } )
 
 
 var a2 = new __.Async()
-//.debug()
 .then( this, "waiter2", "a2.1" )
 .then( this, "waiter2", "a2.2" )
 .then( this, "waiter2", { x : 20 }, "a2.3" )
@@ -275,7 +272,6 @@ Schacht.then( this, "waiter", { x : 1 } ,"schacht1" )
 
 // last late arrival 
 LastLate = new __.Async()
-//LastLate.debug()
 .then( this, "waiter", { x : 1 } ,"ll1" )
 .then( this, "waiter", { x : 2 }, "ll2" )
 .then( function( args ) {
@@ -296,7 +292,6 @@ LastLate = new __.Async()
 
 // stop async
 Stop = new __.Async()
-//Stop.debug()
 .then( this, "waiter", { x : 1 } ,"stop1" )
 .then( function( args ) {
 	__.Async.promise( args ).stop();
@@ -348,7 +343,6 @@ var argstest = function( args ) {
 	async.resolve()
 };
 ( new __.Async() )
-//.debug()
 .then( self, "waiter", { x : 1}, "args1" )
 .then( self, "waiter", { x : 2 }, "args2" )
 .then( self, "waiter", { x : 3 }, "args3" )
@@ -374,7 +368,6 @@ func = function( args ) {
 	async.resolve( args );
 };
 ( new __.Async() )
-.debug()
 .then( self, "func", { sMsg : "one" }, "args2_1" )
 .then( self, "func", "args2_2" )
 .then( self, "func", { sMsg : "three" }, "args2_3" )
@@ -383,6 +376,32 @@ func = function( args ) {
 	assert( "log message", {__guid_async__: "Async14", sMsg: "three"}, args );
 }, "args2_4" )
 .start();
+
+// test standalone
+getKey = function( args ) {
+	var async = __.Async.promise( args );
+	setTimeout( function() {
+		var async = __.Async.promise( args );
+		async.resolve( { "key" : "$ecretke!" + args.salt } );
+	}, 100 );
+	//async.resolve();
+};
+
+( new __.Async() )
+.then( self, "getKey", { salt : "X" }, "key_1" )
+.then( function( args ) {
+	__.Async.promise( args ).resolve();
+	assert( "standalone_in_async", "$ecretke!X", args.key );
+}, "key_result" )
+.start();
+
+getKey( { salt : "Y"
+	, cb : function( args ) {
+		assert( "standalone", "$ecretke!Y", args.key );
+	}
+} );
+getKey( { salt : "Z" } );
+
 </script>
 
 </body>

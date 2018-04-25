@@ -78,11 +78,22 @@ __.Async.fnstat = function() {}
  * @returns {Object} Promise instance for chaining
  */
 __.Async.promise = function( args ) {
-	// fetch the promise object from args.__guid_async__ or create
-	// a new Promise, i.e. we invoke an async task chain as stand-alone
-	var oPromise = ( typeof args == "object" && args.__guid_async__ )
-		? __.Async.store[ args.__guid_async__ ]
-		: ( new __.Async() );
+	// fetch the promise object from args.__guid_async__ 
+	var oPromise = null;
+	if( typeof args == "object" && args.__guid_async__ ) {
+		oPromise = __.Async.store[ args.__guid_async__ ];
+	}
+	// or create a new Promise, i.e. we invoke an async task chain
+	// as stand-alone
+	else {
+		oPromise = ( new __.Async() );
+		// in case we pass on a callback we save it for later
+		// invocation. We attach the callback to the promise
+		// object with double underscores to prevent overriding
+		if( args && args.cb ) {
+			oPromise.__cb__ = args.cb;
+		}
+	}
 	// we set the late arrivals flag on the promise, i.e. any newly
 	// added task will get put at beginning of task queue
 	oPromise.bLateArrivals = true;
@@ -248,7 +259,6 @@ __.Async.Promise.prototype = {
 		var ofn = {
 			  ctx : ( typeof x1 == "object" ) ? x1 : this.ctx
 			, sfn : ( typeof x1 == "object" ) ? x2 : x1
-			, args : ( typeof x2 == "string" )
 			, args : ( typeof x2 == "string" )
 				? ( typeof x3 == "object" )
 					? x3
@@ -426,6 +436,11 @@ __.Async.Promise.prototype = {
 			// otherwise stop and set status to idle
 			this._sStatus = "idle";
 			this._cleanUp();
+			// in case of a forced callback (happens if we
+			// indicate "cb" in a standalone call we invoke it
+			if( this.__cb__ ) {
+				this.__cb__( args );
+			}
 		}
 	}
 	/**

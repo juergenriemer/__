@@ -12,9 +12,7 @@
 
 __.SP.list = {
 	/**
-	 * <pre>
 	 * Gets a list context by name or guid
-	 * </pre>
 	 * @memberof __.SP.list
 	 * @method get
 	 * @todo use arguments object
@@ -39,9 +37,7 @@ __.SP.list = {
 		return ( oList ) ? oList : null;
 	}
 	/**
-	 * <pre>
 	 * Reads list items
-	 * </pre>
 	 * @memberof __.SP.list
 	 * @method read
 	 * @example

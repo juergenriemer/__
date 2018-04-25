@@ -1,4 +1,55 @@
-// ==ClosureCompiler==
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: __.SP.modal.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<style>
+.prettyprint {
+	width : 100%;
+}
+h1 {
+	font-size : 2em;
+}
+h4.name {
+	margin-top : 2em;
+	font-size : 1.7em;
+	border-bottom : 1px dashed #c0c0c0;
+}
+h4.name span.signature {
+	font-size : 70%;
+	padding : 5px;
+}
+h4.name span {
+	font-size : 50%;
+}
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
+</style>
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: __.SP.modal.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @js_externs var __; __.SP; __.SP.modal; __.SP.modal.alert; __.SP.modal.bExists; __.SP.modal.confirm; __.SP.modal.load; __.SP.modal.open; __.SP.modal.resize;
 // ==/ClosureCompiler==
@@ -46,7 +97,7 @@ __.SP.modal = {
 		var dnModal = SP.UI.ModalDialog.showModalDialog( kv );
 		( new __.Async() )
 		.wait( function() {
-			if( dnModal && dnModal.$e_0 ) {
+			if( dnModal &amp;&amp; dnModal.$e_0 ) {
 				if( args.fnLoad ) {
 					args.fnLoad( dnModal.$e_0 );
 				}
@@ -63,7 +114,7 @@ __.SP.modal = {
 	 * @method open
 	 * @example __.SP.modal.confirm( {
 	 *	  sTitle : "Save a filter"
-	 *	, hContent : "name: <input id='filter' type='text'></input>"
+	 *	, hContent : "name: &lt;input id='filter' type='text'>&lt;/input>"
 	 *	, fnact : function( oModal ) {
 	 *		var sName = oModal.dn.getElementById( "#filter" ).value();
 			// save filter with sName
@@ -88,11 +139,11 @@ __.SP.modal = {
 		args.sOk = ( args.hasOwnProperty( "sOk" ) ) ? args.sOk : "Save";
 		args.sCancel = ( args.hasOwnProperty( "sCancel" ) ) ? args.sCancel : "Cancel";
 		args.bClose = ( typeof args.bClose != "undefined" ) ? args.bClose : true;
-		var h = "<div id='osce-modal'>";
+		var h = "&lt;div id='osce-modal'>";
 		h += args.hContent;
-		h += "<p class='separator'></p>";
+		h += "&lt;p class='separator'>&lt;/p>";
 		h += this.buttons( args );
-		h += "</div>";
+		h += "&lt;/div>";
 		this.dn = __.dn.append( h );
 		this.behaviour( this.dn, args );
 		var kv = {
@@ -118,7 +169,7 @@ __.SP.modal = {
 	, behaviour : function( dn, args ) {
 		var that = this;
 		var dnOk = __.dn_( "input[value='" + args.sOk + "']", this.dn );
-		if( dnOk && args.fnact ) {
+		if( dnOk &amp;&amp; args.fnact ) {
 			dnOk.addEventListener( "click", function() {
 				that.processing();
 				args.fnact( that );
@@ -133,7 +184,7 @@ __.SP.modal = {
 		// set focus on first input field
 		setTimeout( function() {
 			var dnInput = __.dn_( "input", that.dn );
-			if( dnInput && dnInput[ 0 ] && dnInput[ 0 ].focus ) {
+			if( dnInput &amp;&amp; dnInput[ 0 ] &amp;&amp; dnInput[ 0 ].focus ) {
 				dnInput[ 0 ].focus();
 			}
 		}, 1500 );
@@ -152,22 +203,22 @@ __.SP.modal = {
 		}
 	}
 	, buttons : function( args ) {
-		var h = "<div class='osce-action-panel'>";
-		h += "  <div class='osce-message'></div>";
-		h += "  <div class='osce-loading'>";
-		h += "   <img src='" + __.SP.icon.mp.loading + "' />";
-		h += "   <span>" + args.sLoading + "</span></div>";
-		h += "  <div class='osce-buttons'>";
+		var h = "&lt;div class='osce-action-panel'>";
+		h += "  &lt;div class='osce-message'>&lt;/div>";
+		h += "  &lt;div class='osce-loading'>";
+		h += "   &lt;img src='" + __.SP.icon.mp.loading + "' />";
+		h += "   &lt;span>" + args.sLoading + "&lt;/span>&lt;/div>";
+		h += "  &lt;div class='osce-buttons'>";
 		if( args.sOk ) {
-		h += "  <input type='button' value='" + args.sOk + "'";
+		h += "  &lt;input type='button' value='" + args.sOk + "'";
 		h += "   accesskey='O' class='ms-ButtonHeightWidth'>";
 		}
 		if( args.sCancel ) {
-		h += "  <input type='button' value='" + args.sCancel+ "'";
+		h += "  &lt;input type='button' value='" + args.sCancel+ "'";
 		h += "   accesskey='1' class='ms-ButtonHeightWidth'>";
 		}
-		h += "  </div>";
-		h += "</div>";
+		h += "  &lt;/div>";
+		h += "&lt;/div>";
 		return h;
 	}
 	, stopProcessing : function() {
@@ -189,7 +240,7 @@ __.SP.modal = {
 	}
 	, cancel : function() {
 		var dnClose = __.dn_( ".ms-dlgCloseBtn" );
-		if( dnClose && dnClose.click ) {
+		if( dnClose &amp;&amp; dnClose.click ) {
 			dnClose.click();
 		}
 		else {
@@ -197,7 +248,7 @@ __.SP.modal = {
 		}
 	}
 	/**
-	 * Opens a confirmation window with a question plus "Yes"/"No" buttons.<br>
+	 * Opens a confirmation window with a question plus "Yes"/"No" buttons.&lt;br>
 	 * Invokes a passed on callback function with a boolean indicating the answer.
 	 * @memberof __.SP.modal
 	 * @method confirm 
@@ -217,8 +268,8 @@ __.SP.modal = {
 	, confirm : function( args ) {
 		var s = ( args.sError ) ? args.sError : args;
 		var hQuestion = ( args.sQuestion )
-			? "<p>" + args.sQuestion + "</p>"
-			: "<p>Do you want to proceed?</p>";
+			? "&lt;p>" + args.sQuestion + "&lt;/p>"
+			: "&lt;p>Do you want to proceed?&lt;/p>";
 		return __.SP.modal.open( {
 			  sTitle : args.sTitle || "Confirm this action..."
 			, hContent : hQuestion
@@ -244,7 +295,7 @@ __.SP.modal = {
 	 */
 	, alert : function( args ) {
 		var sMessage = ( args.sMessage ) ? args.sMessage : "";
-		var h = "<p>" + sMessage + "</p>";
+		var h = "&lt;p>" + sMessage + "&lt;/p>";
 		return __.SP.modal.open( {
 			  sTitle : args.sTitle || "System Message"
 			, hContent : h
@@ -283,3 +334,71 @@ __.SP.modal = {
 	}
 };
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+	<h3><a href="../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+<script>
+var dnNav = document.querySelector( "nav" );
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	dn.textContent = lsParts[ 1 ];
+}
+
+var dnMethods = document.getElementById( "methods" );
+var dnMethodCount = document.getElementById( "method-count" );
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+</script>
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Apr 25 2018 08:12:53 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+<script src="custom.js"> </script>
+</body>
+</html>

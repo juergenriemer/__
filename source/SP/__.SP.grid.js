@@ -6,10 +6,8 @@
 
 __.SP.grid = {
 	/**
-	 * <pre>
 	 * Returns item data of the current list view.
 	 * Includes only data displayed in the view.
-	 * </pre>
 	 * @memberof __.SP.grid
 	 * @method oData
 	 * @todo rename to aListData or aData
@@ -32,9 +30,7 @@ __.SP.grid = {
 		return o;
 	}
 	/**
-	 * <pre>
 	 * Returns DOM node of the list webpart
-	 * </pre>
 	 * @memberof __.SP.grid
 	 * @method dnWebpart
 	 * @example var dnWebpart = __.SP.grid.dnWebpart();
@@ -44,9 +40,7 @@ __.SP.grid = {
 		return __.dn_( "#scriptWPQ2" );
 	}
 	/**
-	 * <pre>
 	 * Returns DOM node of the list webpart's main table
-	 * </pre>
 	 * @memberof __.SP.grid
 	 * @method dnGrid
 	 * @example var dnGrid = __.SP.grid.dnGrid();
@@ -56,10 +50,8 @@ __.SP.grid = {
 		return __.dn_( "table[summary]" );
 	}
 	/**
-	 * <pre>
-	 * Returns item data of the currently selected items.
+	 * Returns item data of the currently selected items.<br>
 	 * Includes only data displayed in the view.
-	 * </pre>
 	 * @memberof __.SP.grid
 	 * @method selection
 	 * @todo test return example
@@ -81,9 +73,7 @@ __.SP.grid = {
 	}
 
 	/**
-	 * <pre>
 	 * Clears current selection of items in list.
-	 * </pre>
 	 * @memberof __.SP.grid
 	 * @method clearSelection 
 	 * @example __.SP.grid.clearSelection();
@@ -97,10 +87,8 @@ __.SP.grid = {
 	}
 
 	/**
-	 * <pre>
 	 * Locks the list webpart by greying it out and preventing any
 	 * user interactions with the list.
-	 * </pre>
 	 * @memberof __.SP.grid
 	 * @method lock
 	 * @example __.SP.grid.lock();
@@ -113,9 +101,7 @@ __.SP.grid = {
 	}
 
 	/**
-	 * <pre>
 	 * Unlocks the webpart enabling user interactions again.
-	 * </pre>
 	 * @memberof __.SP.grid
 	 * @method unlock
 	 * @example __.SP.grid.unlock();
@@ -128,13 +114,11 @@ __.SP.grid = {
 	}
 
 	/**
-	 * <pre>
 	 * Refreshes the list view without reloading the entire page. 
-	 * </pre>
 	 * @memberof __.SP.grid
 	 * @method reload
 	 * @todo test replacing return false in catch with page reload?
-	 * @example __.SP.grid.unlock();
+	 * @example __.SP.grid.reload();
 	 */
 	, reload : function( ms ) {
 		ms = ms || 0;

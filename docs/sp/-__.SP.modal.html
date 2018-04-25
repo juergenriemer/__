@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Namespace: modal</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<style>
+.prettyprint {
+	width : 100%;
+}
+h1 {
+	font-size : 2em;
+}
+h4.name {
+	margin-top : 2em;
+	font-size : 1.7em;
+	border-bottom : 1px dashed #c0c0c0;
+}
+h4.name span.signature {
+	font-size : 70%;
+	padding : 5px;
+}
+h4.name span {
+	font-size : 50%;
+}
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
+</style>
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Namespace: modal</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="-__.html">__</a><a href="-__.SP.html">.SP</a>.</span>modal</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.modal.js.html">__.SP.modal.js</a>, <a href="-__.SP.modal.js.html#line7">line 7</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".alert"><span class="type-signature">(static) </span>alert<span class="signature">(args)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Opens a modal alert window with a message.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a parameter object holding the following values
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sTitle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">title of alert window (default is "System Message"</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sMessage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">message of the alert.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.modal.js.html">__.SP.modal.js</a>, <a href="-__.SP.modal.js.html#line233">line 233</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the modal object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>__.SP.modal.alert( {
+	  sMessage : "You cannot perform this action until you checkout"
+} );</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".bExists"><span class="type-signature">(static) </span>bExists<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if a modal window is currently displayed.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.modal.js.html">__.SP.modal.js</a>, <a href="-__.SP.modal.js.html#line264">line 264</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    true if a modal window is currently displayed
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var bModalOpen = __.SP.modal.bExists();</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".confirm"><span class="type-signature">(static) </span>confirm<span class="signature">(args)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Opens a confirmation window with a question plus "Yes"/"No" buttons.<br>
+Invokes a passed on callback function with a boolean indicating the answer.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a parameter object holding the following values
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sTitle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">title of confirmation window (default is "Confirm this action..."</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sQuestion</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">question to ask the user (default is "Do you want to proceed?")</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fnAnswer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">callback invoked with the answer as parameter</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.modal.js.html">__.SP.modal.js</a>, <a href="-__.SP.modal.js.html#line199">line 199</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the modal object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>__.SP.modal.confirm( {
+	  sTitle : "Confirm this action"
+	, sQuestion : "Do you want to remove the item?"
+	, fnAnswer : function( a ) {
+		console.log( a );
+	}
+} );</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".load"><span class="type-signature">(static) </span>load<span class="signature">(args)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Loads a page into a modal window
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a parameter object holding the following values
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sTitle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">title of modal window</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Url to be loaded into the modal window</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fnLoad</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">function to be called when the page was loaded.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fnClose</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">function to be called when the window gets closed (A number gets passed on indicating whether it was closed by cancelling (0) or clicking the "OK/Save" button (1)).</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.modal.js.html">__.SP.modal.js</a>, <a href="-__.SP.modal.js.html#line14">line 14</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the modal object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>__.SP.modal.load( {
+	  sTitle : "Manage taxonomies"
+	, url : "/link/to/taxonomy.aspx"
+	, fnLoad: function( dnModal ) {
+		var dnButton = dnModal.getElementById( "#add" );
+		__.dn.del( dnButton );
+	}
+} );</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".open"><span class="type-signature">(static) </span>open<span class="signature">(args)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Opens a modal window
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a parameter object holding the following values
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sTitle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">title of modal window</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hContent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">content of modal window in HTML format</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sOk</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">name of main action button (OK/Save), indicatng "null" will not render the button (default is "Save")</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sCancel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">name of cancel button, indicating "null" will not render the button (default is "Cancel" )</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bClose</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">flag wether a button to close the modal window is rendered (X in top right corner)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fnClose</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">function to be called when the window gets closed (A number gets passed on indicating whether it was closed by cancelling (0) or clicking the "OK/Save" button (1)).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fnact</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">function to be called when the main action button is clicked</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sLoading</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">message to be shown when {args.fnact} is called or when {args.bShowProcessing} is flagged true (default is "Processing your request.")</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bShowProcessing</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">flag to show the "in progress" modus (spinning wheel + message).</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.modal.js.html">__.SP.modal.js</a>, <a href="-__.SP.modal.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the modal object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>__.SP.modal.confirm( {
+	  sTitle : "Save a filter"
+	, hContent : "name: &lt;input id='filter' type='text'>&lt;/input>"
+	, fnact : function( oModal ) {
+		var sName = oModal.dn.getElementById( "#filter" ).value();
+			// save filter with sName
+	}
+	, sCancel : null
+	, bClose : false
+} );</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".resize"><span class="type-signature">(static) </span>resize<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Resizes the current modal window to fit the content.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.modal.js.html">__.SP.modal.js</a>, <a href="-__.SP.modal.js.html#line274">line 274</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>__.SP.modal.resize();</code></pre>
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+	<h3><a href="../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+<script>
+var dnNav = document.querySelector( "nav" );
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	dn.textContent = lsParts[ 1 ];
+}
+
+var dnMethods = document.getElementById( "methods" );
+var dnMethodCount = document.getElementById( "method-count" );
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+</script>
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Apr 25 2018 08:12:53 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+<script src="custom.js"> </script>
+</body>
+</html>
