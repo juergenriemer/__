@@ -463,18 +463,6 @@ __.dn = {
 		}
 		dn.style[ k ] = v;
 	}
-	/**
-	* <pre>
-	* Securely writes HTML into a DOM element.
-	* It strips off the following tags: "script", "link", "iframe", "html", "body", "meta", "embed"
-	* </pre>
-	* @memberof __.dn
-	* @method h
-	* @example __.dn.h( dn, "<h1>Hi Mom</h1><iframe></iframe>" );
-	* @param {Element} dn DOM node
-	* @param {String} h HTML string
-	* REF: improve this and text with non-closing tags
-	*/
 	, h : function( dn, us_h ) {
 		us_h = us_h.toString() || "";
 		var dnWrapper = document.createElement( "div" );
