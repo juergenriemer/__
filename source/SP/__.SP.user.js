@@ -51,3 +51,6 @@ SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
 })
 	}
 };
+__.SP.user.current();
+
+console.log( __.SP.user )

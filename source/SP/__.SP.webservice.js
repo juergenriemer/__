@@ -6,29 +6,33 @@ __.Common.Urls = {
 			docin : 'https://docin.osce.org/',
 			sharepoint : 'https://sharepoint.osce.org/',
 			mySite : 'https://sp-selfservice.osce.org/',
-			midtier : 'https://ws-sharepoint.osce.org/WebService.asmx/'
+			midtier : 'https://ws-sharepoint.osce.org/WebService.asmx/',
+			sputils : 'http://sputils-ssom.osce.org/'
 		}
 		, test : {
 			rso : 'https://test-rso.osce.org/',
 			docin : 'https://test-docin.osce.org/',
 			sharepoint : 'https://test-jarvis.osce.org/',
 			mySite : 'https://test-sp-selfservice.osce.org/',
-			midtier : 'https://test-ws-sharepoint.osce.org/WebService.asmx/'
+			midtier : 'https://test-ws-sharepoint.osce.org/WebService.asmx/',
+			sputils : 'http://sputils-ssom-test.osce.org/'
+			
 		}
 		, dev : {
 			rso : 'https://dev-rso.osce.org/',
 			docin : 'https://dev-docin.osce.org/',
 			sharepoint : 'https://dev-sharepoint.osce.org/',
 			mySite : 'https://dev-sp-selfservice.osce.org/',
-			midtier : 'https://dev-ws-sharepoint.osce.org/WebService.asmx/'
+			midtier : 'https://dev-ws-sharepoint.osce.org/WebService.asmx/',
+			sputils : 'http://sputils-ssom-dev.osce.org/'
 		}
 	}
 	, get : function( sDomain ) {
 		var sEnv = "prod";
-			if( /^https:\/\/test/.test( self.location.href ) ) {
+		if( /(^test-|-test\.)/.test( self.location.host ) ) {
 			sEnv = "test";
 		}
-		else if( /^https:\/\/dev/.test( self.location.href ) ) {
+		else if( /(^dev-|-dev\.)/.test( self.location.host ) ) {
 			sEnv = "dev";
 		}
 		var url = this.aaurl[ sEnv ][ sDomain ];

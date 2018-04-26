@@ -27,19 +27,19 @@ type ^
 	%pathBuild%__.utils_1.0.0.min.js ^
 	> %pathBuild%__.core_1.0.0.min.js
 
-echo "compress helper"
+echo "compress plugins"
 
-REM npx google-closure-compiler --js="C:\Users\admin_jriemer\Projects\Osce.Lib.JS\source\helper\autocomplete\__.autocomplete.js" --js_output_file="C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.autocomplete_1.0.0.min.js"
-copy "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\source\helper\autocomplete\__.autocomplete.js" "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.autocomplete_1.0.0.min.js"
-copy "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\source\helper\lock\__.lock.js" "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.lock_1.0.0.min.js"
-copy "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\source\helper\mustache\mustache.min.js" "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\mustache.min.js"
+REM npx google-closure-compiler --js="C:\Users\admin_jriemer\Projects\Osce.Lib.JS\source\plugins\autocomplete\__.autocomplete.js" --js_output_file="C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.autocomplete_1.0.0.min.js"
+copy "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\source\plugins\autocomplete\__.autocomplete.js" "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.autocomplete_1.0.0.min.js"
+copy "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\source\plugins\lock\__.lock.js" "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.lock_1.0.0.min.js"
+copy "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\source\plugins\mustache\mustache.min.js" "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\mustache.min.js"
 
-echo "combine helper"
+echo "combine plugins"
 type ^
 	"C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.autocomplete_1.0.0.min.js" ^
 	"C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.lock_1.0.0.min.js" ^
-	"C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.mustache.min.js" ^
-	> "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.helper_1.0.0.min.js"
+	"C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\mustache.min.js" ^
+	> "C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\__.plugins_1.0.0.min.js"
 
 
 echo "compress and combine SP"
@@ -68,7 +68,7 @@ type ^
 echo "combine __"
 type ^
 	%pathBuild%__.core_1.0.0.min.js ^
-	%pathBuild%__.helper_1.0.0.min.js ^
+	%pathBuild%__.plugins_1.0.0.min.js ^
 	%pathBuild%__.sp_1.0.0.min.js ^
 	> %pathBuild%__.1.0.0.min.js
 

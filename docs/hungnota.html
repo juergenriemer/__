@@ -47,6 +47,13 @@ Why?
 <br>
 Example : dnUserDetails -> [dn] the thing is a DOM node representing [UserDetails] 
 	</div>
+
+<h3>primers on HN</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Hungarian_notation">wikipedia</a></li>
+<li><a href="https://www.joelonsoftware.com/2005/05/11/making-wrong-code-look-wrong/">article</a></li>
+</ul>
+
 <h3>List of prefixes used</h3>
 <table class='prefix'>
 <tr>
@@ -110,14 +117,65 @@ __.dn_( ".comments", function( us_sComment ) {
 
 </table>
 <hr>
+<h3>Why use it?</h3>
+<h4>Make wrong code look wrong</h4>
 
-<h3>Furhter reading</h3>
-<ul>
-<li><a href="https://en.wikipedia.org/wiki/Hungarian_notation">wikipedia</a><li>
-<li><a href="https://www.joelonsoftware.com/2005/05/11/making-wrong-code-look-wrong/">article</a></li>
-
-<hr>
-</div>
+JavaScript is a losely/weakly typed interpreter langague implementing automatic type conversion; in addition JavaScript being a client side language it naturally deals with user inputs that are to be considered malicious.<br>HN helps to prevent mistakes that go unnoticed. 
+<h5>type conversion</h5>
+<pre>
+height = "12 meters";
+...lines later
+margin = 2;
+height += margin;
+// height == "12 meters2";
+--- in HN ---
+sHeight = "12 meters";
+nMargin = 2;
+sHeight += nMargin; <-- wrong
+</pre>
+<h5>unexpected method calls</h5>
+<pre>
+species = "insect";
+...lines later
+for( var ix=0; ix&lt;species.length; ix++ ) {
+	console.log( species[ ix ] );
+}
+// print i,n,s,e,c,t
+--- in HN ---
+sSpecies = "insect";
+for( var ix=0; ix&lt;sSpecies.length; ix++ ) { // <-- wrong
+	console.log( sSpecies[ ix ] );
+}
+</pre>
+<h5>malicious user input</h5>
+Any external, client side input e.g. form field values, cookies, URL parameters are to be considered malicious. We prefix them with "us_" to make it very clear that we deal with something potentially dangerous.
+<br>
+A "us_" prefixed variable must not be in one line with any other prefixed variable unless we sanitize it in the same line:
+<pre>
+us_sFirstName = document.getElementById( "firstName" ).value;
+us_sLastName = document.getElementById( "lastName" ).value;
+// so eiter
+us_sFullName = us_sFirstName + " " + us_sLastName;
+// or 
+sFullName = sanitize( us_sFirstName + " " + us_sLastName );
+</pre>
+another example
+<pre>
+userDetails.comment = document.getElementById( "comment" ).value;
+... line later
+userReport = "&lt;ul>";
+for( var detail in userdetails ) {
+	userReport.push( "&lt;li>" + userDetails[ detail ] + "&lt;\li>" );
+}
+userReport = "&lt;/ul>";
+userDetailBox.innerHTML = userReport;
+--- in HN ---
+kvUserDetails.us_sComment = document.getElementById( "comment" ).value; // <-- wrong
+// either prefix the object with "us_"
+us_kvUserDetails.us_sComment = document.getElementById( "comment" ).value;
+// or sanitize user comment
+kvUserDetails.sComment = sanitize( document.getElementById( "comment" ).value );
+</pre>
 
 </div>
 </div>

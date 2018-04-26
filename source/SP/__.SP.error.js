@@ -24,11 +24,13 @@ top.__.SP.Error = __.Class.extend( {
 		}
 		var now = new Date();
 		var dt = new Date( now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds() );
+		__.SP.user.current();
+		var sUser = ( top.__.SP.user.aInfo && top.__.SP.user.aInfo.sLogin ) ? top.__.SP.user.aInfo.sLogin : "";
 		this.oError = {
 			  sTitle : args.sTitle || "System Message"
 			, sError : sError
 			, sDescription : sDescription
-			, sUser : top.__.SP.user.aInfo.sLogin
+			, sUser : sUser
 			, dt : dt
 			, sInfo : args.sInfo || null
 			, sStack : args.sStack || null
@@ -109,6 +111,7 @@ top.__.SP.Error = __.Class.extend( {
 		var that = this;
 		this.createErrorData( args );
 		var hMessage = this.hMessage( this.oError );
+		console.log( ">>>", hMessage );
 		if( hMessage ) {
 			this.dnWindow = top.__.SP.modal.open( {
 				  sTitle : that.oError.sTitle
