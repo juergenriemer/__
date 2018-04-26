@@ -37,30 +37,30 @@ if( typeof __ == "undefined" ) {
  * @example __.dn_( "[href]", function( dn ) {
  *       dn.setAttribute( "href", "#" );
  *  } );
- * @param {String} s CSS selector string
+ * @param {String} css CSS selector string
  * @param {Element|Function} [x1] starting node or callback function
  * @param {Function} [x2] callback function
  * @returns {Element|Array} A DOM node or a list of DOM nodes or null if CSS selector could not be found
  */
-__.dn_ = function( s, x1, x2 ) {
+__.dn_ = function( css, x1, x2 ) {
 	var dnStart = ( typeof x1 == "object" ) ? x1 : document;
 	var fn = ( typeof x1 == "function" ) ? x1 : x2;
 	var sfn = "querySelectorAll";
-	if( /^.[a-zA-Z0-9_-]*$/.test( s ) ) {
-		var sfst = s.substr( 0, 1 );
+	if( /^.[a-zA-Z0-9_-]*$/.test( css ) ) {
+		var sfst = css.substr( 0, 1 );
 		if( sfst == "#" ) {
 			sfn = "getElementById";
-			s = s.substr( 1 );
+			css = css.substr( 1 );
 		}
 		else if( sfst == "." ) {
 			sfn = "getElementsByClassName";
-			s = s.substr( 1 );
+			css = css.substr( 1 );
 		}
 		else if( /[a-zA-Z]/.test( sfst ) ) {
 			sfn = "getElementsByTagName";
 		}
 	}
-	var xdn = dnStart[ sfn ]( s );
+	var xdn = dnStart[ sfn ]( css );
 	xdn = HTMLCollection.prototype.isPrototypeOf( xdn )
 		? [].slice.call( xdn ) : xdn;
 	if( xdn ) {

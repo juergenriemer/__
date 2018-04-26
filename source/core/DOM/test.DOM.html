@@ -164,16 +164,6 @@ __.dn.each( dnNavi, function( dn ) {
 assert( __.dn_( "#menu" ), null, "__.dn.each/del (menu)" );
 assert( __.dn_( "#footer" ), null, "__.dn.each/del (footer)" );
 
-//var dnSani = __.dn.prepend( "<div id='sani'>xxx</div>" );
-//__.dn.h( escapeHtml( s ), dnSani );
-
-
-//		dn.innerHTML = h;	
-
-s = '<img src="x" onerror="javascript:alert(1)" />';
-//dnResult.innerHTML = s;
-__.dn.h( dnResult, s );
-/*
 
 dnH1 = __.dn_( "h1" );
 s = dnH1.innerHTML;
@@ -182,10 +172,10 @@ assert( s, es, "__.dn_ (tagname)" );
 
 // create/move in document body 
 
-var dnTop = __.dn.prepend( "<div>prepend</div>" );
+//var dnTop = __.dn.prepend( "<div>prepend</div>" );
 // does not return node! var dnSani = __.dn.prepend( "<div id='sani'>xxx</div>", document.body );
 
-var dnBottom = __.dn.append( "<div>prepend</div>" );
+//var dnBottom = __.dn.append( "<div>prepend</div>" );
 
 // create/move in nodes 
 
@@ -449,7 +439,6 @@ setTimeout( function() {
 	}, 5 );
 	__.dn.scroll.to( "y", 10 );
 }, 1200 );
-*/
 </script>
 </body>
 </html>
