@@ -3,9 +3,7 @@
 // @output_file_name __.event.min.js
 // @js_externs var __; __.Event; __.Event.listen; __.Event.trigger;
 // ==/ClosureCompiler==
-// version 1.0
 /**
- * @version 1.0
  * @namespace __.Event
  */
 
