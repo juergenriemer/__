@@ -1,7 +1,7 @@
 <html>
-<script src="__.Utils.js"></script>
+<script src="__.utils.js"></script>
 <body>
-<h3>Unit tests for __.Async.js</h3>
+<h3>Unit tests for __.Utils.js</h3>
 <div id="output"></div>
 <script>
 cOkAssert = 0;
@@ -16,7 +16,7 @@ assert = function( x1, x2, s ) {
 			console.warn( "result:", x1 );
 		}
 		else {
-			console.log( 'OK: ' + s );
+			s = "[OK] " + s;
 		}
 	}
 	else if( typeof x1 == "object" && typeof x2 == "string" ) {
@@ -29,7 +29,7 @@ assert = function( x1, x2, s ) {
 			console.warn( "result:", x1 );
 		}
 		else {
-			console.log( 'OK: ' + s );
+			s = "[OK] " + s;
 		}
 	}
 	dn.innerHTML += s + "<br>";
@@ -484,7 +484,6 @@ c = __.o.c( o );
 ec = 6;
 assert( c, ec, "__.o.c (object is string)" );
 
-/*
 // __.dt.date
 var o = __.dt.date( "2018/04/04" );
 var eo = {nDay:4,nMonth:3,olla:{ a:1,b:{u:"x"}},sDay:"Wednesday",sDayShort:"Wed",sMonth:"April",sMonthShort:"Apr"};
@@ -502,146 +501,146 @@ recurs = function( o ) {
 	}
 }
 recurs( eo );
-assert( o, eo, "__.dt.date" );
+assert( o, eo, "[OK] __.dt.date" );
 
 
 console.log( "> __.o.equal, __.o.diff" );
 
 var o1 = {a:[1,3,1,[false,true,{a:1},[99,-1,"g"]]]};
 var o2 = {a:[1,3,1,[false,true,{a:1},["g",99,-1]]]};
-assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 4" )
+assert( true,  __.o.equal( o1, o2 ), "nested unordered arrays complex 4" )
 
 var o1 = [{a:1},[99,-1,"g"]];
 var o2 = [{a:1},[99,-1,"g"]];
-assert( __.o.equal( o1,o2 ), "object with multiple undefined" )
+assert( true,  __.o.equal( o1,o2 ), "object with multiple undefined" )
 
 var o1 = {a:[,[[]],[]]}; 
 var o2 = {a:[,[],[[]]]};
-assert( false === __.o.equal( o1,o2 ), "object with multiple undefined" )
+assert( true,  false === __.o.equal( o1,o2 ), "object with multiple undefined" )
 
 var o1 = {a:[]}; var o2 = {a:[0]};
-assert( false === __.o.equal( o1,o2 ), "object with undefined, zero" )
+assert( true,  false === __.o.equal( o1,o2 ), "object with undefined, zero" )
 
 var o1 = {a:[0,[[0]]]}; var o2 = {a:[0,[0,[]]]};
-assert( false === __.o.equal( o1,o2 ), "nested object with undefined, zero" )
+assert( true,  false === __.o.equal( o1,o2 ), "nested object with undefined, zero" )
 
 var o1 = {a:[[[,0]],]}; var o2 = {a:[,[[0,]]]};
-assert( false === __.o.equal( o1,o2 ), "nested object with undefined, zero 2" )
+assert( true,  false === __.o.equal( o1,o2 ), "nested object with undefined, zero 2" )
 
-assert( false === __.o.equal( [],[0] ), "undefined, zero" )
+assert( true,  false === __.o.equal( [],[0] ), "undefined, zero" )
 
 var o1 = {a:[1,,4]};
 var o2 = {a:[1,,4]};
-assert( __.o.equal( o1, o2 ), "object equal" );
+assert( true,  __.o.equal( o1, o2 ), "object equal" );
 
-assert( false === __.o.equal( [0],[] ), "zero, undefined" )
-assert( __.o.equal( [],[] ), "undefined, undefined" )
+assert( true,  false === __.o.equal( [0],[] ), "zero, undefined" )
+assert( true,  __.o.equal( [],[] ), "undefined, undefined" )
 
 var o1 = {a:1,b:1,c:1};
 var o2 = {a:1,b:2,c:1};
 var ldiff = {o1:[["diff", "b", 1, 2]],o2:[["diff", "b", 2, 1]]};
-assert( false === __.o.equal( o1, o2 ), "simple object, many keys, diff val" );
-assert( __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
+assert( true,  false === __.o.equal( o1, o2 ), "simple object, many keys, diff val" );
+assert( true,  __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
 
 var o1 = {a:[1]};
 var o2 = {a:[1]};
-assert( __.o.equal( o1, o2 ), "object equal" );
+assert( true,  __.o.equal( o1, o2 ), "object equal" );
 
 var o1 = {a:1};
 var o2 = {a:1};
-assert( __.o.equal( o1, o2 ), "simple object equal" );
+assert( true,  __.o.equal( o1, o2 ), "simple object equal" );
 var o1 = {a:1};
 var o2 = {a:true};
-assert( false === __.o.equal( o1, o2 ), "simple object diff type" );
+assert( true,  false === __.o.equal( o1, o2 ), "simple object diff type" );
 var ldiff = {o1:[["length",null,7,10],["type", "a", 1, true]],o2:[["length",null,7,10],["type", "a", true, 1]]};
-assert( __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
+assert( true,  __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
 
 var o1 = {a:1,b:1,c:1};
 var o2 = {a:1,b:1,c:1};
-assert( __.o.equal( o1, o2 ), "simple object, many keys" );
+assert( true,  __.o.equal( o1, o2 ), "simple object, many keys" );
 
 var o1 = {a:1,b:1,c:1};
 var o2 = {a:1,b:2,c:1};
-assert( false === __.o.equal( o1, o2 ), "simple object, many keys, diff val" );
+assert( true,  false === __.o.equal( o1, o2 ), "simple object, many keys, diff val" );
 var ldiff = {o1:[["diff", "b", 1, 2]],o2:[["diff", "b", 2, 1]]};
-assert( __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
+assert( true,  __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
 
 var o1 = [1];
 var o2 = [1];
-assert( __.o.equal( o1, o2 ), "simple array" );
+assert( true,  __.o.equal( o1, o2 ), "simple array" );
 
 var o1 = [1,2,3];
 var o2 = [1,2,3];
-assert( __.o.equal( o1, o2 ), "simple array, multiple elements" );
+assert( true,  __.o.equal( o1, o2 ), "simple array, multiple elements" );
 
 var o1 = [1,2,3];
 var o2 = [3,1,2];
-assert( __.o.equal( o1, o2 ), "!!simple array, multiple elements unordered" );
+assert( true,  __.o.equal( o1, o2 ), "!!simple array, multiple elements unordered" );
 
 var o1 = { a: [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ] };
 var o2 = { a: [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ] };
-assert( __.o.equal( o1, o2 ), "complex object" );
+assert( true,  __.o.equal( o1, o2 ), "complex object" );
 
 var o1 = [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ];
 var o2 = [ { a:1,b:[1] }, { c:[{u:7,l:[[[4]]]}]} ];
-assert( false === __.o.equal( o1, o2 ), "complex object, wrong value" );
+assert( true,  false === __.o.equal( o1, o2 ), "complex object, wrong value" );
 var ldiff = {o1:[["diff", "1.c.0.l.0.0.0", 5, 4]],o2:[["diff", "1.c.0.l.0.0.0", 4, 5]]};
-assert( __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
+assert( true,  __.o.equal( ldiff, __.o.diff( o1, o2 ) ), "->diff" );
 
 var o1 = [ [ {a:1},{a:2},{a:3} ], [ {a:1},{a:2},{a:3} ] ];
 var o2 = [ [ {a:1},{a:2},{a:3} ], [ {a:1},{a:2},{a:3} ] ];
-assert( __.o.equal( o1, o2 ), "multiple objects duplicated in arrays" );
+assert( true,  __.o.equal( o1, o2 ), "multiple objects duplicated in arrays" );
 
 var o1 = [ [ {a:1},{b:2},{a:3} ], [ {a:1},{b:2},{a:3} ] ];
 var o2 = [ [ {a:1},{b:2},{a:3} ], [ {a:1},{b:2},{a:3} ] ];
-assert( __.o.equal( o1, o2 ), "multiple objects in arrays" );
+assert( true,  __.o.equal( o1, o2 ), "multiple objects in arrays" );
 
 var o1 = { fn:function(){var x=1} };
 var o2 = { fn:function(){var x=1} };
-assert( __.o.equal( o1, o2 ), "functions" );
+assert( true,  __.o.equal( o1, o2 ), "functions" );
 
 var o1 = { fn:function(){var x=1} };
 var o2 = { fn:function(){var x=1} };
-assert( __.o.equal( o1, o2 ), "functions with spaces" );
+assert( true,  __.o.equal( o1, o2 ), "functions with spaces" );
 
 var o1 = { b:new Date(2018,1,1) };
 var o2 = { b:new Date(2018,1,1) };
-assert( __.o.equal( o1, o2 ), "same dates" );
+assert( true,  __.o.equal( o1, o2 ), "same dates" );
 
 var o1 = { b:new Date(2018,1,1) };
 var o2 = { b:new Date(2018,1,2) };
-assert( false === __.o.equal( o1, o2 ), "different dates" );
+assert( true,  false === __.o.equal( o1, o2 ), "different dates" );
 
-assert( false === __.o.equal( {l:[4,3],s:{a:1}}, {l:[3,4],s:[11112]} ), "object with different types" );
-assert( __.o.equal( {l:[4,3],s:{a:1}}, {l:[3,4],s:{a:1}} ), "unordered objects" );
-assert( false === __.o.equal( [null],[0] ), "null, zero" )
-assert( false === __.o.equal( [],[0] ), "undefined, zero" )
-assert( false === __.o.equal( [0],[""] ), "zero, empty string" )
-assert( false === __.o.equal( [],[""] ), "undefined, empty string" )
-assert( false === __.o.equal( [null],[""] ), "null, empty string" )
-assert( false === __.o.equal( [null],[0] ), "null, zero" )
-assert( false === __.o.equal( [null],[] ), "null, undefined" )
-assert( __.o.equal(
+assert( true,  false === __.o.equal( {l:[4,3],s:{a:1}}, {l:[3,4],s:[11112]} ), "object with different types" );
+assert( true,  __.o.equal( {l:[4,3],s:{a:1}}, {l:[3,4],s:{a:1}} ), "unordered objects" );
+assert( true,  false === __.o.equal( [null],[0] ), "null, zero" )
+assert( true,  false === __.o.equal( [],[0] ), "undefined, zero" )
+assert( true,  false === __.o.equal( [0],[""] ), "zero, empty string" )
+assert( true,  false === __.o.equal( [],[""] ), "undefined, empty string" )
+assert( true,  false === __.o.equal( [null],[""] ), "null, empty string" )
+assert( true,  false === __.o.equal( [null],[0] ), "null, zero" )
+assert( true,  false === __.o.equal( [null],[] ), "null, undefined" )
+assert( true,  __.o.equal(
 	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 	, { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 ), "obect various types" );
-assert( false === __.o.equal(
+assert( true,  false === __.o.equal(
 	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 	, { a:false,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 ), "object various types, diff values" );
-assert( false === __.o.equal(
+assert( true,  false === __.o.equal(
 	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 	, { a:true,b:new Date(2018,1,2),c:-1,d:[[[1]]] }
 ), "object various types, diff values 2" );
-assert( false === __.o.equal(
+assert( true,  false === __.o.equal(
 	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 	, { a:true,b:new Date(2018,1,1),c:0,d:[[[1]]] }
 ), "object various types, diff values 3" );
-assert( false === __.o.equal(
+assert( true,  false === __.o.equal(
 	  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 	, { a:true,b:new Date(2018,1,1),c:0,d:[[[2]]] }
 ), "object various types, diff values 4" );
-assert( __.o.equal(
+assert( true,  __.o.equal(
 	  { a:1,b:{c:{d:{e:1}}}}
 	, { a:1,b:{c:{d:{e:1}}}}
 ), "nested objects" );
@@ -673,68 +672,67 @@ o2  = {
 	, f : function() { return 'olla' }
 }
 
-assert( false === __.o.equal( o1, o2 ), "complex object, diff struc" );
+assert( true,  false === __.o.equal( o1, o2 ), "complex object, diff struc" );
 delete o2.b.b2.bb3;
-assert( false === __.o.equal( o1, o2 ) , "complex object, diff struc 2" );
+assert( true,  false === __.o.equal( o1, o2 ) , "complex object, diff struc 2" );
 o2.c = "by";
-assert( __.o.equal( o1, o2 ), "complex object, corrected" );
-assert( "olla" == o1.f(), "test function of complex object" );
-assert( "olla" == o2.f(), "test function of complex object 2" );
+assert( true,  __.o.equal( o1, o2 ), "complex object, corrected" );
+assert( true,  "olla" == o1.f(), "test function of complex object" );
+assert( true,  "olla" == o2.f(), "test function of complex object 2" );
 var o1 = {a:["a",-1,true]}
 var o2 = {a:["a",-1,true]}
-assert( __.o.equal( o1, o2 ), "mixed arrays" )
+assert( true,  __.o.equal( o1, o2 ), "mixed arrays" )
 
 var o1 = {a:[1,true,"a"]}
 var o2 = {a:["a",1,true]}
 var o1 = ["a",1,2,3,"b"]
 var o2 = ["a","b",3,1,2]
-assert( __.o.equal( o1, o2 ), "mixed arrays unordered" )
+assert( true,  __.o.equal( o1, o2 ), "mixed arrays unordered" )
 
 var o1 = [[[["a",1,2,3,"b"]]]];
 var o2 = [[[["a","b",3,1,2]]]];
-assert( __.o.equal( o1, o2 ), "nested mixed arrays unordered" )
+assert( true,  __.o.equal( o1, o2 ), "nested mixed arrays unordered" )
 
 var o1 = {a:[7,2,3,[5,1,2,[8,1,3]]]};
 var o2 = {a:[7,2,3,[5,1,2,[8,1,3]]]};
-assert( __.o.equal( o1, o2 ), "nested arrays" )
+assert( true,  __.o.equal( o1, o2 ), "nested arrays" )
 
 var o1 = [7,2,3,[5,1,2,[8,1,3]]];
 var o2 = [7,2,3,[5,1,2,[8,1,3]]];
-assert( __.o.equal( o1, o2 ), "nested arrays 1" )
+assert( true,  __.o.equal( o1, o2 ), "nested arrays 1" )
 
 var o1 = [7,2,[5,4,[8,1]]];
 var o2 = [7,2,[5,4,[8,1]]];
-assert( __.o.equal( o1, o2 ), "nested arrays 2" )
+assert( true,  __.o.equal( o1, o2 ), "nested arrays 2" )
 
 var o1 = {a:[{b:1},[1,2],4,5]}
 var o2 = {a:[{b:1},[1,2],4,5]}
-assert( __.o.equal( o1, o2 ), "nested arrays complex" )
+assert( true,  __.o.equal( o1, o2 ), "nested arrays complex" )
 
 var o1 = {a:[1,3,1,[false,true,{a:1},["g",-1,99,[1]]]]};
 var o2 = {a:[1,3,1,[false,true,{a:1},["g",-1,99,[1]]]]};
-assert( __.o.equal( o1, o2 ), "nested ordered arrays complex 2" )
+assert( true,  __.o.equal( o1, o2 ), "nested ordered arrays complex 2" )
 
 var o1 = {a:[["g",-1,99,[1,3]],3,1,1,{a:1}]};
 var o2 = {a:[1,3,1,{a:1},[99,-1,"g",[3,1]]]};
-assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 3" )
+assert( true,  __.o.equal( o1, o2 ), "nested unordered arrays complex 3" )
 
 var o1 = {a:[1,3,1,[false,true,{a:1},[99,-1,"g"]]]};
 var o2 = {a:[1,3,1,[false,true,{a:1},["g",99,-1]]]};
-assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 4" )
+assert( true,  __.o.equal( o1, o2 ), "nested unordered arrays complex 4" )
 
 var o1 = {a:[1,[true,{a:1},[99,-1,"g"]]]};
 var o2 = {a:[1,[true,{a:1},["g",99,-1]]]};
-assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 5" )
+assert( true,  __.o.equal( o1, o2 ), "nested unordered arrays complex 5" )
 
 var o1 = {a:[{a:1},[99,-1,"g"]]};
 var o2 = {a:[{a:1},["g",99,-1]]};
-assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 6" )
+assert( true,  __.o.equal( o1, o2 ), "nested unordered arrays complex 6" )
 
 var o1 = [{a:1},[99,-1,"g"]];
 var o2 = [{a:1},["g",99,-1]];
-assert( __.o.equal( o1, o2 ), "nested unordered arrays complex 7" )
+assert( true,  __.o.equal( o1, o2 ), "nested unordered arrays complex 7" )
 console.log( "=======", "[OK: " + cOkAssert + "] [ERR: " + cErrAssert + "]", "========" );
-*/
 </script>
 </body>
 </html>
