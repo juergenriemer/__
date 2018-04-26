@@ -38,13 +38,13 @@ if( typeof __ == "undefined" ) {
  *       dn.setAttribute( "href", "#" );
  *  } );
  * @param {String} css CSS selector string
- * @param {Element|Function} [x1] starting node or callback function
- * @param {Function} [x2] callback function
+ * @param {Element|Function} [dn_or_cb] starting node or callback function
+ * @param {Function} [cb] callback function
  * @returns {Element|Array} A DOM node or a list of DOM nodes or null if CSS selector could not be found
  */
-__.dn_ = function( css, x1, x2 ) {
-	var dnStart = ( typeof x1 == "object" ) ? x1 : document;
-	var fn = ( typeof x1 == "function" ) ? x1 : x2;
+__.dn_ = function( css, dn_or_cb, cb ) {
+	var dnStart = ( typeof dn_or_cb == "object" ) ? dn_or_cb : document;
+	var cb = ( typeof dn_or_cb == "function" ) ? dn_or_cb : cb;
 	var sfn = "querySelectorAll";
 	if( /^.[a-zA-Z0-9_-]*$/.test( css ) ) {
 		var sfst = css.substr( 0, 1 );
@@ -64,8 +64,8 @@ __.dn_ = function( css, x1, x2 ) {
 	xdn = HTMLCollection.prototype.isPrototypeOf( xdn )
 		? [].slice.call( xdn ) : xdn;
 	if( xdn ) {
-		if( fn ) {
-			this.dn.each( xdn, fn );
+		if( cb ) {
+			this.dn.each( xdn, cb );
 		}
 		var c = xdn.length;
 		if ( ! isNaN( c ) ) {
@@ -95,15 +95,15 @@ __.dn_ = function( css, x1, x2 ) {
  *     dn.style.border = "1px solid red";
  *     dn.style.padding = "1em";
  * } );
- * @param {String} s CSS selector string
+ * @param {String} css CSS selector string
  * @param {Element} dn starting node
- * @param {Function} [fn] callback function
+ * @param {Function} [cb] callback function
  * @returns {Element} A DOM node or null if CSS selector could not be found
  */
-__._dn = function( s, dn, fn ) {
-	var dnClosest = dn.closest( s );
-	if( fn ) {
-		this.dn.each( dnClosest, fn );
+__._dn = function( css, dn, cb ) {
+	var dnClosest = dn.closest( css );
+	if( cb ) {
+		this.dn.each( dnClosest, cb );
 	}
 	return dnClosest
 };

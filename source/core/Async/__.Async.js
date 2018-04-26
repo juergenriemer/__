@@ -22,6 +22,7 @@ if( typeof __ == "undefined" ) {
  * @property {String}  sFile - Name of file; used for debugging
  * @property {Function}  fnerr - Custom function to be invoked in case of rejections
  * @property {Function}  fnstat - Custom function to be invoked on every finished task
+ * @todo replace x1..xn paramters with more meaningful names e.g. ctx_or_cb
  * @example ( new __.Async() )
  * .then( __.SP.list, "create", { sList : "Dossier" } )
  * .start();
