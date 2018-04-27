@@ -251,14 +251,14 @@ Object.defineProperty( Object.prototype, "struc", {
  * @method equal
  * @example var o1 = { sName : "John", nAge : 44 };
  * var o2 = { sName : "John", nAge : 44 };
- * var bEqual = __.o.equal( o1, o2 );
+ * var bEqual = o.equal( o1 );
  * @param {Object} o1 first object to be compared 
  * @param {Object} o2 second object to be compared 
  * @returns {Boolean} true if objects are equal, false if not
  */
 Object.defineProperty( Object.prototype, "equal", {
 	value : function( oOther ) {
-		return this._compare_( oOther ).b; 
+		return this.compareTo( oOther ).isEqual;
 	}
 } );
 
@@ -275,11 +275,11 @@ Object.defineProperty( Object.prototype, "equal", {
  */
 Object.defineProperty( Object.prototype, "diff", {
 	value : function( o2 ) {
-		var ldiff1 = this._compare_( o2 ); 
-		if( ldiff1.b ) {
+		var ldiff1 = this.compareTo( o2 ); 
+		if( ldiff1.isEqual ) {
 			return null;
 		}
-		var ldiff2 = o2._compare_( this ); 
+		var ldiff2 = o2.compareTo( this ); 
 		return {
 			  o1 : ldiff1.ldiff
 			, o2 : ldiff2.ldiff
@@ -287,15 +287,26 @@ Object.defineProperty( Object.prototype, "diff", {
 	}
 } );
 
-Object.defineProperty( Object.prototype, "_compare_", {
+/**
+ * Compare two objects and retrieve their differences
+ * @memberof Object
+ * @method diff
+ * @example var o1 = { sName : "John", nAge : 44 };
+ * var o2 = { sName : "John", nAge : 23, bMarried : true };
+ * var oDiff = o1.compareTo( o2 );
+ * @param {Object} o2 second object to be compared 
+ * @returns {Object|null} returns an object of two objects holding
+ * an array of differences found in the second object.
+ */
+Object.defineProperty( Object.prototype, "compareTo", {
 	value : function( o2 ) {
-		var b = true;
+		var isEqual = true;
 		var ldiff = [];
 		var oStruc1 = this.struc( this );
 		var oStruc2 = this.struc( o2 );
 		if( oStruc1.nLength !== oStruc2.nLength ) {
 			ldiff.push( [ "length", ,oStruc1.nLength, oStruc2.nLength ] );
-			b = false;
+			isEqual = false;
 		}
 		oStruc1.lsStruc.forEach( function( s ) {
 			var x1 = oStruc1.o;
@@ -306,12 +317,12 @@ Object.defineProperty( Object.prototype, "_compare_", {
 				x2 = ( x2 ) ? x2[ lsParts[ ix ] ] : x2;
 				if( typeof x1 !== typeof x2 ) {
 					ldiff.push( [ "type", s, x1, x2 ] );
-					b = false;
+					isEqual = false;
 					break;
 				}
 				else if( typeof x2 === "undefined" ) {
 					ldiff.push( [ "miss", s, x1, x2 ] );
-					b = false;
+					isEqual = false;
 					break;
 				}
 				else if( x1 instanceof Date || x1 instanceof Function ) {
@@ -320,14 +331,14 @@ Object.defineProperty( Object.prototype, "_compare_", {
 				}
 				else if( typeof x1 !== "object" ) {
 					if( x1 !== x2 ) {
-						b = false;
+						isEqual = false;
 						ldiff.push( [ "diff", s, x1, x2 ] );
 					}
 				}
 			}
 		} );
 		return {
-			  b : b
+			  isEqual : isEqual
 			, ldiff : ldiff
 		};
 	}
@@ -587,17 +598,17 @@ Object.defineProperty( Array.prototype, "contains", {
 /**
  * Check if two arrays contain exactly the same data.
  * NB: it is not sorting the array. If you don't want to
- * keep the order use __.o.equal method instead.
+ * keep the order use o.equal method instead.
  * @memberof __.l
  * @method equal
  * @example var l1 = [ 1, 2, 3 ];
  * var l2 = [ 1, 2, 3 ];
- * var bEqual = __.l.equal( l1, l2 );
+ * var bEqual = l.equal( l1, l2 );
  * @param {Array} l1 first array to be compared 
  * @param {Array} l2 second array to be compared 
  * @returns {Boolean} result of comparison
  */
-Object.defineProperty( Array.prototype, "equal", {
+Object.defineProperty( Array.prototype, "equalxxxxxxxxx", {
 	value : function( lOther ) {
 		return ( this.join( "-" ) === lOther.join( "-" ) );
 	}
@@ -631,15 +642,32 @@ Object.defineProperty( Array.prototype, "empty", {
 Object.defineProperty( Array.prototype, "kSort", {
 	value : function( k ) {
 		return this.sort( function( a, b ) {
-			if( ! a.hasOwnProperty( k ) ) {
+		console.log( typeof a[ k ] + " -- " + typeof b[ k ] );
+			var nReturn = 1;
+			if( ! a.hasOwnProperty( k ) || typeof a[k] == "undefined" ) {
+				console.log( "....1" );
 				return 1;
+				nReturn = 1;
 			} 
-			else if( ! b.hasOwnProperty( k ) ) {
-				return 0;
+			else if( ! b.hasOwnProperty( k ) || typeof b[k] == "undefined" ) {
+				console.log( "....0" );
+				return -1;
+				nReturn = 0;
 			} 
-//console.log(  a[ k ] - b[ k ]  );
-			return ( a[ k ] > b[ k ] );
+     if(a[k] < b[k]){
+            return -1;
+        }else if(a[k] > b[k]){
+            return 1;
+        }
+        return 0;
+
+
+
+			nReturn = ( a[ k ] > b[ k ] ) ? 1 : 0;
+			console.log( a[ k ] + " : " + b[ k ] + "=> " + nReturn );
+			return nReturn;
 		} );
+
 	}
 } );
 
@@ -764,10 +792,11 @@ __.url = {
 	}
 };
 
-__.dt = {
+__.utils = {};
+__.utils.dt = {
 	  date : function( sdt ) {
 		var dt = ( sdt )
-			? new Date( sdt.replace( /\D/g, '-' ).split( '-' ) )
+			? new Date( sdt.replace( /\D/g, '-' ) )
 			: new Date();
 			
 		var lsDays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
@@ -787,7 +816,7 @@ __.dt = {
 	}
 };
 
-__.misc = {
+__.utils.misc = {
 	  isIE : function() {
 		// http://stackoverflow.com/a/36688806/463676 
 		if( navigator.appName == 'Microsoft Internet Explorer' ) {
@@ -849,12 +878,7 @@ this.Element && function( oPrototype ) {
 	};
 }() );
 
-__.win = {
-	  dx: function () {
-		return window.innerWidth;
-	}
-	, dy: function () {
-		return window.innerHeight;
-	}
-};
+
+
+
 
