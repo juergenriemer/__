@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: o</title>
+    <title>JSDoc: Namespace: Object</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -40,7 +40,7 @@ h4.name span {
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: o</h1>
+    <h1 class="page-title">Namespace: Object</h1>
 
     
 
@@ -51,8 +51,7 @@ h4.name span {
 
 <header>
     
-        <h2>
-            <span class="ancestors"><a href="-__.html">__</a>.</span>o</h2>
+        <h2>Object</h2>
         
     
 </header>
@@ -96,7 +95,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line258">line 258</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line141">line 141</a>
     </li></ul></dd>
     
 
@@ -135,7 +134,7 @@ h4.name span {
     
 
     
-    <h4 class="name" id=".add"><span class="type-signature">(static) </span>add<span class="signature">(ocur, onew)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".add"><span class="type-signature">(static) </span>add<span class="signature">(onew)</span><span class="type-signature"></span></h4>
     
 
     
@@ -143,9 +142,7 @@ h4.name span {
 
 
 <div class="description">
-    <pre>
-Adds an object to an existing object.
-</pre>
+    Adds an object to an existing object.
 </div>
 
 
@@ -177,29 +174,6 @@ Adds an object to an existing object.
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>ocur</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Existing object</td>
-        </tr>
-
     
 
         <tr>
@@ -261,7 +235,7 @@ Adds an object to an existing object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line325">line 325</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line351">line 351</a>
     </li></ul></dd>
     
 
@@ -292,7 +266,7 @@ Adds an object to an existing object.
     
     <pre class="prettyprint"><code>var oOrig = { sName : "John", nAge : 44 }
 var oNew = { email : "john@example.com", id : 123 }
-__.o.add( oOrig, oNew );</code></pre>
+oOrig.add( oNew );</code></pre>
 
 
 
@@ -302,7 +276,7 @@ __.o.add( oOrig, oNew );</code></pre>
     
 
     
-    <h4 class="name" id=".c"><span class="type-signature">(static) </span>c<span class="signature">(o)</span><span class="type-signature"> &rarr; {<a href="Number.html">Number</a>}</span></h4>
+    <h4 class="name" id=".copy"><span class="type-signature">(static) </span>copy<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Object.html">Object</a>}</span></h4>
     
 
     
@@ -310,9 +284,7 @@ __.o.add( oOrig, oNew );</code></pre>
 
 
 <div class="description">
-    <pre>
-Counts first level elements of an object
-</pre>
+    Create a copy of an object
 </div>
 
 
@@ -321,55 +293,6 @@ Counts first level elements of an object
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>o</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">object to be examined</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -405,172 +328,7 @@ Counts first level elements of an object
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line371">line 371</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    count of elements
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Number.html">Number</a></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
-var oNew = __.o.c( o ); // 2</code></pre>
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".copy"><span class="type-signature">(static) </span>copy<span class="signature">(o)</span><span class="type-signature"> &rarr; {<a href="Object.html">Object</a>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <pre>
-Create a copy of an object
-</pre>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>o</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">object to be copied</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line391">line 391</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line418">line 418</a>
     </li></ul></dd>
     
 
@@ -621,8 +379,8 @@ Create a copy of an object
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var oOrig = { sName : "John", nAge : 44 }
-var oNew = __.o.copy( oOrig );</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
+var oNew = o.copy();</code></pre>
 
 
 
@@ -632,7 +390,7 @@ var oNew = __.o.copy( oOrig );</code></pre>
     
 
     
-    <h4 class="name" id=".diff"><span class="type-signature">(static) </span>diff<span class="signature">(o1, o2)</span><span class="type-signature"> &rarr; {<a href="Object.html">Object</a>|null}</span></h4>
+    <h4 class="name" id=".diff"><span class="type-signature">(static) </span>diff<span class="signature">(o2)</span><span class="type-signature"> &rarr; {<a href="Object.html">Object</a>|null}</span></h4>
     
 
     
@@ -640,9 +398,7 @@ var oNew = __.o.copy( oOrig );</code></pre>
 
 
 <div class="description">
-    <pre>
-Compare two objects and retrieve their differences
-</pre>
+    Compare two objects and retrieve their differences
 </div>
 
 
@@ -674,29 +430,6 @@ Compare two objects and retrieve their differences
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>o1</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">first object to be compared</td>
-        </tr>
-
     
 
         <tr>
@@ -758,7 +491,7 @@ Compare two objects and retrieve their differences
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line477">line 477</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line239">line 239</a>
     </li></ul></dd>
     
 
@@ -815,172 +548,7 @@ an array of differences found for each of the two object passed on or null if th
     
     <pre class="prettyprint"><code>var o1 = { sName : "John", nAge : 44 };
 var o2 = { sName : "John", nAge : 23, bMarried : true };
-var oDiff = __.o.diff( o1, o2 );</code></pre>
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".empty"><span class="type-signature">(static) </span>empty<span class="signature">(o)</span><span class="type-signature"> &rarr; {Booelan}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <pre>
-Checks whether an object is empty
-</pre>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>o</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">object we want to examine</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line545">line 545</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Result of the check
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Booelan</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>var o = {};
-var bEmpty = __.b.empty( o );</code></pre>
+var oDiff = o1.diff( o2 );</code></pre>
 
 
 
@@ -998,9 +566,7 @@ var bEmpty = __.b.empty( o );</code></pre>
 
 
 <div class="description">
-    <pre>
-Check if two objects contain the same data
-</pre>
+    Check if two objects contain the same data
 </div>
 
 
@@ -1116,7 +682,7 @@ Check if two objects contain the same data
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line461">line 461</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line222">line 222</a>
     </li></ul></dd>
     
 
@@ -1179,7 +745,7 @@ var bEqual = __.o.equal( o1, o2 );</code></pre>
     
 
     
-    <h4 class="name" id=".k"><span class="type-signature">(static) </span>k<span class="signature">(o)</span><span class="type-signature"> &rarr; {<a href="String.html">String</a>}</span></h4>
+    <h4 class="name" id=".getKey"><span class="type-signature">(static) </span>getKey<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="String.html">String</a>}</span></h4>
     
 
     
@@ -1187,9 +753,7 @@ var bEqual = __.o.equal( o1, o2 );</code></pre>
 
 
 <div class="description">
-    <pre>
-Return (first) key of an object
-</pre>
+    Return (first) key of an object
 </div>
 
 
@@ -1198,55 +762,6 @@ Return (first) key of an object
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>o</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">object</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -1282,7 +797,7 @@ Return (first) key of an object
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line285">line 285</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line311">line 311</a>
     </li></ul></dd>
     
 
@@ -1333,8 +848,8 @@ Return (first) key of an object
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var mp = { "country" : "Belgium" }
-var k = __.o.k( mp ); // key</code></pre>
+    <pre class="prettyprint"><code>var kv = { "country" : "Belgium" }
+var k = kv.getKey(); // key</code></pre>
 
 
 
@@ -1344,7 +859,7 @@ var k = __.o.k( mp ); // key</code></pre>
     
 
     
-    <h4 class="name" id=".kk"><span class="type-signature">(static) </span>kk<span class="signature">(o)</span><span class="type-signature"> &rarr; {array}</span></h4>
+    <h4 class="name" id=".getKeys"><span class="type-signature">(static) </span>getKeys<span class="signature">()</span><span class="type-signature"> &rarr; {array}</span></h4>
     
 
     
@@ -1352,9 +867,7 @@ var k = __.o.k( mp ); // key</code></pre>
 
 
 <div class="description">
-    <pre>
-Return keys of an object.
-</pre>
+    Return keys of an object.
 </div>
 
 
@@ -1363,55 +876,6 @@ Return keys of an object.
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>o</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">object</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -1447,7 +911,7 @@ Return keys of an object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line302">line 302</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line328">line 328</a>
     </li></ul></dd>
     
 
@@ -1499,7 +963,7 @@ Return keys of an object.
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
-var lk = __.o.kk( o ); // [ "sName", "nAge" ]</code></pre>
+var lk = o.getKeys(); // [ "sName", "nAge" ]</code></pre>
 
 
 
@@ -1509,7 +973,7 @@ var lk = __.o.kk( o ); // [ "sName", "nAge" ]</code></pre>
     
 
     
-    <h4 class="name" id=".kRename"><span class="type-signature">(static) </span>kRename<span class="signature">(o, kold, knew)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".isEmpty"><span class="type-signature">(static) </span>isEmpty<span class="signature">()</span><span class="type-signature"> &rarr; {Booelan}</span></h4>
     
 
     
@@ -1517,9 +981,235 @@ var lk = __.o.kk( o ); // [ "sName", "nAge" ]</code></pre>
 
 
 <div class="description">
-    <pre>
-Rename a key of an object.
-</pre>
+    Checks whether an object is empty
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line437">line 437</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Result of the check
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Booelan</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var o = {};
+var bEmpty = o.isEmpty();</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".kCount"><span class="type-signature">(static) </span>kCount<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Number.html">Number</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Counts first level elements of an object
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line398">line 398</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    count of elements
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Number.html">Number</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
+var c =o.kCount(); // 2</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".kRename"><span class="type-signature">(static) </span>kRename<span class="signature">(kold, knew)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Rename a key of an object.
 </div>
 
 
@@ -1551,29 +1241,6 @@ Rename a key of an object.
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>o</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">object</td>
-        </tr>
-
     
 
         <tr>
@@ -1658,7 +1325,7 @@ Rename a key of an object.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line345">line 345</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line372">line 372</a>
     </li></ul></dd>
     
 
@@ -1687,8 +1354,8 @@ Rename a key of an object.
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var oOrig = { sName : "John", nAge : 44 }
-__.o.kRename( oOrig, "sName", "sFirstName" );</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
+o.kRename( "sName", "sFirstName" );</code></pre>
 
 
 
@@ -1698,7 +1365,7 @@ __.o.kRename( oOrig, "sName", "sFirstName" );</code></pre>
     
 
     
-    <h4 class="name" id=".s"><span class="type-signature">(static) </span>s<span class="signature">(o)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id=".stringify"><span class="type-signature">(static) </span>stringify<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
     
 
     
@@ -1706,10 +1373,8 @@ __.o.kRename( oOrig, "sName", "sFirstName" );</code></pre>
 
 
 <div class="description">
-    <pre>
-Converts an object into a string
+    Converts an object into a string
 Uses JSON.stringify therefore returns null in case of circular references
-</pre>
 </div>
 
 
@@ -1718,55 +1383,6 @@ Uses JSON.stringify therefore returns null in case of circular references
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>o</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object to be stringified.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -1802,7 +1418,7 @@ Uses JSON.stringify therefore returns null in case of circular references
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line265">line 265</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line152">line 152</a>
     </li></ul></dd>
     
 
@@ -1854,7 +1470,122 @@ Uses JSON.stringify therefore returns null in case of circular references
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
-var s = __.o.s( o );</code></pre>
+var s = o.stringify();</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".stringify"><span class="type-signature">(static) </span>stringify<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Converts an array into a string
+Uses JSON.stringify therefore returns null in case of circular references
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line500">line 500</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    String representation of the object.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var l = [1,2,3]
+var s = l.stringify();</code></pre>
 
 
 
@@ -1872,11 +1603,9 @@ var s = __.o.s( o );</code></pre>
 
 
 <div class="description">
-    <pre>
-Retrieve the structure of an object including its string size
+    Retrieve the structure of an object including its string size
 array of arrays containing key paths as string and a sorted 
 copy of the object passed on
-</pre>
 </div>
 
 
@@ -1969,7 +1698,7 @@ copy of the object passed on
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.utils2.js.html">__.utils2.js</a>, <a href="-__.utils2.js.html#line410">line 410</a>
+        <a href="-__.utils.js.html">__.utils.js</a>, <a href="-__.utils.js.html#line172">line 172</a>
     </li></ul></dd>
     
 
@@ -1997,10 +1726,9 @@ copy of the object passed on
         
 <div class="param-desc">
     result of comparison
-
-			  o : copy of object 
-			, nLength : string size 
-			, lsStruc : arrays of keys
+		  o : copy of object 
+		, nLength : string size 
+		, lsStruc : arrays of keys
 </div>
 
 
@@ -2024,8 +1752,8 @@ copy of the object passed on
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o1 = { sName : "John", nAge : 44 };
-var oStruc = __.o.struc( o1 );</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 };
+var oStruc = o1.struc();</code></pre>
 
 
 

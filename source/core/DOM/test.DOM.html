@@ -439,6 +439,21 @@ setTimeout( function() {
 	}, 5 );
 	__.dn.scroll.to( "y", 10 );
 }, 1200 );
+
+
+
+
+var dndmiep = __.dn.append( "<h1>asdf<span class='a'>a</span><span class='l'>l</span></h1>", document.body );
+Object.defineProperty( Node.prototype, "find", {
+	value : function( css, fn ) {
+		return __.dn_( css, this, fn );
+	}
+} );
+document.body.find( "span", function( dn ) {
+	console.log( dn.textContent );
+} );
+
+
 </script>
 </body>
 </html>

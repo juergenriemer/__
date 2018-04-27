@@ -1,0 +1,88 @@
+<html>
+<body>
+<h1 id='xxx'>asdf<span class='a'>a</span><span class='l'>l</span></h1>
+<div id='output'>...</div>
+<script>
+__  = {}
+__.dn  = {}
+__.dn_ = function( css, dn_or_cb, cb ) {
+	var dnStart = ( typeof dn_or_cb == "object" ) ? dn_or_cb : document;
+	var cb = ( typeof dn_or_cb == "function" ) ? dn_or_cb : cb;
+	var sfn = "querySelectorAll";
+	if( /^.[a-zA-Z0-9_-]*$/.test( css ) ) {
+		var sfst = css.substr( 0, 1 );
+		if( sfst == "#" ) {
+			sfn = "getElementById";
+			css = css.substr( 1 );
+		}
+		else if( sfst == "." ) {
+			sfn = "getElementsByClassName";
+			css = css.substr( 1 );
+		}
+		else if( /[a-zA-Z]/.test( sfst ) ) {
+			sfn = "getElementsByTagName";
+		}
+	}
+	var xdn = dnStart[ sfn ]( css );
+	xdn = HTMLCollection.prototype.isPrototypeOf( xdn )
+		? [].slice.call( xdn ) : xdn;
+	if( xdn ) {
+		if( cb ) {
+			this.dn.each( xdn, cb );
+		}
+		var c = xdn.length;
+		if ( ! isNaN( c ) ) {
+			if( c == 1 ) {
+				return xdn[ 0 ];
+			}
+			else if( c == 0 ) {
+				return null;
+			}
+		}
+	}
+	return xdn;
+};
+__.dn.each = function( xdn, fn ) {
+	if( xdn ) {
+		var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
+		var c = ldn.length;
+		for( var ix=0; ix<c; ix++ ) {
+			fn( ldn[ ix ], ix );
+		}
+	}
+}
+Object.defineProperty( Node.prototype, "find", {
+	value : function( css, fn ) {
+		return __.dn_( css, this, fn );
+	}
+} );
+var dnOutput = document.getElementById( 'output' );
+document.body.find( "span", function( dn ) {
+	dnOutput.innerHTML += dn.textContent;
+} );
+
+var dndmiep = document.getElementById( "xxx" );
+dndmiep.find( ".a", function( dn ) {
+	dnOutput.innerHTML += dn.textContent;
+} );
+
+Object.defineProperty( Object.prototype, "add", {
+	  value : function( onew ) {
+		if( onew ) {
+			for( var s in onew ) {
+				this[ s ] = onew[ s ];
+			} 
+		} 
+	}
+} );
+o1 = { a:1, b:2 };
+o2 = { c:3, d:4 };
+o1.add( o2 );
+for( var k in o1 ) {
+	dnOutput.innerHTML += "." + k;
+}
+
+
+</script>
+</body>
+</html>

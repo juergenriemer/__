@@ -9,18 +9,17 @@ cErrAssert = 0;
 assert = function( x1, x2, s ) {
 	var dn = document.getElementById( "output" );
 	var b = true;
-	if( x1 && typeof x1 == "object" && typeof s == "string" ) {
-		if( x1.diff( x2 ) ) {
+	if( typeof x1 == "object" && typeof s == "string" ) {
+		if( __.o.diff( x1, x2 ) ) {
 			console.warn( 'ERR: ' + s );
 			console.warn( "expected:", x2 );
 			console.warn( "result:", x1 );
-			s = "[ERR] " + s + " check console.log";
 		}
 		else {
 			s = "[OK] " + s;
 		}
 	}
-	else if( x1 && x2 && typeof x1 == "object" && typeof x2 == "string" ) {
+	else if( typeof x1 == "object" && typeof x2 == "string" ) {
 		console.log( '>> single true' );
 	}
 	else {
@@ -28,7 +27,6 @@ assert = function( x1, x2, s ) {
 			console.warn( 'ERR: ' + s );
 			console.warn( "expected:", x2 );
 			console.warn( "result:", x1 );
-			s = "[ERR] " + s + " check console.log";
 		}
 		else {
 			s = "[OK] " + s;
@@ -41,182 +39,164 @@ assert = function( x1, x2, s ) {
 // __.s.o
 
 s = '{"sName":"John","nAge":44}';
-o = s.toJson();
+o = __.s.o ( s );
 eo =  { sName:'John', nAge:44}
 assert( o, eo, "__.s.o" );
 
 s = "{'sName':'John','nAge':44}";
-o = s.toJson();
+o = __.s.o ( s );
 eo = null;
 assert( o, eo, "__.s.o (single quotes)" );
 
 s = "{sName:'John','nAge':44}";
-o = s.toJson();
+o = __.s.o ( s );
 eo = null;
 assert( o, eo, "__.s.o (missing quotes)" );
 
 s = "sName:'John','nAge':44";
-o = s.toJson();
+o = __.s.o ( s );
 eo = null;
 assert( o, eo, "__.s.o (broken json)" );
 
 // __.s.empty
 s = "";
-b = s.isEmpty();
+b = __.s.empty( s );
 eb = true;
 assert( b, eb, "__.s.empty" );
 
 s = "  ";
-b = s.isEmpty();
+b = __.s.empty( s );
 eb = true;
 assert( b, eb, "__.s.empty (spaces)" );
 
 s = " 0 ";
-b = s.isEmpty();
+b = __.s.empty( s );
 eb = false;
 assert( b, eb, "__.s.empty (string)" );
 
-// __.s.toCamelCase
-var s = "   hi mom   how are you".toCamelCase();
+s = 12;
+b = __.s.empty( s );
+eb = false;
+assert( b, eb, "__.s.empty (number)" );
+
+// __.s.camelCase
+var s = __.s.camelCase( "   hi mom   how are you" );
 var es = "Hi Mom How Are You";
-assert( s, es, "__.s.toCamelCase" );
+assert( s, es, "__.s.camelCase" );
 
 // __.s.unCamelCase
-var s = "   HiMomHowAreYou   ".unCamelCase();
+var s = __.s.unCamelCase( "   HiMomHowAreYou   " );
 var es = "Hi Mom How Are You";
 assert( s, es, "__.s.unCamelCase" );
 
-var s =  "HiMomIAmHome".unCamelCase();
+var s = __.s.unCamelCase( "HiMomIAmHome" );
 var es = "Hi Mom I Am Home";
 assert( s, es, "__.s.unCamelCase (single capital)" );
 
-var s = "OSCE".unCamelCase();
+var s = __.s.unCamelCase( "OSCE" );
 var es = "OSCE";
 assert( s, es, "__.s.unCamelCase (akronym)" );
 
-var s =  "OCEEAEvents".unCamelCase();
+var s = __.s.unCamelCase( "OCEEAEvents" );
 var es = "OCEEA Events";
 assert( s, es, "__.s.unCamelCase (akronym with word)" );
 
 // __.s.tokenize
-s = "Hi 'Mom',\nHi Dad".tokenize(); // himom,hidad
+s = __.s.tokenize( "Hi 'Mom',\nHi Dad" ); // himom,hidad
 es = "himom,hidad";
 assert( s, es, "__.s.tokenize" );
 
-s = "   Hi 'Mom',\nHi   Dad   \n\n\n".tokenize(); // himom,hidad
+s = __.s.tokenize( "   Hi 'Mom',\nHi   Dad   \n\n\n" ); // himom,hidad
 es = "himom,hidad";
 assert( s, es, "__.s.tokenize (multiple spaces, new lines)" );
 
-
-
-// NUMBER
-
-
-
+/* ** __.n ** */
 
 // __.n.within
-_n = 1
-n = _n.within( 5, 9 );
+
+n = __.n.within( 1, [ 5, 9 ] );
 en = 5;
 assert( n, en, "__.n.within" );
 
-_n = 4;
-n = _n.within( 5, 9 );
+n = __.n.within( 4, [ 5, 9 ] );
 en = 5;
 assert( n, en, "__.n.within (left boundary outside)" );
 
-_n = 5;
-n = _n.within( 5, 9 );
+n = __.n.within( 5, [ 5, 9 ] );
 en = 5;
 assert( n, en, "__.n.within (left boundary inside)" );
 
-_n = 6;
-n = _n.within( 5, 9 );
+n = __.n.within( 6, [ 5, 9 ] );
 en = 6;
 assert( n, en, "__.n.within (left boundary inside 2)" );
 
-_n = 10;
-n = _n.within( 5, 9 );
+n = __.n.within( 10, [ 5, 9 ] );
 en = 9;
 assert( n, en, "__.n.within (right boundary outside)" );
 
-_n = 9;
-n = _n.within( 5, 9 );
+n = __.n.within( 9, [ 5, 9 ] );
 en = 9;
 assert( n, en, "__.n.within (right boundary inside)" );
 
-_n = 8;
-n = _n.within( 5, 9 );
+n = __.n.within( 8, [ 5, 9 ] );
 en = 8;
 assert( n, en, "__.n.within (right boundary inside 2)" );
 
-_n = -8;
-n = _n.within( 5, 9 );
+n = __.n.within( -8, [ 5, 9 ] );
 en = 5;
 assert( n, en, "__.n.within (negative value)" );
 
-_n = -8;
-n = _n.within( -5, 9 );
+n = __.n.within( -8, [ -5, 9 ] );
 en = -5;
 assert( n, en, "__.n.within (negative boundary)" );
 
-_n = -5;
-n = _n.within( -5, 9 );
+n = __.n.within( -5, [ -5, 9 ] );
 en = -5;
 assert( n, en, "__.n.within (negative boundary)" );
 
 
-
-
-
-// ARRAY 
-
-
-
+/* ** __.l ** */
 
 // __.l.del
 
 l = [ 1, 3, 7 ];
 el = [ 1, 3 ];
-l.del( 7 );
+__.l.del( l, 7 );
 assert( l, el, "__.l.del (single elem)" );
 
 l = [ 1, 3, 7, 7, 8 ];
 el = [ 1, 3, 8 ];
-l.del( 7 );
+__.l.del( l, 7 );
 assert( l, el, "__.l.del (multiple elems)" );
 
 l = [ 7, 1, 3, 7, 7 ];
 el = [ 1, 3 ];
-l.del( 7 );
+__.l.del( l, 7 );
 assert( l, el, "__.l.del (multiple elems boundary)" );
 
 l = [ 7, 7 ];
 el = [ ];
-l.del( 7 );
+__.l.del( l, 7 );
 assert( l, el, "__.l.del (all removed)" );
 
 l = [ 1, 3 ];
 el = [ 1, 3 ];
-l.del( 7 );
+__.l.del( l, 7 );
 assert( l, el, "__.l.del (none removed)" );
-
-
-
 
 // __.l.contains
 l = [ 1, 3, 7 ];
-b = l.contains( 7 );
+b = __.l.contains( l, 7 );
 eb = true;
 assert( b, eb, "__.l.contains (true)" );
 
 l = [ 1, 3 ];
-b = l.contains( 7 );
+b = __.l.contains( l, 7 );
 eb = false;
 assert( b, eb, "__.l.contains (false)" );
 
 l = [];
-b = l.contains( 7 );
+b = __.l.contains( l, 7 );
 eb = false;
 assert( b, eb, "__.l.contains (empty array)" );
 
@@ -224,84 +204,78 @@ assert( b, eb, "__.l.contains (empty array)" );
 
 l1 = [ 1, 2, 3 ];
 l2 = [ 1, 2, 3 ];
-b = l1.equal( l2 );
+b = __.l.equal( l1, l2 );
 eb = true;
 assert( b, eb, "__.l.equal (simple)" );
 
 l1 = [ 2, 1, 3 ];
 l2 = [ 1, 2, 3 ];
-b = l1.equal( l2 );
+b = __.l.equal( l1, l2 );
 eb = false;
 assert( b, eb, "__.l.equal (different order)" );
 
 l1 = [ 2, 1, 3 ];
 l2 = [];
-b = l1.equal( l2 );
+b = __.l.equal( l1, l2 );
 eb = false;
 assert( b, eb, "__.l.equal (one empty)" );
 
 // __.l.empty
 
 l = [ ];
-b = l.empty();
+b = __.l.empty( l );
 eb = true;
 assert( b, eb, "__.l.empty (true)" );
 
 l = [null];
-b = l.empty();
+b = __.l.empty( l );
 eb = false;
 assert( b, eb, "__.l.empty (null)" );
 
 l = [""];
-b = l.empty();
+b = __.l.empty( l );
 eb = false;
 assert( b, eb, "__.l.empty (empty string)" );
 
 l = [0];
-b = l.empty();
+b = __.l.empty( l );
 eb = false;
 assert( b, eb, "__.l.empty (zero)" );
 
 l = [[]];
-b = l.empty();
+b = __.l.empty( l );
 eb = false;
 assert( b, eb, "__.l.empty (array)" );
-
 
 // __.l.kSort (put in o?)
 
 lo = [ {v:5}, {v:11}, {v:1} ];
-lo = lo.kSort( "v" );
+lo = __.l.kSort( lo, "v" );
 elo = [ {v:1}, {v:5}, {v:11} ];
 assert( lo, elo, "__.l.kSort (numbers)" );
 
-lo = [ {v:"b"}, {v:"c"}, {v:"a"} ];
-lo = lo.kSort( "v" );
-elo = [ {v:"a"}, {v:"b"} , {v:"c"} ];
-assert( lo, elo, "__.l.kSort (strings 1)" );
-
 lo = [ {v:"Z"}, {v:"b"}, {v:"A"}, {v:"a"}, {v:"z"} ];
-lo = lo.kSort( "v" );
+lo = __.l.kSort( lo, "v" );
 elo = [{v:"A"}, {v:"Z"}, {v:"a",}, {v:"b"}, {v:"z"} ];
 assert( lo, elo, "__.l.kSort (strings)" );
 
 lo = [ {v:5}, {v:1}, {v:"a"}, {v:"z"} ];
-lo = lo.kSort( "v" );
+lo = __.l.kSort( lo, "v" );
 elo = [ {v:1}, {v:5}, {v:"a"}, {v:"z"} ];
 assert( lo, elo, "__.l.kSort (mixed)" );
 
 lo = [ {v:12}, { v:11}, {s:"x"}, {v:2} ];
-lo = lo.kSort( "v" );
+lo = __.l.kSort( lo, "v" );
 elo = [ {v:2}, {v:11}, {v:12}, {s:"x"} ];
 assert( lo, elo, "__.l.kSort (add. keys)" );
 
 lo = [ {v:5 }, {v:11}, {v:1}, {v:-1}, {v:null},{x:'1'} ];
-lo = lo.kSort( "v" );
+lo = __.l.kSort( lo, "v" );
 elo = [ {v:-1}, {v:null}, {v:1}, {v:5}, {v:11},{x:'1'} ];
 assert( lo, elo, "__.l.kSort (null, -1)" );
 
 lo = [ {v:"g"}, {x:11}, {s:"x"}, {v:"a"} ];
-lo = lo.kSort( "v" );
+lo = __.l.kSort( lo, "v" );
 elo = [ {v:"a"}, {v:"g"}, {s:"x"}, {x:11}];
 assert( lo, elo, "__.l.kSort (string values)" );
 
@@ -309,127 +283,127 @@ assert( lo, elo, "__.l.kSort (string values)" );
 
 // __.o.s
 o =  { sName:'John', nAge:44}
-s = o.stringify();
+s = __.o.s( o );
 es = '{"sName":"John","nAge":44}';
 assert( s, es, "__.o.s (simple)" );
 
 o = {}
-s = o.stringify();
+s = __.o.s( o );
 es = '{}';
 assert( s, es, "__.o.s (empty)" );
 
 o = 12
-s = o.stringify();
+s = __.o.s( o );
 es = "12";
 assert( s, es, "__.o.s (no object)" );
 
 o = {};
 o.ref = o;
-s = o.stringify();
+s = __.o.s( o );
 es = null;
 assert( s, es, "__.o.s (circular reference)" );
 
 // __.o.k
 
 o = { "country" : "Belgium" }
-k = o.getKey();
+k = __.o.k( o );
 ek = "country";
-assert( k, ek, "__.o.getKey (single attribute)" );
+assert( k, ek, "__.o.k (single attribute)" );
 
 o = { "country" : "Belgium", "address" : "street 11" }
-k = o.getKey();
+k = __.o.k( o );
 ek = "country";
-assert( k, ek, "__.o.getKey (mulitple attributes)" );
+assert( k, ek, "__.o.k (mulitple attributes)" );
 
 o = {};
-k = o.getKey();
+k = __.o.k( o );
 ek = null
-assert( k, ek, "__.o.getKey (empty object)" );
+assert( k, ek, "__.o.k (empty object)" );
 
 o = [ { "country" : "Belgium" } ];
-k = o.getKey();
+k = __.o.k( o );
 ek = "0" 
-assert( k, ek, "__.o.getKey (array)" );
+assert( k, ek, "__.o.k (array)" );
 
 o = "country";
-k = o.getKey();
+k = __.o.k( o );
 ek = "0";
-assert( k, ek, "__.o.getKey (no object)" );
+assert( k, ek, "__.o.k (no object)" );
 
-// __.o.getKeys
+// __.o.kk
 
 o = { sName : "John" };
-lk = o.getKeys();
+lk = __.o.kk( o );
 elk = [ "sName" ];
-assert( lk, elk, "__.o.getKeys (one attribute)" );
+assert( lk, elk, "__.o.kk (one attribute)" );
 
 o = { sName : "John", nAge : 44, mpCards : { "a" : 1, "b" : 2 } };
-lk = o.getKeys();
+lk = __.o.kk( o );
 elk = [ "sName", "nAge", "mpCards" ];
-assert( lk, elk, "__.o.getKeys (multiple attribues)" );
+assert( lk, elk, "__.o.kk (multiple attribues)" );
 
 o = {};
-lk = o.getKeys();
+lk = __.o.kk( o );
 elk = [];
-assert( lk, elk, "__.o.getKeys (empty object)" );
+assert( lk, elk, "__.o.kk (empty object)" );
 
 // __.o.add
 
 
 o1 = { a:1, b:2 };
-o2 = { c:3, d:4, d:5 };
-o1.add( o2 );
-eo1 = { a:1, b:2, c:3, d:4, d:5 };
-eo2 = { c:3, d:4, d:5 };
+o2 = { c:3, d:4 };
+__.o.add( o1, o2 );
+eo1 = { a:1, b:2, c:3, d:4 };
+eo2 = { c:3, d:4 };
 assert( o1, eo1, "__.o.add (two, one-level, different objects)" );
 assert( o2, eo2, "__.o.add (second object unchanged)" );
 
 o1 = { a:1, b:2 };
 o2 = { a:3, d:4 };
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = { a:3, b:2, d:4 };
 assert( o1, eo1, "__.o.add (two, one-level, intersections)" );
 
 o1 = { a:1, b:2 };
 o2 = { a:{f:[1,2,{i:{o1:2,o2:3}}]}, d:4 };
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = { a:{f:[1,2,{i:{o1:2,o2:3}}]}, b:2, d:4 };
 assert( o1, eo1, "__.o.add (multi-level, intersections)" );
 
 o1 = {};
 o2 = { a:1, b:2 };
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = { a:1, b:2 };
 assert( o1, eo1, "__.o.add (first object empty)" );
 o1 = { a:1, b:2 };
 
 o1 = { a:1, b:2 };
 o2 = {};
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = { a:1, b:2 };
 assert( o1, eo1, "__.o.add (second object empty)" );
 
 o1 = {};
 o2 = {};
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = {};
 assert( o1, eo1, "__.o.add (both objects empty)" );
 
 o1 = { a:1, b:2 };
 o2 = "hi";
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = { 0:"h", 1:"i", a:1, b:2 };
 assert( o1, eo1, "__.o.add (second param string)" );
 
 o1 = "hi";
 o2 = { a:1, b:2 };
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = "hi";
 assert( o1, eo1, "__.o.add (first param string)" );
 
 o1 = [1,2];
 o2 = { a:1, b:2 };
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = [ 1, 2 ];
 eo1["a"] = 1;
 eo1["b"] = 2;
@@ -437,13 +411,13 @@ assert( o1, eo1, "__.o.add (first param array)" );
 
 o1 = { a:1, b:2 };
 o2 = [1,2];
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = { 0:1, 1:2, a:1, b:2 };
 assert( o1, eo1, "__.o.add (second param array)" );
 
 o1 = [1,2];
 o2 = [3,4];
-o1.add( o2 );
+__.o.add( o1, o2 );
 eo1 = [3,4];
 assert( o1, eo1, "__.o.add (both params array)" );
 
@@ -451,19 +425,23 @@ assert( o1, eo1, "__.o.add (both params array)" );
 
 
 o = { sName : "John", nAge : 44 };
-o.kRename( "sName", "sFirstName" );
+__.o.kRename( o, "sName", "sFirstName" );
 eo = { sFirstName : "John", nAge : 44 };
 assert( o, eo, "__.o.kRename (simple)" );
 
 o = {"a":1,"b":2};
-o.kRename( "a", "b" );
+__.o.kRename( o, "a", "b" );
 eo = {"b":1};
 assert( o, eo, "__.o.kRename (key already exists)" );
 
+lo = [ {"a":1},{"a":3},{"a":"hi"} ];
+__.o.kRename( lo, "a", "b" );
+elo = [ {"a":1},{"a":3},{"a":"hi"} ];
+assert( lo, elo, "__.o.kRename (array)" );
 
 lo = [ {"a":1},{"a":3},{"a":"hi"} ];
 lo.forEach( function( o ) {
-	o.kRename( "a", "b" );
+	__.o.kRename( o, "a", "b" );
 } );
 elo = [ {"b":1},{"b":3},{"b":"hi"} ];
 assert( lo, elo, "__.o.kRename (iterate list of objects)" );
@@ -472,72 +450,39 @@ assert( lo, elo, "__.o.kRename (iterate list of objects)" );
 
 
 o = { sName : "John", nAge : 44 };
-c = o.kCount();
+c = __.o.c( o );
 ec = 2;
 assert( c, ec, "__.o.c (simple)" );
 
 o = { a:{d:{e:1}}, b:2, c:{f:1} };
-c = o.kCount();
+c = __.o.c( o );
 ec = 3;
 assert( c, ec, "__.o.c (nested object)" );
 
 o = { a:1, b:2, c:[1,2] };
-c = o.kCount();
+c = __.o.c( o );
 ec = 3;
 assert( c, ec, "__.o.c (with arrays)" );
 
 o = { a:1, b:2, b:4 };
-c = o.kCount();
+c = __.o.c( o );
 ec = 2;
 assert( c, ec, "__.o.c (duplicate key)" );
 
 o = { a:1, b:2, c:null };
-c = o.kCount();
+c = __.o.c( o );
 ec = 3;
 assert( c, ec, "__.o.c (key nulled)" );
 
 o = [ 1,2,3,4];
-c = o.kCount();
+c = __.o.c( o );
 ec = 4;
 assert( c, ec, "__.o.c (object is array)" );
 
 o = "hi mom";
-c = o.kCount();
+c = __.o.c( o );
 ec = 6;
 assert( c, ec, "__.o.c (object is string)" );
-
-b = "http://www.orf.at".isUrl();
-assert( b, true, "s.isUrl (http valid)" );
-
-b = "http://www.orf.at/asdf/asdf.html".isUrl();
-assert( b, true, "s.isUrl (http valid plus path)" );
-
-b = "http://www.orf.at/asdf/asdf.html?a=1&r=4#hash".isUrl();
-assert( b, true, "s.isUrl (http valid plus path plus params)" );
-
-b = "https://www.orf.at".isUrl();
-assert( b, true, "s.isUrl (https valid)" );
-
-b = "https://www.orf.at/asdf/asdf.html".isUrl();
-assert( b, true, "s.isUrl (https valid plus path)" );
-
-b = "https://www.orf.at/asdf/asdf.html?a=1&r=4#hash".isUrl();
-assert( b, true, "s.isUrl (https valid plus path plus params)" );
-
-b = "http://orf.at/asdf/asdf.html?a=1&r=4#hash".isUrl();
-assert( b, true, "s.isUrl (no subdomain)" )
-
-b = "ftp://www.orf.at/asdf/asdf.html?a=1&r=4#hash".isUrl();
-assert( b, false, "s.isUrl (wrong protool)" )
-
-b = "www.orf.at/asdf/asdf.html?a=1&r=4#hash".isUrl();
-assert( b, false, "s.isUrl (no protool)" )
-
-b = "http://orf/asdf/asdf.html?a=1&r=4#hash".isUrl();
-assert( b, false, "s.isUrl (no TLD)" )
-
-b = "http://orf.at/asdf/asdf.ht ml?a=1&r=4#hash".isUrl();
-assert( b, true, "s.isUrl (valid variations)" )
 
 // __.dt.date
 var o = __.dt.date( "2018/04/04" );
@@ -559,6 +504,7 @@ recurs( eo );
 assert( o, eo, "[OK] __.dt.date" );
 
 
+console.log( "> __.o.equal, __.o.diff" );
 
 var o1 = {a:[1,3,1,[false,true,{a:1},[99,-1,"g"]]]};
 var o2 = {a:[1,3,1,[false,true,{a:1},["g",99,-1]]]};
@@ -790,6 +736,23 @@ console.log( "=======", "[OK: " + cOkAssert + "] [ERR: " + cErrAssert + "]", "==
 
 
 console.log( "==================" );
+
+Object.defineProperty( Object.prototype, "add", {
+	  value : function( onew ) {
+		if( onew ) {
+			for( var s in onew ) {
+				this[ s ] = onew[ s ];
+			} 
+		} 
+	}
+} );
+o1 = { a:1, b:2 };
+o2 = { c:3, d:4 };
+o1.add( o2 );
+console.log( ">>>>>>>>",o1 );
+for( var k in o1 ) {
+	console.log( k, o1[k] );
+}
 
 </script>
 </body>
