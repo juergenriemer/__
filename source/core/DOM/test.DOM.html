@@ -32,7 +32,7 @@
 <div id="output"><h1>Unit test __.DOM.js</h1></div>
 
 <script>
-var dnResult = __.dn_( "#result" );
+var dnResult = document.body.find( "#result" );
 assert = function( h, eh, s ) {
 	if( h === eh ) {
 		sResult = "OK: " + s + "<br>";
@@ -46,7 +46,7 @@ assert = function( h, eh, s ) {
 	dnResult.innerHTML = sResult + dnResult.innerHTML; 
 }
 
-dnOutput = __.dn_( "#output" );
+dnOutput = document.body.find( "#output" );
 h = dnOutput.innerHTML;
 eh = "<h1>Unit test __.DOM.js</h1>";
 assert( h, eh, "__.dn_ (id)" );
@@ -72,25 +72,28 @@ var h = " \
 		<a href='#f3'>f3</a> | \
 	</div> \
 ";
-var dnNavi = __.dn.append( h );
+
+var dnNavi = document.body.__append( h );
+console.log( document.body.__append );
+console.log( dnNavi );
 var dnMenu = dnNavi[ 1 ];
 var dnFooter = dnNavi[ 2 ];
 
 es = 'two.two';
-s = __.dn_( ".active", dnMenu ).textContent.trim();
+s = dnMenu.find( ".active" ).textContent.trim();
 assert( s, es, "__.dn_ (css selector class )" );
 
 es = 'two.two';
-s = __.dn_( "[href='#2_2']", dnMenu ).textContent;
+s = dnMenu.find( "[href='#2_2']" ).textContent;
 assert( s, es, "__.dn_ (css selector attr )" );
 
 es = 'two.two';
-s = __.dn_( ".active [href='#2_2']", dnMenu ).textContent;
+s = dnMenu.find( ".active [href='#2_2']" ).textContent;
 assert( s, es, "__.dn_ (css selector class/attr )" );
 
 es = 'two.onetwo.two';
 s = '';
-__.dn_( "ul>li:nth-child(2)>ul>li", dnMenu, function( dn ) {
+dnMenu.find( "ul>li:nth-child(2)>ul>li", function( dn ) {
 	s += dn.textContent.trim();
 } )
 assert( s, es, "__.dn_ (css selector direct rout)" );
@@ -98,27 +101,28 @@ assert( s, es, "__.dn_ (css selector direct rout)" );
 es = 'onetwotwo.onetwo.twothree';
 s = '';
 
-__.dn_( "li.lvl_one", dnMenu, function( dn ) {
+dnMenu.find( "li.lvl_one", function( dn ) {
 	s += dn.textContent.replace( /\s/g, "" );
 } )
 assert( s, es, "__.dn_ (css selector li.lvl_one)" );
 
 
-// __._dn
+// xxx.closest
 
-var dnActiveMenu = __.dn_( ".active", dnMenu );
-assert( __._dn( "div", dnActiveMenu ).id, "menu", "__._dn (menu)" );
+var dnActiveMenu = dnMenu.find( ".active" );
+assert( dnActiveMenu.closest( "div" ).id, "menu", "xxx.closest (menu)" );
 
-var dnActiveFooter = __.dn_( ".active", dnFooter );
-assert( __._dn( "div", dnActiveFooter ).id, "footer", "__._dn (footer)" );
+var dnActiveFooter = dnFooter.find( ".active" );
+assert( dnActiveFooter.closest( "div" ).id, "footer", "xxx.closest (footer)" );
 
-var dnLink = __.dn_( "[href='#2_2']" );
+console.log( "only document?" );
+var dnLink = document.body.find( "[href='#2_2']" );
 
-var bClass = __._dn( "li", dnLink ).classList.contains( "active" );
-assert( bClass, true, "__._dn (li)" );
+var bClass = dnLink.closest( "li" ).classList.contains( "active" );
+assert( bClass, true, "xxx.closest (li)" );
 
-var bClass = __._dn( "li.lvl_one", dnLink ).classList.contains( "test" );
-assert( bClass, true, "__._dn (li.lvl_one)" );
+var bClass = dnLink.closest( "li.lvl_one" ).classList.contains( "test" );
+assert( bClass, true, "xxx.closest (li.lvl_one)" );
 
 // __.dn.show/__.dn.hide
 
@@ -134,10 +138,10 @@ assert( dnMenu.style.display, "block", "__.dn.show(block)" );
 
 // __.dn.ix
 
-var dnFooterLink = __.dn_( "[href='#f3']" );
+var dnFooterLink = document.body.find( "[href='#f3']" );
 assert( __.dn.ix( dnFooterLink ), 2, "__.dn.ix (dnFooterLink)" );
 
-assert( __.dn.ix( __._dn( "li", dnLink ) ), 1, "__.dn.ix (dnLink)" );
+assert( __.dn.ix( dnLink.closest( "li" ) ), 1, "__.dn.ix (dnLink)" );
 
 // __.dn.x/y/dx/dz
 __.dn.x( dnMenu, "100" );
@@ -152,20 +156,20 @@ assert( __.dn.y( dnMenu ), 200, "__.dn.y (dnMenu)" );
 assert( __.dn.dx( dnMenu ), 400, "__.dn.dx (dnMenu)" );
 assert( __.dn.dy( dnMenu ), 400, "__.dn.dy (dnMenu)" );
 
-// __.dn.each/__.dn.del
+// __.dn.each/dn.remove
 
 var en = 2;
-var n = __.dn_( "ul", dnMenu ).length;
+var n = dnMenu.find( "ul" ).length;
 assert( n, en, "__.dn_ (tagname)" );
 
 __.dn.each( dnNavi, function( dn ) {
-	__.dn.del( dn );
+	dn.remove();
 } )
-assert( __.dn_( "#menu" ), null, "__.dn.each/del (menu)" );
-assert( __.dn_( "#footer" ), null, "__.dn.each/del (footer)" );
+assert( document.body.find( "#menu" ), null, "__.dn.each/del (menu)" );
+assert( document.body.find( "#footer" ), null, "__.dn.each/del (footer)" );
 
 
-dnH1 = __.dn_( "h1" );
+dnH1 = document.body.find( "h1" );
 s = dnH1.innerHTML;
 es = "Unit test __.DOM.js";
 assert( s, es, "__.dn_ (tagname)" );
@@ -173,142 +177,143 @@ assert( s, es, "__.dn_ (tagname)" );
 // create/move in document body 
 
 //var dnTop = __.dn.prepend( "<div>prepend</div>" );
-// does not return node! var dnSani = __.dn.prepend( "<div id='sani'>xxx</div>", document.body );
+// does not return node! var dnSani = document.body.__prepend( "<div id='sani'>xxx</div>" );
 
 //var dnBottom = __.dn.append( "<div>prepend</div>" );
 
 // create/move in nodes 
 
-dnAppend = __.dn.append( "<b>append</b>", dnOutput );
+dnAppend = dnOutput.__append( "<b>append</b>" );
 h = dnOutput.innerHTML;
 eh = "<h1>Unit test __.DOM.js</h1><b>append</b>";
 assert( h, eh, "__.dn.append (string)" );
 
 
-dnPrepend = __.dn.prepend( "<b>prepend</b>", dnOutput );
+dnPrepend = document.body.__prepend( "<b>prepend</b>", dnOutput );
 h = dnOutput.innerHTML;
 eh = "<b>prepend</b><h1>Unit test __.DOM.js</h1><b>append</b>";
 assert( h, eh, "__.dn.prepend (string)" );
 
-dnBefore = __.dn.before( "<i>before</i>", dnH1 );
+dnBefore = dnH1.__before( "<i>before</i>", dnH1 );
 h = dnOutput.innerHTML;
 eh = "<b>prepend</b><i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>";
 assert( h, eh, "__.dn.before (string)" );
 
-dnAfter = __.dn.after( '<i class="after">after</i>', dnH1 );
+dnAfter = dnH1.__after( '<i class="after">after</i>' );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i>before</i><h1>Unit test __.DOM.js</h1><i class="after">after</i><b>append</b>';
 assert( h, eh, "__.dn.after (string)" );
 
 // move 
-dnClass = __.dn_( ".after" );
+dnClass = document.body.find( ".after" );
 s = dnClass.textContent;
 es = "after";
 assert( s, es, "__.dn_ (classname)" );
 
-__.dn.append( dnClass, dnBefore );
+dnBefore.__append( dnClass );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i>before<i class="after">after</i></i><h1>Unit test __.DOM.js</h1><b>append</b>';
 assert( h, eh, "__.dn.append (node)" );
 
-__.dn.before( dnClass, dnBefore );
+dnBefore.__before( dnClass );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i class="after">after</i><i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>';
 assert( h, eh, "__.dn.before (node)" );
 
-__.dn.prepend( dnClass, dnBefore );
+dnBefore.__prepend( dnClass );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i><i class="after">after</i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>';
 assert( h, eh, "__.dn.prepend (node)" );
 
-__.dn.after( dnClass, dnBefore );
+dnBefore.__after( dnClass );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i>before</i><i class="after">after</i><h1>Unit test __.DOM.js</h1><b>append</b>';
 assert( h, eh, "__.dn.after (node)" );
 
 // add to document
-dnOutput_2 = __.dn.append( "<div><h1>output2</h1></div>" );
+dnOutput_2 = document.body.__append( "<div><h1>output2</h1></div>" );
 s = dnOutput_2.innerHTML;
 es = "<h1>output2</h1>";
 assert( s, es, "__.dn.append (to document)" );
 
 // multiple nodes as string 
-dnH1_2 = __.dn_( "h1", dnOutput_2 );
-dnAppend = __.dn.append( "<b>1</b><i>2</i>", dnH1_2 );
+dnH1_2 = dnOutput_2.find( "h1" );
+dnAppend = dnH1_2.__append( "<b>1</b><i>2</i>" );
 h = dnOutput_2.innerHTML;
 eh = "<h1>output2<b>1</b><i>2</i></h1>";
 assert( h, eh, "__.dn.append (multiple string)" );
 
-dnPrepend = __.dn.prepend( "<b>3</b><i>4</i>", dnH1_2 );
+dnPrepend = dnH1_2.__prepend( "<b>3</b><i>4</i>" );
 h = dnOutput_2.innerHTML;
 eh = "<h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1>";
 assert( h, eh, "__.dn.prepend (multiple string)" );
 
-dnBefore = __.dn.before( "<b>5</b><i>6</i>", dnH1_2 );
+dnBefore = dnH1_2.__before( "<b>5</b><i>6</i>" );
 h = dnOutput_2.innerHTML;
 eh = "<b>5</b><i>6</i><h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1>";
 assert( h, eh, "__.dn.before (multiple string)" );
 
-dnAfter = __.dn.after( "<b>7</b><i>8</i>", dnH1_2 );
+dnAfter = dnH1_2.__after( "<b>7</b><i>8</i>" );
 h = dnOutput_2.innerHTML;
 eh = "<b>5</b><i>6</i><h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1><b>7</b><i>8</i>";
 assert( h, eh, "__.dn.after (multiple string)" );
 
 // moving single dom node
-var dnTarget = __.dn.append( '<div><div class="inner"><b>middle</b></div></div>' );
-var dnMove = __.dn.append( "<b>MOVE</b>" );
-var dnInner = __.dn_( ".inner", dnTarget );
+var dnTarget = document.body.__append( '<div><div class="inner"><b>middle</b></div></div>' );
+var dnMove = document.body.__append( "<b>MOVE</b>" );
+var dnInner = dnTarget.find( ".inner" );
 
-__.dn.before( dnMove, dnInner );
+dnInner.__before( dnMove );
 h = dnTarget.innerHTML;
 eh = '<b>MOVE</b><div class="inner"><b>middle</b></div>';
 assert( h, eh, "__.dn.before (single DOM node)" );
 
-__.dn.prepend( dnMove, dnInner );
+dnInner.__prepend( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>MOVE</b><b>middle</b></div>';
 assert( h, eh, "__.dn.prepend (single DOM node)" );
 
-__.dn.append( dnMove, dnInner );
+dnInner.__append( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b><b>MOVE</b></div>';
 assert( h, eh, "__.dn.append (single DOM node)" );
 
-__.dn.after( dnMove, dnInner );
+dnInner.__after( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b></div><b>MOVE</b>';
 assert( h, eh, "__.dn.after (single DOM node)" );
 
 // moving multiple dom nodes
-__.dn.del( dnTarget );
-__.dn.del( dnMove );
-var dnTarget = __.dn.append( '<div><div class="inner"><b>middle</b></div></div>' );
-var dnMove = __.dn.append( "<b>MOVE</b><i>YES</i>" );
-var dnInner = __.dn_( ".inner", dnTarget );
+dnTarget.remove();
+dnMove.remove();
+var dnTarget = document.body.__append( '<div><div class="inner"><b>middle</b></div></div>' );
 
-__.dn.before( dnMove, dnInner );
+var dnMove = document.body.__append( "<b>MOVE</b><i>YES</i>" );
+var dnInner = dnTarget.find( ".inner" );
+
+dnInner.__before( dnMove );
 h = dnTarget.innerHTML;
 eh = '<b>MOVE</b><i>YES</i><div class="inner"><b>middle</b></div>';
 assert( h, eh, "__.dn.before (multiple DOM node)" );
 
-__.dn.prepend( dnMove, dnInner );
+dnInner.__prepend( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>MOVE</b><i>YES</i><b>middle</b></div>';
 assert( h, eh, "__.dn.prepend (multiple DOM node)" );
 
-__.dn.append( dnMove, dnInner );
+dnInner.__append( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b><b>MOVE</b><i>YES</i></div>';
 assert( h, eh, "__.dn.append (multiple DOM node)" );
 
-__.dn.after( dnMove, dnInner );
+dnInner.__after( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b></div><b>MOVE</b><i>YES</i>';
 assert( h, eh, "__.dn.after (multiple DOM node)" );
 
-var dnScrollDiv = __.dn_( "#xxx" );
-var dnScrollDivTop = __.dn_( ".top", dnScrollDiv );
-var dnScrollDivBottom = __.dn_( ".bottom", dnScrollDiv );
+var dnScrollDiv = document.body.find( "#xxx" );
+var dnScrollDivTop = dnScrollDiv.find( ".top" );
+var dnScrollDivBottom = dnScrollDiv.find( ".bottom" );
 
 setTimeout( function() {
 	__.dn.scroll.to( "top" );
@@ -441,17 +446,6 @@ setTimeout( function() {
 }, 1200 );
 
 
-
-
-var dndmiep = __.dn.append( "<h1>asdf<span class='a'>a</span><span class='l'>l</span></h1>", document.body );
-Object.defineProperty( Node.prototype, "find", {
-	value : function( css, fn ) {
-		return __.dn_( css, this, fn );
-	}
-} );
-document.body.find( "span", function( dn ) {
-	console.log( dn.textContent );
-} );
 
 
 </script>
