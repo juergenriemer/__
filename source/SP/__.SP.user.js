@@ -1,3 +1,8 @@
+/**
+ * @namespace __.SP.user
+ * @memberof __.SP
+ */
+
 __.SP.user = {
 	/**
 	 * Stores user info for consequtive calls to current()

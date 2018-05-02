@@ -1,14 +1,52 @@
-__.SP.ribbon = {
-	  reload : function() {
+/**
+ * @namespace __.SP.ribbon
+ * @memberof __.SP
+ */
+
+__.SP.ribbon = {};
+
+/**
+ * Reloads the current ribbon, refreshing their active states. In case it fails to reload the ribbon it reloads the page
+ * @memberof __.SP.ribbon
+ * @method reload
+ * @instance
+ * @example
+ * __.SP.ribbon.reload();
+ */
+__.SP.ribbon.reload = function() {
 		try {
 			SP.Ribbon.PageManager.get_instance().get_ribbon().refresh();
 		} catch( e ) {
 			self.location.reload();
 		}
 	}
-	, addIcon : function( args ) { //sList, sRibbon, sSegment, sLabel, sDescription, sAction, sEnabled, urlIcon16, urlIcon32, sToolTipTitle, sToolTipDescription
-		// sRibbon: https://msdn.microsoft.com/en-us/library/office/bb802730.aspx
-		// sSegment: https://msdn.microsoft.com/en-us/library/ee537543(office.14).aspx
+};
+
+/**
+ * Creates a new icon in a ribbon
+ * @memberof __.SP.ribbon
+ * @method addIcon
+ * @async 
+ * @instance
+ * @example
+ * n/a atm
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name of the list 
+ * @param {String} args.sRibbon name of the list's ribbon 
+ * @param {String} args.sSegment name of the ribbon's segement 
+ * @param {String} args.sLabel label of the icon
+ * @param {String} args.sDescription description of the icon
+ * @param {String} args.sAction inline JavaScript of the onclick action
+ * @param {String} args.sEnabled inline JavaScript to identify whether icon is acitve
+ * @param {String} args.urlIcon16 URL of the small icon image
+ * @param {String} args.urlIcon32 URL of the large icon image
+ * @param {String} args.sToolTipTitle title of the tooltip
+ * @param {String} args.sToolTipDescription description of the tooltip
+ * @note list of list's ribbons: https://msdn.microsoft.com/en-us/library/office/bb802730.aspx
+ * @note list of ribbon's segments: https://msdn.microsoft.com/en-us/library/ee537543(office.14).aspx
+ * @returns {Object} Resolved promise
+ */
+__.SP.ribbon.addIcon = function( args ) { // sList, sRibbon, sSegment, sLabel, sDescription, sAction, sEnabled, urlIcon16, urlIcon32, sToolTipTitle, sToolTipDescription
 		// or: to get the segment use browser inspector and check the ID of the segement in UI
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
@@ -41,40 +79,14 @@ __.SP.ribbon = {
 		xml += '/>';
 		xml += '</CommandUIHandlers>';
 		xml += '</CommandUIExtension>';
-		console.log( xml );
 		oIcon.set_commandUIExtension( xml );
 		oIcon.update();
 		ctx.load( oList, "UserCustomActions" );
 		__.SP.exec( ctx, oList, function( oList ) {
 			if( oList.sError ) {
-				console.log( 'err' );
-				async.reject( oList );
+				async.reject();
 			}
 			else {
-				console.log( 'ok' );
-				async.resolve();
-			}
-		} );
-	}
-	, dmiep : function( args ) {
-		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
-		var oList = __.SP.list.get( ctx, args.sList );
-		var oIcon = oList.get_userCustomActions().add();
-		console.log( oList.get_userCustomActions() )
-		console.log( oList.get_userCustomActions().add() )
-		oIcon.set_location( args.sRibbon );
-		//oIcon.set_commandUIExtension( xml );
-		oIcon.set_group( "hello" );
-		oIcon.set_title( "hello" );
-		ctx.load( oList, "UserCustomActions" );
-		__.SP.exec( ctx, oList, function( oList ) {
-			if( oList.sError ) {
-				console.log( 'err' );
-				async.reject( oList );
-			}
-			else {
-				console.log( 'ok' );
 				async.resolve();
 			}
 		} );

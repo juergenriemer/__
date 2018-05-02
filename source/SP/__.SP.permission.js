@@ -1,5 +1,29 @@
-__.SP.permission = {};
+/**
+ * @namespace __.SP.group
+ * @memberof __.SP
+ */
+
 __.SP.group = {};
+
+/**
+ * Creates a new SharePoint group
+ * @memberof __.SP.group
+ * @method add
+ * @async 
+ * @instance
+ * @example
+ * __.SP.group.add( {
+ *       sName : "TaskAdmins"
+ *     , sDescription : "users that can administer Tasks" 	
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sName name of the group
+ * @param {String} [args.sDescription] description of the group
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * oGroup | (Object) | SP object of created group
+ * </pre>
+ */
 __.SP.group.add = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -20,29 +44,26 @@ __.SP.group.add = function( args ) {
 		}
 	} );
 }
-__.SP.group.addUser = function( args ) {
-	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
-	var oGroups = ctx.get_web().get_siteGroups();
-	var oGroup = oGroups.getByName( args.sGroup );
-	var oUserInfo = new SP.UserCreationInformation();
-	//oUserInfo.set_loginName( args.sUser );
-	oUserInfo.set_loginName( 'OSCE-test\\jriemer' );
-	oUserInfo.set_title( 'jriemer' );
-	oUserInfo.set_email('alias@somewhere.com');
-	var oUser = oGroup.get_users().add( oUser );
-	console.log(1)
-	ctx.load( oUser );
-	__.SP.exec( ctx, [ oGroup, oUser ], function( oUser ) {
-		if( oUser.sError ) {
-			async.reject( oUser );
-		}
-		else {
-			async.resolve();
-		}
-	} );
-}
 
+/**
+ * Adds a user to a SharePoint group
+ * @memberof __.SP.group
+ * @method addUser
+ * @async 
+ * @instance
+ * @example
+ * __.SP.group.add( {
+ *       sName : "OSCE-test\\jriemer"
+ *     , sGroup : "TaskAdmins"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sUser domain/login of user
+ * @param {String} args.sGroup name of the group
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * oUser | (Object) | SP object of added user
+ * </pre>
+ */
 __.SP.group.addUser = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
