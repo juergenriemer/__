@@ -1,16 +1,21 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
-// @output_file_name __.min.js
-// @js_externs var __; __.dn_; __._dn; __.each; __.dn; __.dn.del; __.dn._move; __.dn.move; __.dn.move_; __.dn.add; __.dn._add; __.dn.add_; __.dn._add_; __.dn.show; __.dn.hide; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.dn.fade_; __.dn._fade; __.dn.css; __.css.h; __.s; __.s.o; __.o.empty; __.o.camelCase; __.o.tokenize; __.n; __.n.within; __.l; __.l.del; __.l.contains; __.l.equal; __.l.empty; __.l.kSort; __.l.remove; __.o; __.o.s; __.o.k; __.o.kk; __.o.add; __.o.kRename; __.o.c; __.o.copy; __.o.equal; __.o.empty; __.e; __.e.stop; __.css; __.b; __.b.mail; __.b.url; __.dt; __.dt.date; __.cookie; __.cookie.get; __.cookie.set; __.cookie.del; __.url; __.url.oParams; __.misc; __.misc.isIE; __.win; __.win.dx; __.win.dy; 
+// @output_file_name __.utils.min.js
+// @js_externs var __toJson; var __compareTo; var __struc; var __remove; var __toString; var __; __.e; __.e.stop; __.utils; __.css; __.utils.dt; __.utils.dt.date; __.cookie; __.cookie.get; __.cookie.set; __.cookie.del; __.url; __.url.oParams; __.misc; __.misc.isIE;
 // ==/ClosureCompiler==
 /**
  * @namespace __
  */
 
+this.__compareTo = function() {}
+this.__struc = function() {}
+this.__remove = function() {}
+this.__toString = function() {}
+this.__toJson = function() {}
+
 if( typeof __ == "undefined" ) {
 	__ = {};
 }
-
 
 
 
@@ -29,12 +34,12 @@ if( typeof __ == "undefined" ) {
  * Converts a string into an object.
  * It will return [null] if it fails.
  * @memberof String
- * @method toJson
+ * @method __toJson
  * @example var s = '{"sName":"John","nAge":44}';
- * var o = s.toJson();
+ * var o = s.__toJson();
  * @returns {Object|null} Object or null
  */
-Object.defineProperty( String.prototype, "toJson", {
+Object.defineProperty( String.prototype, "__toJson", {
 	  value : function() {
 		try {
 			return JSON.parse( this );
@@ -48,12 +53,12 @@ Object.defineProperty( String.prototype, "toJson", {
 /**
  * Checks whether a string is empty after stripping of whitespaces
  * @memberof String
- * @method isEmpty
+ * @method __isEmpty
  * @example var s = "  ";
- * var bEmpty = s.isEmpty();
+ * var bEmpty = s.__isEmpty();
  * @returns {Booelan} Result of the check
  */
-Object.defineProperty( String.prototype, "isEmpty", {
+Object.defineProperty( String.prototype, "__isEmpty", {
 	value : function() {
 		return ( this.trim() === "" );
 	}
@@ -62,11 +67,11 @@ Object.defineProperty( String.prototype, "isEmpty", {
 /**
  * Uppercases the first character of a word
  * @memberof String
- * @method toCamelCase
- * @example var s = "hi mom".toCamelCase();
+ * @method __toCamelCase
+ * @example var s = "hi mom".__toCamelCase();
  * @returns {String} Camelcased string
  */
-Object.defineProperty( String.prototype, "toCamelCase", {
+Object.defineProperty( String.prototype, "__toCamelCase", {
 	value : function() {
 		var ls = [];
 		this.split( " " ).forEach( function( s, ix ) {
@@ -81,11 +86,11 @@ Object.defineProperty( String.prototype, "toCamelCase", {
 /**
  * Splits camelcase string into words separated by spaces
  * @memberof String
- * @method unCamelCase
- * @example var s = "HiMom".unCamelCase();
+ * @method __unCamelCase
+ * @example var s = "HiMom".__unCamelCase();
  * @returns {String} un-camelcased string
  */
-Object.defineProperty( String.prototype, "unCamelCase", {
+Object.defineProperty( String.prototype, "__unCamelCase", {
 	value : function() {
 		s = this.replace( /([A-Z])([a-z])/g, ' $1$2' );
 		s = s.replace( /([a-z])([A-Z])/g, '$1 $2' );
@@ -98,12 +103,12 @@ Object.defineProperty( String.prototype, "unCamelCase", {
  * Tokenize a string to certain levels:
  * simple: remove spaces, quotes, newlines an lowercase
  * @memberof String
- * @method tokenize
- * @example var s = "Hi 'Mom'".tokenize(); // himom
+ * @method __tokenize
+ * @example var s = "Hi 'Mom'".__tokenize(); // himom
  * @param {String} [sType] string to indicate level (default is simple)
  * @returns {String} tokenized string
  */
-Object.defineProperty( String.prototype, "tokenize", {
+Object.defineProperty( String.prototype, "__tokenize", {
 	value : function( sType ) {
 		var s = this;
 		if( ! sType || sType == "simple" ) {
@@ -117,28 +122,13 @@ Object.defineProperty( String.prototype, "tokenize", {
 } );
 
 /**
- * Sanitizes a string by removing tags only
- * @memberof String
- * @method sanitize
- * @example var s = "Hi 'Mom'".sanitize(); // himom
- * @returns {String} sanitized string
- */
-// REF: unit test this
-Object.defineProperty( String.prototype, "sanitize", {
-	value : function() {
-		return this.replace( /<(?:.|\n)*?>/gm, "" );
-	}
-} );
-
-
-/**
  * Checks whether a string is a valid email
  * @memberof String
- * @method isEmail
- * @example var bEmail = "john@example.com".isEmail();
+ * @method __isEmail
+ * @example var bEmail = "john@example.com".__isEmail();
  * @returns {Booelan} Result of the check
  */
-Object.defineProperty( String.prototype, "isEmail", {
+Object.defineProperty( String.prototype, "__isEmail", {
 	value : function() {
 		return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+[\.]{1}[a-zA-Z]{2,4}$/.test( this );
 	}
@@ -147,11 +137,11 @@ Object.defineProperty( String.prototype, "isEmail", {
 /**
  * Checks whether a string is a valid URL 
  * @memberof String
- * @method isUrl 
- * @example var bUrl = "http://example.com".isUrl();
+ * @method __isUrl 
+ * @example var bUrl = "http://example.com".__isUrl();
  * @returns {Booelan} Result of the check
  */
-Object.defineProperty( String.prototype, "isUrl", {
+Object.defineProperty( String.prototype, "__isUrl", {
 	value : function() {
 		return /^(http|https):\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test( this );
 	}
@@ -179,12 +169,12 @@ Object.defineProperty( String.prototype, "isUrl", {
  * Converts an object into a string
  * Uses JSON.stringify therefore returns null in case of circular references
  * @memberof Object
- * @method stringify
+ * @method __toString()
  * @example var o = { sName : "John", nAge : 44 }
- * var s = o.stringify();
+ * var s = o.__toString();
  * @returns {string} String representation of the object.
  */
-Object.defineProperty( Object.prototype, "stringify", {
+Object.defineProperty( Object.prototype, "__toString", {
 	value : function() {
 		try {
 			return JSON.stringify( this );
@@ -200,25 +190,25 @@ Object.defineProperty( Object.prototype, "stringify", {
  * array of arrays containing key paths as string and a sorted 
  * copy of the object passed on
  * @memberof Object
- * @method struc 
+ * @method __struc 
  * @example var o = { sName : "John", nAge : 44 };
- * var oStruc = o1.struc();
+ * var oStruc = o1.__struc();
  * @param {Object} o1 object to be examined 
  * @returns {Object} result of comparison
 		  o : copy of object 
 		, nLength : string size 
 		, lsStruc : arrays of keys
  */
-Object.defineProperty( Object.prototype, "struc", {
-	value : function( o ) {
+Object.defineProperty( Object.prototype, "__struc", {
+	value : function() {
 		var presort = function( a, b ) {
 			var _a = ( a && a.sort ) ? a.sort() : a;
 			var _b = ( b && b.sort ) ? b.sort() : b;
 			return _a > _b;
 		};
-		var s = o.stringify();
+		var s = this.__toString();
 		var nLength = s.length;
-		var _o = s.toJson();
+		var _o = s.__toJson();
 		if( _o && _o.sort ) {
 			_o.sort( presort ).sort();
 		}
@@ -248,62 +238,37 @@ Object.defineProperty( Object.prototype, "struc", {
 /**
  * Check if two objects contain the same data
  * @memberof Object
- * @method equal
+ * @method __equal
  * @example var o1 = { sName : "John", nAge : 44 };
  * var o2 = { sName : "John", nAge : 44 };
- * var bEqual = o.equal( o1 );
+ * var bEqual = o.__equal( o1 );
  * @param {Object} o1 first object to be compared 
  * @param {Object} o2 second object to be compared 
  * @returns {Boolean} true if objects are equal, false if not
  */
-Object.defineProperty( Object.prototype, "equal", {
+Object.defineProperty( Object.prototype, "__equal", {
 	value : function( oOther ) {
-		return this.compareTo( oOther ).isEqual;
+		return this.__compareTo( oOther ).isEqual;
 	}
 } );
 
 /**
  * Compare two objects and retrieve their differences
  * @memberof Object
- * @method diff
+ * @method __compareTo
  * @example var o1 = { sName : "John", nAge : 44 };
  * var o2 = { sName : "John", nAge : 23, bMarried : true };
- * var oDiff = o1.diff( o2 );
- * @param {Object} o2 second object to be compared 
- * @returns {Object|null} returns an object of two objects holding
- * an array of differences found for each of the two object passed on or null if they are identical
- */
-Object.defineProperty( Object.prototype, "diff", {
-	value : function( o2 ) {
-		var ldiff1 = this.compareTo( o2 ); 
-		if( ldiff1.isEqual ) {
-			return null;
-		}
-		var ldiff2 = o2.compareTo( this ); 
-		return {
-			  o1 : ldiff1.ldiff
-			, o2 : ldiff2.ldiff
-		};
-	}
-} );
-
-/**
- * Compare two objects and retrieve their differences
- * @memberof Object
- * @method diff
- * @example var o1 = { sName : "John", nAge : 44 };
- * var o2 = { sName : "John", nAge : 23, bMarried : true };
- * var oDiff = o1.compareTo( o2 );
+ * var oDiff = o1.__compareTo( o2 );
  * @param {Object} o2 second object to be compared 
  * @returns {Object|null} returns an object of two objects holding
  * an array of differences found in the second object.
  */
-Object.defineProperty( Object.prototype, "compareTo", {
+Object.defineProperty( Object.prototype, "__compareTo", {
 	value : function( o2 ) {
 		var isEqual = true;
 		var ldiff = [];
-		var oStruc1 = this.struc( this );
-		var oStruc2 = this.struc( o2 );
+		var oStruc1 = this.__struc();
+		var oStruc2 = o2.__struc();
 		if( oStruc1.nLength !== oStruc2.nLength ) {
 			ldiff.push( [ "length", ,oStruc1.nLength, oStruc2.nLength ] );
 			isEqual = false;
@@ -344,16 +309,41 @@ Object.defineProperty( Object.prototype, "compareTo", {
 	}
 } );
 
+/**
+ * Compare two objects and retrieve their differences
+ * @memberof Object
+ * @method __diff
+ * @example var o1 = { sName : "John", nAge : 44 };
+ * var o2 = { sName : "John", nAge : 23, bMarried : true };
+ * var oDiff = o1.__diff( o2 );
+ * @param {Object} o2 second object to be compared 
+ * @returns {Object|null} returns an object of two objects holding
+ * an array of differences found for each of the two object passed on or null if they are identical
+ */
+Object.defineProperty( Object.prototype, "__diff", {
+	value : function( o2 ) {
+		var ldiff1 = this.__compareTo( o2 );
+		if( ldiff1.isEqual ) {
+			return null;
+		}
+		var ldiff2 = o2.__compareTo( this ); 
+		return {
+			  "o1" : ldiff1.ldiff
+			, "o2" : ldiff2.ldiff
+		};
+	}
+} );
+
 
 /**
  * Return (first) key of an object
  * @memberof Object
- * @method getKey
+ * @method __getKey
  * @example var kv = { "country" : "Belgium" }
- * var k = kv.getKey(); // key
+ * var k = kv.__getKey(); // key
  * @returns {String} k string of key or null if no assoc
  */
-Object.defineProperty( Object.prototype, "getKey", {
+Object.defineProperty( Object.prototype, "__getKey", {
 	value : function() {
 		for( var k in this ) {
 			return k;
@@ -365,12 +355,12 @@ Object.defineProperty( Object.prototype, "getKey", {
 /**
  * Return keys of an object.
  * @memberof Object
- * @method getKeys
+ * @method __getKeys
  * @example var o = { sName : "John", nAge : 44 }
- * var lk = o.getKeys(); // [ "sName", "nAge" ]
+ * var lk = o.__getKeys(); // [ "sName", "nAge" ]
  * @returns {array} Array of keys
  */
-Object.defineProperty( Object.prototype, "getKeys", {
+Object.defineProperty( Object.prototype, "__getKeys", {
 	value : function() {
 		if( Object && Object.keys ) {
 			return Object.keys( this );
@@ -388,13 +378,13 @@ Object.defineProperty( Object.prototype, "getKeys", {
 /**
  * Adds an object to an existing object.
  * @memberof Object
- * @method add
+ * @method __add
  * @example var oOrig = { sName : "John", nAge : 44 }
  * var oNew = { email : "john@example.com", id : 123 }
- * oOrig.add( oNew );
+ * oOrig.__add( oNew );
  * @param {Object} onew object to be added
  */
-Object.defineProperty( Object.prototype, "add", {
+Object.defineProperty( Object.prototype, "__add", {
 	  value : function( onew ) {
 		if( onew ) {
 			for( var s in onew ) {
@@ -409,15 +399,15 @@ Object.defineProperty( Object.prototype, "add", {
 /**
  * Rename a key of an object.
  * @memberof Object
- * @method kRename
+ * @method __kRename
  * @example var o = { sName : "John", nAge : 44 }
- * o.kRename( "sName", "sFirstName" );
+ * o.__kRename( "sName", "sFirstName" );
  * @param {String} kold key to be renamed
  * @param {String} knew new key name
  */
 // http://stackoverflow.com/a/14592469/463676
 // REF: is this IE10 compatible?
-Object.defineProperty( Object.prototype, "kRename", {
+Object.defineProperty( Object.prototype, "__kRename", {
 	value : function( kold, knew ) {
 			Object.defineProperty(
 				  this
@@ -427,7 +417,7 @@ Object.defineProperty( Object.prototype, "kRename", {
 			delete this[ kold ];
 		try {
 		} catch( e ) {
-			console.warn( 'kRename: o is no object' );
+			console.warn( '__kRename: o is no object' );
 		}
 	}
 } );
@@ -435,12 +425,12 @@ Object.defineProperty( Object.prototype, "kRename", {
 /**
  * Counts first level elements of an object
  * @memberof Object
- * @method kCount 
+ * @method __kCount 
  * @example var o = { sName : "John", nAge : 44 }
- * var c =o.kCount(); // 2
+ * var c =o.__kCount(); // 2
  * @returns {Number} count of elements
  */
-Object.defineProperty( Object.prototype, "kCount", {
+Object.defineProperty( Object.prototype, "__kCount", {
 	value : function() {
 		var _c = 0;
 		for( var k in this ) {
@@ -455,12 +445,12 @@ Object.defineProperty( Object.prototype, "kCount", {
 /**
  * Create a copy of an object
  * @memberof Object
- * @method copy 
+ * @method __copy 
  * @example var o = { sName : "John", nAge : 44 }
- * var oNew = o.copy();
+ * var oNew = o.__copy();
  * @returns {Object} Copy of the object
  */
-Object.defineProperty( Object.prototype, "copy", {
+Object.defineProperty( Object.prototype, "__copy", {
 	value : function() {
 		try {
 			return JSON.parse( JSON.stringify( this ) );
@@ -474,12 +464,12 @@ Object.defineProperty( Object.prototype, "copy", {
 /**
  * Checks whether an object is empty
  * @memberof Object
- * @method isEmpty
+ * @method __isEmpty
  * @example var o = {};
- * var bEmpty = o.isEmpty();
+ * var bEmpty = o.__isEmpty();
  * @returns {Booelan} Result of the check
  */
-Object.defineProperty( Object.prototype, "isEmpty", {
+Object.defineProperty( Object.prototype, "__isEmpty", {
 	value : function() {
 		// http://stackoverflow.com/a/34491287/463676
 		for( var k in this ) {
@@ -509,13 +499,14 @@ Object.defineProperty( Object.prototype, "isEmpty", {
  * and returns the value of the number or either min or
  * max value if the number lies outside those boundaries
  * @memberof Number
- * @method within 
- * @example var n = 1.within( 5, 9 ); // 1
+ * @method __withinBoundary
+ * @example var n1 = 1;
+ * var n2 = n1.__withinBoundary( 5, 9 ); // 5
  * @param {Number} min minimum value
  * @param {Number} max maximum value
  * @returns {Number} value of number within boundaries
  */
-Object.defineProperty( Number.prototype, "within", {
+Object.defineProperty( Number.prototype, "__withinBoundary", {
 	value : function( min, max ) {
 		var n = this;
 		n = ( n < min ) ? min : n;
@@ -534,44 +525,22 @@ Object.defineProperty( Number.prototype, "within", {
 
 
 
-/**
- * Converts an array into a string
- * Uses JSON.stringify therefore returns null in case of circular references
- * @memberof Object
- * @method stringify
- * @example var l = [1,2,3]
- * var s = l.stringify();
- * @returns {string} String representation of the object.
- */
-Object.defineProperty( Array.prototype, "xxxxxstringify", {
-	value : function() {
-		try {
-			return JSON.stringify( this );
-		}
-		catch( e ) {
-			return null;
-		}
-	}
-} );
-
-
-
 
 /**
  * Remove an element from a list
  * @memberof Array
- * @method del
+ * @method __remove
  * @example var l = [ 1, 3, 7 ];
- * var l = l.del( 7 );
+ * var l = l.__remove( 7 );
  * @param {String|Number} x Element we want to remove
  * @returns {Booelan} Result of the check whether list holds the element
  */
-Object.defineProperty( Array.prototype, "del", {
+Object.defineProperty( Array.prototype, "__remove", {
 	value : function( el ) {
 		var ix = this.indexOf( el );
 		if( ix > -1 ) {
 			this.splice( ix, 1 );
-			this.del( el );
+			this.__remove( el );
 		}
 	}
 
@@ -580,49 +549,31 @@ Object.defineProperty( Array.prototype, "del", {
 /**
  * Checks whether a list contains an element
  * @memberof Array
- * @method contains
+ * @method __contains
  * @example
  * var l = [ 1, 3, 7 ];
- * var b7 = l.contains( 7 );
+ * var b7 = l.__contains( 7 );
  * @result
  * (b7 == true);
  * @param {String|Number} x Element we are looking for
  * @returns {Booelan} Result of the check whether list holds the element
  */
-Object.defineProperty( Array.prototype, "contains", {
+Object.defineProperty( Array.prototype, "__contains", {
 	value : function( el ) {
 		return ( this.indexOf( el ) > -1 );
 	}
 } );
 
-/**
- * Check if two arrays contain exactly the same data.
- * NB: it is not sorting the array. If you don't want to
- * keep the order use o.equal method instead.
- * @memberof __.l
- * @method equal
- * @example var l1 = [ 1, 2, 3 ];
- * var l2 = [ 1, 2, 3 ];
- * var bEqual = l.equal( l1, l2 );
- * @param {Array} l1 first array to be compared 
- * @param {Array} l2 second array to be compared 
- * @returns {Boolean} result of comparison
- */
-Object.defineProperty( Array.prototype, "equalxxxxxxxxx", {
-	value : function( lOther ) {
-		return ( this.join( "-" ) === lOther.join( "-" ) );
-	}
-} );
 
 /**
  * Checks whether a list is empty
  * @memberof Array
- * @method empty
+ * @method __empty
  * @example var l = [];
- * var bEmpty = l.empty();
+ * var bEmpty = l.__empty();
  * @returns {Booelan} Result of the check
  */
-Object.defineProperty( Array.prototype, "empty", {
+Object.defineProperty( Array.prototype, "__empty", {
 	value : function() {
 		return this.length == 0;
 		return __.o.s( l ) === "[]";
@@ -632,40 +583,31 @@ Object.defineProperty( Array.prototype, "empty", {
 /**
  * Sorts an array of objects by an object's key
  * @memberof Array
- * @method empty
+ * @method __kSort
  * @example var lo = [ { v : 12 }, { x : 11 }, { s : "x" }, { v : 2 } ];
- * lo = lo.kSort( lo, "v" );
+ * lo = lo.__kSort( lo, "v" );
  * @result lo == [ { x : 11, s : "x", v : 2, v : 12 } ]
  * @param {String} k key we want to sort by
  * @returns {Array} Sorted array of objects
  */
-Object.defineProperty( Array.prototype, "kSort", {
+Object.defineProperty( Array.prototype, "__kSort", {
 	value : function( k ) {
 		return this.sort( function( a, b ) {
-		console.log( typeof a[ k ] + " -- " + typeof b[ k ] );
 			var nReturn = 1;
 			if( ! a.hasOwnProperty( k ) || typeof a[k] == "undefined" ) {
-				console.log( "....1" );
 				return 1;
 				nReturn = 1;
 			} 
 			else if( ! b.hasOwnProperty( k ) || typeof b[k] == "undefined" ) {
-				console.log( "....0" );
 				return -1;
 				nReturn = 0;
 			} 
-     if(a[k] < b[k]){
-            return -1;
-        }else if(a[k] > b[k]){
-            return 1;
-        }
-        return 0;
-
-
-
-			nReturn = ( a[ k ] > b[ k ] ) ? 1 : 0;
-			console.log( a[ k ] + " : " + b[ k ] + "=> " + nReturn );
-			return nReturn;
+			if( a[ k ] < b[ k ] ) {
+				return -1;
+			} else if( a[ k ] > b[ k ] ) {
+				return 1;
+			}
+			return 0;
 		} );
 
 	}
@@ -753,11 +695,11 @@ __.cookie = {
 	 * Removes a cookie by name
 	 * </pre>
 	 * @memberof __.cookie
-	 * @method del
-	 * @example __.cookie.del( "pref" );
+	 * @method remove
+	 * @example __.cookie.remove( "pref" );
 	 * @param {String} k String representing a cookie name
 	 */
-	, del : function( k ) {
+	, remove : function( k ) {
 		__.cookie.set( k, '', -1 );
 	}
 };
@@ -769,6 +711,7 @@ __.cookie = {
  * @namespace __.url
  */
 // REF: move to win
+
 __.url = {
 	/**
 	 * <pre>
@@ -806,12 +749,12 @@ __.utils.dt = {
 		var nMonth = dt.getMonth();
 		var sMonth = lsMonths[ nMonth ];
 		return {
-			  nDay : nDay
-			, sDay : sDay
-			, sDayShort : sDay.substring( 0, 3 )
-			, nMonth : nMonth
-			, sMonth : sMonth
-			, sMonthShort : sMonth.substring( 0, 3 )
+			  "nDay" : nDay
+			, "sDay" : sDay
+			, "sDayShort" : sDay.substring( 0, 3 )
+			, "nMonth" : nMonth
+			, "sMonth" : sMonth
+			, "sMonthShort" : sMonth.substring( 0, 3 )
 		}
 	}
 };
@@ -828,57 +771,4 @@ __.utils.misc = {
 		return false; 
 	}
 }
-
-/* *** Polyfills *** */
-/* matches */
-this.Element && function( oPrototype ) {
-	oPrototype.matches = oPrototype.matches ||
-	oPrototype.matchesSelector ||
-	oPrototype.webkitMatchesSelector ||
-	oPrototype.msMatchesSelector ||
-	function( sCSS ) {
-		var dn = this;
-		var ldn = ( dn.parentNode || dn.document ).querySelectorAll( sCSS );
-		var ix = -1;
-		while( ldn[ ++ix ] && ldn[ ix ] != dn ){
-			// just loop until hit the end
-		};
-		return ( ldn[ ix ] ) ? true : false;
-	}
-}( Element.prototype );
-
-/* closest */
-this.Element && function( oPrototype ) {
-	oPrototype.closest = oPrototype.closest || function( sCSS ) {
-		var dn = this;
-		while( dn.matches && ! dn.matches( sCSS ) ) {
-			dn = dn.parentNode;
-		}
-		return ( dn.matches ) ? dn : null;
-	}
-}( Element.prototype );
-
-/* classList.toggle */
-
-( function() {
-	function ClassList( el ) {
-		this.element = el;
-	}
-	ClassList.prototype = {
-		toggle : function( name ) {
-			if( this.contains( name ) ) {
-				this.remove( name );
-				return false;
-			}
-			else {
-				this.add( name );
-				return true;
-			}
-		}
-	};
-}() );
-
-
-
-
 

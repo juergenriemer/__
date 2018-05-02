@@ -93,7 +93,7 @@ __.SP.modal = {
 		h += "<p class='separator'></p>";
 		h += this.buttons( args );
 		h += "</div>";
-		this.dn = __.dn.append( h );
+		this.dn = document.body.__append( h );
 		this.behaviour( this.dn, args );
 		var kv = {
 			  title : args.sTitle
@@ -110,21 +110,21 @@ __.SP.modal = {
 			this.processing();
 		}
 		if( args.bNoButtons ) {
-			__.dn_( ".osce-buttons", this.dn ).style.display = "none";
+			this.dn.__find( ".osce-buttons" ).style.display = "none";
 		}
 		SP.UI.ModalDialog.showModalDialog( kv );
 		return this;
 	}
 	, behaviour : function( dn, args ) {
 		var that = this;
-		var dnOk = __.dn_( "input[value='" + args.sOk + "']", this.dn );
+		var dnOk = this.dn.__find( "input[value='" + args.sOk + "']" );
 		if( dnOk && args.fnact ) {
 			dnOk.addEventListener( "click", function() {
 				that.processing();
 				args.fnact( that );
 			} );
 		}
-		var dnCancel = __.dn_( "input[value='" + args.sCancel + "']", this.dn );
+		var dnCancel = this.dn.__find( "input[value='" + args.sCancel + "']" );
 		if( dnCancel ) {
 			dnCancel.addEventListener( "click", function() {
 				__.SP.modal.cancel();
@@ -132,15 +132,15 @@ __.SP.modal = {
 		}
 		// set focus on first input field
 		setTimeout( function() {
-			var dnInput = __.dn_( "input", that.dn );
+			var dnInput = that.dn.__find( "input" );
 			if( dnInput && dnInput[ 0 ] && dnInput[ 0 ].focus ) {
 				dnInput[ 0 ].focus();
 			}
 		}, 1500 );
 	}
 	, message : function( s ) {
-		var dnMessage = __.dn_( ".osce-message", this.dn );
-		var dnLoading = __.dn_( ".osce-loading", this.dn );
+		var dnMessage = this.dn.__find( ".osce-message" );
+		var dnLoading = this.dn.__find( ".osce-loading" );
 		if( s ) {
 			dnMessage.textContent = s;
 			dnMessage.style.display = "block";
@@ -171,24 +171,22 @@ __.SP.modal = {
 		return h;
 	}
 	, stopProcessing : function() {
-		var dnLoading = __.dn_( ".osce-loading", this.dn );
+		var dnLoading = this.dn.__find( ".osce-loading" );
 		dnLoading.style.display = "none";
-		//__.dn._fade( dnLoading );
 	}
 	, processing : function() {
-		var dnLoading = __.dn_( ".osce-loading", this.dn );
+		var dnLoading = this.dn.__find( ".osce-loading" );
 		dnLoading.style.display = "block";
-		//__.dn._fade( dnLoading );
 	}
 	, progress : function( s ) {
-		var dnMessage = __.dn_( ".osce-loading > span", this.dn );
+		var dnMessage = this.dn.__find( ".osce-loading > span" );
 		dnMessage.textContent = s;
 	}
 	, close : function() {
 		SP.UI.ModalDialog.commonModalDialogClose( 1 );
 	}
 	, cancel : function() {
-		var dnClose = __.dn_( ".ms-dlgCloseBtn" );
+		var dnClose = document.body.__find( ".ms-dlgCloseBtn" );
 		if( dnClose && dnClose.click ) {
 			dnClose.click();
 		}
@@ -254,11 +252,11 @@ __.SP.modal = {
 	}
 	, closeAll : function() {
 		console.log( 'closeall' );
-		__.dn_( ".ms-dlgContent", function( dnModal ) {
-			__.dn.del( dnModal );
+		document.body.__find( ".ms-dlgContent", function( dnModal ) {
+			dnModal.__remove();
 		} );
-		__.dn_( ".ms-dlgOverlay", function( dnBlend ) {
-			__.dn.del( dnBlend );
+		document.body.__find( ".ms-dlgOverlay", function( dnBlend ) {
+			dnBlend.__remove();
 		} );
 	}
 	/**
@@ -269,7 +267,7 @@ __.SP.modal = {
 	 * @returns {Boolean} true if a modal window is currently displayed
 	 */
 	, bExists : function() {
-		return __.dn_( ".ms-dlgContent" );
+		return document.body.__find( ".ms-dlgContent" );
 	}
 	/**
 	 * Resizes the current modal window to fit the content.

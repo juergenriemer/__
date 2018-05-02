@@ -134,7 +134,7 @@ __.SP.item = {
 		// in case we pass on additional parameters such as custom
 		// field names to be fetched we do this in an array and...
 		var lsFields = args.lsFields;
-		var _args = __.o.copy( args.lsFields );
+		var _args = args.lsFields.__copy();
 		if( lsFields ) {
 			// construct the arguments list for the 'load' call
 			// by preceding the arguments with the item [oItem]
@@ -185,7 +185,7 @@ __.SP.item = {
 							_kv = convert( sField, oField );
 						}
 					}
-					__.o.add( kv, _kv );
+					kv.__add( _kv );
 				} );
 				async.resolve( { oItem : oItem, kv : kv } );
 			}
@@ -288,7 +288,7 @@ __.SP.item = {
 		if( ! isNaN( args.xUser ) ) {
 			oUser = oUsers.getById( args.xUser );
 		}
-		else if( __.b.email( args.xUser ) ) {
+		else if( args.xUser.__isEmail() ) {
 			oUser = oUsers.getByEmail( args.xUser );
 		}
 		else {

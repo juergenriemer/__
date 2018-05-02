@@ -1,5 +1,13 @@
 <html>
-<script src="__.Async.js"></script>
+<script>
+if( /\?min/.test( self.location.href ) ) {
+	document.write( '<sc'+'ript src="__.async.min.js"></sc'+'ript>' );
+}
+else {
+	document.write( '<sc'+'ript src="__.async.js"></sc'+'ript>' );
+}
+</script>
+
 
 <body>
 <h3>Unit tests for __.Async.js</h3>
@@ -335,6 +343,7 @@ noprom();
 // test pass on args
 var argstest = function( args ) {
 	var async = __.Async.promise( args );
+	console.log( args );
 	args.aResult.push( "|" + args.y + "|" );
 	if( ! args.laTest ) {
 		args.laTest = [];

@@ -8,14 +8,14 @@ __.SP.taxonomy.setTermInForm = function( args ) { // sField, sTerm, guid
 	var h;
 	if( args.guid ) {
 		var v = args.sTerm + "|" + args.guid;
-		__.dn_( "#" + args.sField + "_\\$input" ).value = v;
+		document.body.__find( "#" + args.sField + "_\\$input" ).value = v;
 		h = "<span class='valid-text'>" + args.sTerm + "</span>";
 	}
 	else {
 		h  = '<span class="invalid-text" ';
 		h += 'title="The term is not a valid term">' + args.sTerm + '</span>';
 	}
-	__.dn_( "#" + args.sField + "_\\$containereditableRegion" ).innerHTML = h;
+	document.body.__find( "#" + args.sField + "_\\$containereditableRegion" ).innerHTML = h;
 	__.Async.promise( args ).resolve();
 }
 
@@ -131,12 +131,12 @@ __.SP.taxonomy.load = function( args ) {
 								, guid : aTerms[ sTerm ].guid
 							};
 							aLabels[ sLabel ] = vLookup;
-							aLabels[ __.s.tokenize( sLabel ) ] = vLookup;
+							aLabels[ sLabel.__tokenize() ] = vLookup;
 						}
 						else {
 							aTerms[ sTerm ].lsLabels.push( sLabel );
 							aLabels[ sLabel ] = vLookup;
-							aLabels[ __.s.tokenize( sLabel ) ] = vLookup;
+							aLabels[ sLabel.__tokenize() ] = vLookup;
 						}
 					}
 					if( ( sLastTerm == sTerm ) ) {

@@ -20,7 +20,7 @@ __.SP.Filter = __.Class.extend( {
 		this.defaultView = aConf.defaultView || "All Items";
 		// SP's OOTB default views differ in internal and display name
 		this.sdftView = aConf.defaultView || "AllItems";
-		this.sFilter = "_filter_" + __.s.tokenize( this.sList ) + "_";
+		this.sFilter = "_filter_" + this.sList.__tokenize() + "_";
 		this.sFilterFieldStore = this.sFilter + "_fields_";
 		// check if filter has already been created
 		( new __.Async( {
@@ -34,7 +34,8 @@ __.SP.Filter = __.Class.extend( {
 		*/
 		.then( function( args ) {
 			var h = "<div id='"+ that.sFilter +"' style='display:none' class='osce-filter'></div>";
-			that.dnRoot = __.dn.append( h, __.dn_( "#sideNavBox" ) );
+			var dnSideNav = document.body.__find( "#sideNavBox" );
+			that.dnRoot = dnSideNav.__append( h );
 			that.createButtons();
 			that.dnForm = __.SP.filter.form.create( {
 				  dnRoot : that.dnRoot
@@ -130,7 +131,7 @@ __.SP.Filter = __.Class.extend( {
 				delete kv[ k ];
 			}
 		}
-		return ( __.o.empty( kv ) ) ? null : kv;
+		return ( kv.__isEmpty() ) ? null : kv;
 	}
 	, bFilterView : function() {
 		if( ! this.guidFilter ) {
@@ -166,13 +167,13 @@ __.SP.Filter = __.Class.extend( {
 	}
 	, form2hash : function() {
 		var kv = this.read();
-		var sHash = ( kv ) ? "&query=__" + __.o.s( kv ) + "__" : "";
+		var sHash = ( kv ) ? "&query=__" + kv.__toString() + "__" : "";
 		return sHash;
 	}
 	, getForm : function() {
 		return this.dnForm;
-		var id = "_filter_" + __.s.tokenize( ctx.ListTitle ) + "_";
-		var dnForm = __.dn_( "#" + id );
+		var id = "_filter_" + ctx.ListTitle.__tokenize() + "_";
+		var dnForm = document.body.__find( "#" + id );
 		if( dnForm ) {
 			return dnForm;
 		}
@@ -205,15 +206,15 @@ __.SP.Filter = __.Class.extend( {
 			lsxml = xmlQuery.match( /<Where>.*?<\/Where>/ );
 			if( lsxml && lsxml[ 0 ] ) {
 				xmlQuery = lsxml[ 0 ];
-				var dn = __.dn.append( xmlQuery );
-				__.dn_( "FieldRef", dn, function( dn ) {
+				var dn = document.body.__append( xmlQuery );
+				dn.__find( "FieldRef", function( dn ) {
 					// get necessary attributes from field node
 					var sName = dn.getAttribute( "name" );
 					var sOperator = dn.parentNode.tagName;
 					// create sid of field
-					var sid = __.s.tokenize( that.sFilter + sOperator + sName );
+					var sid = ( that.sFilter + sOperator + sName ).__tokenize();
 					// get the corresponding field in our filter
-					var dnField = __.dn_( "[sid='" + sid + "']", dnForm );
+					var dnField = dnForm.__find( "[sid='" + sid + "']" );
 					// skip unknown fields (e.g. for custom queries such as cherry picks)
 					if( ! dnField ) {
 						return;
@@ -236,15 +237,15 @@ __.SP.Filter = __.Class.extend( {
 			lsxml = xmlQuery.match( /<Where>.*?<\/Where>/ );
 			if( lsxml && lsxml[ 0 ] ) {
 				xmlQuery = lsxml[ 0 ];
-				var dn = __.dn.append( xmlQuery );
-				__.dn_( "FieldRef", dn, function( dn ) {
+				var dn = document.body.__append( xmlQuery );
+				dn.__find( "FieldRef", function( dn ) {
 					// get necessary attributes from field node
 					var sName = dn.getAttribute( "name" );
 					var sOperator = dn.parentNode.tagName;
 					// create sid of field
-					var sid = __.s.tokenize( that.sFilter + sOperator + sName );
+					var sid = ( that.sFilter + sOperator + sName ).__tokenize();
 					// get the corresponding field in our filter
-					var dnField = __.dn_( "[sid='" + sid + "']", dnForm );
+					var dnField = dnForm.__find( "[sid='" + sid + "']" );
 					// skip unknown fields (e.g. for custom queries such as cherry picks)
 					if( ! dnField ) {
 						return;
@@ -252,7 +253,7 @@ __.SP.Filter = __.Class.extend( {
 					var sFormType = dnField.getAttribute( "sFormType" );
 					// and we check its type of field (e.g. choice, taxonomy, etc. )
 					// all supported types are found in __.SP.filter.form.js
-					var dnMultiValues = __.dn_( "values", dn );
+					var dnMultiValues = dn.__find( "values" );
 					if( dnMultiValues ) {
 						dn = dnMultiValues;
 					}
@@ -296,7 +297,7 @@ __.SP.Filter = __.Class.extend( {
 				if( bTaxTerms ) {
 					that.compareQueries();
 				}
-				__.dn.del( dn );
+				dn.__remove();
 			}
 			__.Async.promise( args ).resolve();
 		}, "Analyse query" )
@@ -362,11 +363,11 @@ __.SP.Filter = __.Class.extend( {
 									  id : idParent
 									, sName : sName
 								} );
-								if( ! __.l.empty( lid ) ) {
+								if( ! lid.__isEmpty() ) {
 									laTaxFields.push( lid );
 								}
 							}
-							if( ! __.l.empty( laTaxFields ) ) {
+							if( ! laTaxFields.__isEmpty() ) {
 								lvCAML.push( {
 									  sType : "taxonomy"
 									, sName : oField.sName
@@ -423,7 +424,7 @@ __.SP.Filter = __.Class.extend( {
 		}, "load taxonomies" )
 		.then( function( args ) {
 			var token = function( s ) {
-				s = __.s.tokenize( s );
+				s = s.__tokenize();
 				var sValues = s.replace( /<(?:.|\n)*?>/gm, "|" );
 				if( sValues ) {
 					var lsValues = sValues.split( "|" );
@@ -468,7 +469,7 @@ __.SP.Filter = __.Class.extend( {
 		h += '<span class="menu icon-save" action="save" title="Save this search"></span>';
 		h += '<b><span class="menu icon-clear" action="clear" title="Clear the filter"></span></b>';
 		h += "</div>";
-		__.dn.append( h, this.dnRoot )
+		this.dnRoot.__append( h )
 			.addEventListener( "click", function( e ) {
 				e.preventDefault();
 				e.stopPropagation();
@@ -498,7 +499,7 @@ __.SP.Filter = __.Class.extend( {
 				oField.sOperator = ( oField.sCAMLType == "taxonomy" ) ? "In" : "Eq";
 			}
 		} );
-		this.loFields = __.l.kSort( this.loFields, "nFilter" );
+		this.loFields = this.loFields.__kSort( "nFilter" );
 		return this.loFields;
 	}
 	, createView : function( sName, cbfn ) {
@@ -532,7 +533,7 @@ __.SP.Filter = __.Class.extend( {
 		}, "get list of views" )
 		.then( function( args ) {
 			var async = __.Async.promise( args );
-			var sMode = ( __.l.contains( args.lsViews, sName ) ) ? "update" : "add";
+			var sMode = ( args.lsViews.__contains( sName ) ) ? "update" : "add";
 			async.resolve( { sMode : sMode } );
 		}, "decide wether to create or update" )
 		.then( __.SP.view, "read", {
@@ -706,22 +707,6 @@ __.SP.Filter = __.Class.extend( {
 			*/
 		} );
 	}
-	, bDuplicateFilterName : function( sName ) {
-		// iterate sidebar titles for "Saved Filters"
-		var b = false;
-		__.dn_( "h2", __.dn_( "#osce-sidebar" ), function( dnTitle ) {
-			if( dnTitle.textContent == "Saved Filters" ) {
-				// iterate all saved links
-				var dnBox = __._dn( "div.osce-left-bar", dnTitle )
-				__.dn_( "a", dnBox, function( dnLink ) {
-					if( dnLink.textContent.trim() == sName ) {
-						b = true;
-					}
-				} );
-			}
-		} );
-		return b;
-	}
 	, openSaveWindow : function() {
 		var that = this;
 		var h = "<p>";
@@ -743,8 +728,8 @@ __.SP.Filter = __.Class.extend( {
 			}
 			, fnact : function() {
 				that.oModal.message( "" );
-				var dnValue = __.dn_( "[name='sName']", that.oModal.dn );
-				var sName = __.s.sanitize( dnValue.value );
+				var dnValue = that.oModal.dn.__find( "[name='sName']" );
+				var sName = dnValue.value.__sanitize();
 				if( sName  ) {
 					( new __.Async( { sLabel : "check duplicate filter" } ) )
 					.then( __.SP.view, "list", {
@@ -752,7 +737,7 @@ __.SP.Filter = __.Class.extend( {
 					}, "get list of views" )
 					.then( function( args ) {
 						var async = __.Async.promise( args );
-						if( __.l.contains( args.lsViews, sName ) ) {
+						if( args.lsViews.__contains( sName ) ) {
 							var d = __.SP.modal.confirm( {
 								  sTitle : "Confirm this action"
 								, sQuestion : O$C3.Lang.saved_filter_name_exists_overwrite
@@ -792,7 +777,7 @@ __.SP.Filter = __.Class.extend( {
 				var sDisabled = ( aField.sName == "FrontOffice" )
 					? " disabled "
 					: "";
-				var sChecked = ( __.l.contains( that.lsFilterFields, aField.sName ) )
+				var sChecked = ( that.lsFilterFields.__contains( aField.sName ) )
 					? " checked "
 					: "";
 				h += "<tr>";
@@ -816,9 +801,9 @@ __.SP.Filter = __.Class.extend( {
 	}
 	, toggleFilterFields : function() {
 		var that = this;
-		__.dn_( ".osce-form-field", this.dnRoot, function( dn ) {
+		this.dnRoot.__find( ".osce-form-field", function( dn ) {
 			var sid = dn.getAttribute( "sName" );
-			if( __.l.contains( that.lsFilterFields, sid ) ) {
+			if( that.lsFilterFields.__contains( sid ) ) {
 				dn.classList.remove( "hide" );
 			}
 			else {
@@ -835,22 +820,22 @@ __.SP.Filter = __.Class.extend( {
 			this.loFields.forEach( function( oField ) {
 				that.lsFilterFields.push( oField.sName );
 			} );
-			localStorage.setItem( this.sFilterFieldStore, __.o.s( this.lsFilterFields ) );
+			localStorage.setItem( this.sFilterFieldStore, this.lsFilterFields.__toString() );
 		}
 		else {
 			// otherwise use local storage
-			this.lsFilterFields = __.s.o( slsFilterFields );
+			this.lsFilterFields = slsFilterFields.__toJson();
 		}
 	}
 	, updateFilterFields : function( oModal ) {
 		var that = this;
 		this.lsFilterFields = [];
-		__.dn_( "[name]", oModal.dn, function( dn ) {
+		oModal.dn.__find( "[name]", function( dn ) {
 			if( dn.checked ) {
 				that.lsFilterFields.push( dn.getAttribute( "name" ) );
 			}
 		} );
-		localStorage.setItem( this.sFilterFieldStore, __.o.s( this.lsFilterFields ) );
+		localStorage.setItem( this.sFilterFieldStore, this.lsFilterFields.__toString() );
 	}
 } );
 

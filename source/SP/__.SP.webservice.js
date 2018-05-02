@@ -88,7 +88,7 @@ __.SP.webservice = {
 	  call : function( args ) {
 		var async = __.Async.promise( args );
 		var that = this;
-		var sPayload = __.o.s( args.oPayload );
+		var sPayload = args.oPayload.__toString();
 		var sMethod = args.sMethod || "POST";
 		var oAjax = window.XMLHttpRequest ?
 			new XMLHttpRequest() :
@@ -100,7 +100,7 @@ __.SP.webservice = {
 			var fnerr = function( oAjax, sError ) {
 				var sInfo = escape( oAjax.response );
 				var sError = "Error reported: " + ( oAjax.statusText );
-				var oResponse = __.s.o( oAjax.response );
+				var oResponse = oAjax.response.__toJson();
 				if( oResponse && oResponse.Message ) {
 					sError = oResponse.Message;
 				}

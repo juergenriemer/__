@@ -1,7 +1,7 @@
 __.SP.filter.form = {};
 __.SP.filter.form.create = function( args ) {
 	var h = "<form class='osce-form'></form>";
-	var dn = __.dn.append( h, args.dnRoot );
+	var dn = args.dnRoot.__append( h );
 	args.loFields.forEach( function( oField ) {
 		oField.dnRoot = dn;
 		oField.idFilter = args.idFilter;
@@ -13,7 +13,7 @@ __.SP.filter.form.create = function( args ) {
 		}
 	} );
 	var fnModal = function() {
-		var dn = __.dn_( ".ms-dlgContent" );
+		var dn = document.body.__find( ".ms-dlgContent" );
 		if( ! dn ) {
 			if( args.cbChange ) {
 				args.cbChange();
@@ -30,8 +30,8 @@ __.SP.filter.form.create = function( args ) {
 		}
 		// prevent manual manipulation of the taxonomy picker DIV
 		if( e.target.classList.contains( "ms-inputBox" ) ) {
-			var dnRoot = __._dn( ".osce-form-field", e.target );
-			var dnImg = __.dn_( "img.ms-taxonomy-browser-button", dnRoot );
+			var dnRoot = e.target.__find( ".osce-form-field" );
+			var dnImg = dnRoot.__find( "img.ms-taxonomy-browser-button" );
 			dnImg.click();
 		}
 	} );
@@ -40,10 +40,10 @@ __.SP.filter.form.create = function( args ) {
 
 __.SP.filter.form.reset = function( dn ) {
 	// clear all taxonomy fields
-	__.dn_( '[role="textbox"]', dn, function( dn ) {
+	dn.__find( '[role="textbox"]', function( dn ) {
 		dn.innerHTML = "";
 	} );
-	__.dn_( '.osce-v', dn, function( dn ) {
+	dn.__find( '.osce-v', function( dn ) {
 		dn.value = "";
 	} );
 	// and reset the form
@@ -52,7 +52,7 @@ __.SP.filter.form.reset = function( dn ) {
 
 __.SP.filter.form.read = function( dn ) {
 	var kv = {};
-	__.dn_( ".osce-form-field", dn, function( dn ) {
+	dn.__find( ".osce-form-field", function( dn ) {
 		var sid = dn.getAttribute( "sid" );
 		var sFormType = dn.getAttribute( "sFormType" );
 		kv[ sid ] = {
@@ -73,12 +73,12 @@ __.SP.filter.form.field.sid = function( x ) {
 	// e.g. from/to date fields
 	var sid = "";
 	if( x instanceof Element ) {
-		sid += __._dn( ".osce-filter", x ).id;
-		sid += __.s.tokenize( x.getAttribute( "sOperator" ) + x.getAttribute( "sName" ) );
+		sid += x.__find( ".osce-filter" ).id;
+		sid += ( x.getAttribute( "sOperator" ) + x.getAttribute( "sName" ) ).__tokenize();
 	}
 	else if( x.idFilter && x.sDisplayName ) {
 		sid += x.idFilter;
-		sid += __.s.tokenize( x.sOperator + x.sName );
+		sid += ( x.sOperator + x.sName ).__tokenize();
 	}
 	else {
 		console.warn( "parameter is no filter form argument", x );
@@ -104,14 +104,14 @@ __.SP.filter.form.field.text = {
 		var h = __.SP.filter.form.field.hHeader( args );
 		h += "<input class='osce-v'></input>";
 		h += "</div>";
-		__.dn.append( h, args.dnRoot );
+		dnRoot.__append( h );
 	}
 	, get : function( dn ) {
-		var v = __.dn_( ".osce-v", dn ).value;
+		var v = dn.__find( ".osce-v" ).value;
 		return ( v ) ? v : null;
 	}
 	, set : function( dn, v ) {
-		var v = __.dn_( ".osce-v", dn ).value = v;
+		var v = dn.__find( ".osce-v" ).value = v;
 	}
 };
 
@@ -132,10 +132,10 @@ __.SP.filter.form.field.lookupdate = {
 		h += ' frameborder="0" scrolling="no" style="display:none; position:absolute; width:200px; z-index:101;" ';
 		h += ' title="Select a date from the calendar."></iframe>';
 		h += "</div>";
-		__.dn.append( h, args.dnRoot );
+		dnRoot.__append( h );
 	}
 	, get : function( dn ) {
-		var v = __.dn_( ".osce-v", dn ).value;
+		var v = dn.__find( ".osce-v" ).value;
 		if( v ) {
 			var nDate = v.split( "/" ).reverse().join( "" );;
 			return nDate;
@@ -146,7 +146,7 @@ __.SP.filter.form.field.lookupdate = {
 		if( v ) {
 			var lsMatch = v.match( /(....)(..)(..)/ );
 			var sDate = lsMatch[ 3 ] + "/" + lsMatch[ 2 ] + "/" + lsMatch[ 1 ];
-			__.dn_( ".osce-v", dn ).value = sDate;
+			dn.__find( ".osce-v" ).value = sDate;
 		}
 	}
 };
@@ -177,9 +177,9 @@ __.SP.filter.form.field.autocomplete = {
 			} )
 			.start();
 		};
-		var dnLookup = __.dn.append( h, args.dnRoot );
+		var dnLookup = dnRoot.__append( h );
 		__.autocomplete.init( {
-			  dn : __.dn_( "input", dnLookup )
+			  dn : dnLookup.__find( "input" )
 			, sField : args.sLookupField
 			, fnFetch : fnFetch
 			, cb : function( rec ) {
@@ -188,11 +188,11 @@ __.SP.filter.form.field.autocomplete = {
 		} );
 	}
 	, get : function( dn ) {
-		var v = __.dn_( ".osce-v", dn ).value;
+		var v = dn.__find( ".osce-v" ).value;
 		return ( v ) ? v : null;
 	}
 	, set : function( dn, v ) {
-		var v = __.dn_( ".osce-v", dn ).value = v;
+		var v = dn.__find( ".osce-v" ).value = v;
 	}
 };
 
@@ -207,14 +207,14 @@ __.SP.filter.form.field.checkbox = {
 			h += "<option value='No'>No</option>";
 		h += "</select>";
 		h += "</div>";
-		__.dn.append( h, args.dnRoot );
+		dnRoot.__append( h );
 	}
 	, get : function( dn ) {
-		var v = __.dn_( ".osce-v", dn ).value;
+		var v = dn.__find( ".osce-v" ).value;
 		return ( v ) ? v : null;
 	}
 	, set : function( dn, v ) {
-		var v = __.dn_( ".osce-v", dn ).value = v;
+		var v = dn.__find( ".osce-v" ).value = v;
 	}
 };
 
@@ -233,11 +233,11 @@ __.SP.filter.form.field.choice = {
 		__.dn.append( h, args.dnRoot );
 	}
 	, get : function( dn ) {
-		var v = __.dn_( ".osce-v", dn ).value;
+		var v = dn.__find( ".osce-v" ).value;
 		return ( v ) ? v : null;
 	}
 	, set : function( dn, v ) {
-		var v = __.dn_( ".osce-v", dn ).value = v;
+		var v = dn.__find( ".osce-v" ).value = v;
 	}
 };
 
@@ -255,11 +255,11 @@ __.SP.filter.form.field.taxonomy = {
 		h += '<div id="' + sidPicker + '" class="ms-taxonomy">';
 		h += '</div>';
 		h += "</div>";
-		var dn = __.dn.append( h, args.dnRoot );
+		var dn = dnRoot.__append( h );
 		var sspId = O$C3.Tax.guidTermStore;
 		var url = _spPageContextInfo.webServerRelativeUrl;
 		url += '\u002f_vti_bin\u002fTaxonomyInternalService.json';
-		var dnPicker = __.dn_( "#" + sidPicker );
+		var dnPicker = document.body.__find( "#" + sidPicker );
 		dnPicker.InputFieldId = sidInput;
 		dnPicker.SspId = sspId;
 		  // REF: put Tax object into __.SP.taxonomy!!!
@@ -288,7 +288,7 @@ __.SP.filter.form.field.taxonomy = {
 		Microsoft.SharePoint.Taxonomy.ScriptForWebTaggingUI.onLoad( sidPicker );
 	}
 	, get : function( dn ) {
-		var lv = __.dn_( '.osce-v', dn ).value.trim().split( ";" );
+		var lv = dn.__find( '.osce-v' ).value.trim().split( ";" );
 		var kv = {};
 		lv.forEach( function( s ) {
 			if( s ) {
@@ -296,15 +296,15 @@ __.SP.filter.form.field.taxonomy = {
 				kv[ ls[ 0 ] ] = ls[ 1 ];
 			}
 		} );
-		return ( __.o.empty( kv ) ) ? null : kv;
+		return ( kv.__isEmpty() ) ? null : kv;
 	}
 	, set : function( dn, aTermInfos ) {
 		var sName = aTermInfos.sName
 		var guid = aTermInfos.guid;
 		if( sName && guid ) {
-			var dnDisplay = __.dn_( "[role='textbox']", dn );
+			var dnDisplay = dn.__find( "[role='textbox']" );
 			dnDisplay.innerHTML += "<span class='valid-text' title='" + sName + "'>" + sName + "</span>;&nbsp;";
-			var dnHidden = __.dn_( "input", dn );
+			var dnHidden = dn.__find( "input" );
 			var vnew = sName + "|" + guid;
 			var lsvHidden = [];
 			if( dnHidden.value ) {
