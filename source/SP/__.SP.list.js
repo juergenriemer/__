@@ -714,7 +714,6 @@ __.SP.list.field = {};
  * @example
  * __.SP.list.field.display( {
  * 	  sList : "test list"
- *	, idList : ""12345678-asdf-zxcv-qwwe-1234567890ab"
  * 	, sField : "Title"
  * } );
  * @param {Object} args a parameter object holding the following values
@@ -840,6 +839,20 @@ __.SP.list.field.reorder = function( args ) {
 	} );
 };
 
+/**
+ * Sets jsLink file on a field
+ * @memberof __.SP.list.field
+ * @method setJsLink
+ * @example
+ * __.SP.list.field.setJsLink( {
+ *        sList : "OSCE Contacts"
+ * 	, sField : "jsLink"
+ * 	, urlJsLink : "~sitecollection/App/js/jsLink/jsLink_OCEEARegistrations_list.js?v=v5"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {Array} args.lsFields array of internal field names
+ */
 __.SP.list.field.setJsLink= function( args ) { // sList, [sField], urlJsLink
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -854,7 +867,7 @@ __.SP.list.field.setJsLink= function( args ) { // sList, [sField], urlJsLink
 			async.reject( oField.sError );
 		}
 		else {
-			async.resolve();
+			async.resolve( "jsLink set" );
 		}
 	} );
 };

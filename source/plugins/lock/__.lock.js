@@ -15,7 +15,7 @@ __.lock = {
 			// this means its the first call to the server
 			if( ! dnBag ) {
 				dnBag = document.createElement( "div" );
-				__.dn.css( dnBag, "height", __.dn.css( dn, "minHeight" ) );
+				dnBag.__css( "height", dn.__css( "minHeight" ) );
 				dn.appendChild( dnBag );
 			}
 			// locking blend (bag) does not exist...
@@ -30,7 +30,7 @@ __.lock = {
 				// because if we prepend and have Hx tags then
 				// because of top padding entire stone gets shifted down
 				
-				dnBag = __.dn.append( hBag, dn );
+				dnBag = dn.__append( hBag );
 			}
 			// adjust height of blend and show
 			// dy needs to be the outer height with padding
@@ -39,23 +39,23 @@ __.lock = {
 			dnFront.innerHTML = "";
 			if( kv && kv.hText ) {
 				setTimeout( function() {
-					__.dn.h( dnFront, kv.hText );
-					__.dn.y( dnFront, -dy );
-					__.dn.dy( dnFront, dy );
+					dnFront.__h( kv.hText );
+					dnFront.__y( -dy );
+					dnFront.__dy( dy );
 				}, 500 );
 			}
 			var dnBack = dnBag.lastElementChild;
-			__.dn.y( dnBack, -dy );
-			__.dn.dy( dnBack, dy );
-			__.dn.dy( dnFront, dy );
-			__.dn.show( dnBag );
+			dnBack.__y( -dy );
+			dnBack.__dy( dy );
+			dnFront.__dy( dy );
+			dnBack.__show();
 		}, 0 );
 	}
 	, un : function( dn ) {
 		// set timeout as a consequence of us using it for locking as well
 		setTimeout( function() {
-			__.dn_( ".-lck-bag", dn, function( dnBag ) {
-				__.dn.del( dnBag );
+			dn.__find( ".-lck-bag", function( dnBag ) {
+				dnBag.__remove();
 			} );
 		}, 0 );
 	}

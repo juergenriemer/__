@@ -516,6 +516,22 @@ Object.defineProperty( Number.prototype, "__withinBoundary", {
 } );
 
 
+/**
+ * Sanitizes any given string.
+ * @memberof String
+ * @method __sanitize
+ * @example var us_sName = "Henry<script>alert(666)</script>"
+ * var sName = us_sName.__sanitize();
+ * @returns {String} Sanitized string
+ */
+Object.defineProperty( String.prototype, "__sanitize", {
+	value : function() {
+		us_h = this.toString() || "";
+		var dnWrapper = document.createElement( "div" );
+		dnWrapper.appendChild( document.createTextNode( us_h ) );
+		return dnWrapper.innerHTML;
+	}
+} );
 
 // ARRAY
 /**

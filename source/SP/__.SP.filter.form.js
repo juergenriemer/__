@@ -104,7 +104,7 @@ __.SP.filter.form.field.text = {
 		var h = __.SP.filter.form.field.hHeader( args );
 		h += "<input class='osce-v'></input>";
 		h += "</div>";
-		dnRoot.__append( h );
+		args.dnRoot.__append( h );
 	}
 	, get : function( dn ) {
 		var v = dn.__find( ".osce-v" ).value;
@@ -132,7 +132,7 @@ __.SP.filter.form.field.lookupdate = {
 		h += ' frameborder="0" scrolling="no" style="display:none; position:absolute; width:200px; z-index:101;" ';
 		h += ' title="Select a date from the calendar."></iframe>';
 		h += "</div>";
-		dnRoot.__append( h );
+		args.dnRoot.__append( h );
 	}
 	, get : function( dn ) {
 		var v = dn.__find( ".osce-v" ).value;
@@ -177,7 +177,7 @@ __.SP.filter.form.field.autocomplete = {
 			} )
 			.start();
 		};
-		var dnLookup = dnRoot.__append( h );
+		var dnLookup = args.dnRoot.__append( h );
 		__.autocomplete.init( {
 			  dn : dnLookup.__find( "input" )
 			, sField : args.sLookupField
@@ -207,7 +207,7 @@ __.SP.filter.form.field.checkbox = {
 			h += "<option value='No'>No</option>";
 		h += "</select>";
 		h += "</div>";
-		dnRoot.__append( h );
+		args.dnRoot.__append( h );
 	}
 	, get : function( dn ) {
 		var v = dn.__find( ".osce-v" ).value;
@@ -230,7 +230,7 @@ __.SP.filter.form.field.choice = {
 		} );
 		h += "</select>";
 		h += "</div>";
-		__.dn.append( h, args.dnRoot );
+		args.dnRoot.__append( h );
 	}
 	, get : function( dn ) {
 		var v = dn.__find( ".osce-v" ).value;
@@ -255,7 +255,7 @@ __.SP.filter.form.field.taxonomy = {
 		h += '<div id="' + sidPicker + '" class="ms-taxonomy">';
 		h += '</div>';
 		h += "</div>";
-		var dn = dnRoot.__append( h );
+		var dn = args.dnRoot.__append( h );
 		var sspId = O$C3.Tax.guidTermStore;
 		var url = _spPageContextInfo.webServerRelativeUrl;
 		url += '\u002f_vti_bin\u002fTaxonomyInternalService.json';

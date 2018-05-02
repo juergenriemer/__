@@ -9,7 +9,7 @@ this.__show = function() {}
 this.__cbScroll = function() {}
 
 /**
- * Takes a CSS selector string and queries the DOM for matching nodes.
+ * Takes a CSS selector string and queries the DOM for matching nodes. If not used as node method it will assume document.body.
  * <br>
  * It returns a single DOM node if just one node was found.
  * <br>
@@ -23,13 +23,13 @@ this.__cbScroll = function() {}
  * will be invoked with two parameters: the single node and its index of the array.
  * @memberof Node
  * @method __find
- * @example var dnMenu = document.body.__find( "#menu" );
+ * @example var dnMenu = __find( "#menu" );
  * @example var ldnLinks = dnMenu.__find( "a.footer" );
  * @example dnMenu.__find( "a.footer", function( dn, ix ) {
  *       dn.style.color = "red";
  *       dn.style.border = ix + "px solid green";
  *  } );
- * @example document.body.__find( "[href]", function( dn ) {
+ * @example __find( "[href]", function( dn ) {
  *       dn.setAttribute( "href", "#" );
  *  } );
  * @param {String} css CSS selector string
@@ -77,6 +77,7 @@ Object.defineProperty( Node.prototype, "__find", {
 		return xdn;
 	}
 } );
+
 /**
 * Deletes a DOM node.
 * @memberof Node
@@ -376,13 +377,14 @@ Object.defineProperty( Node.prototype, "__dy", {
 */
 Object.defineProperty( Node.prototype, "__fadeOut", {
 	value : function( ms, cb ) {
+		var dn = this;
 		var ms = ( typeof ms == "number" ) ? ms : 250;
 		var cb = ( typeof cb == "function" ) ? ms : cb;
 		var nStep = 25 / ms;
-		this.style.opacity = this.style.opacity || 1;
+		dn.style.opacity = dn.style.opacity || 1;
 		( function fader() {
-			if( ( this.style.opacity -= nStep) < 0 ) {
-				this.__hide();
+			if( ( dn.style.opacity -= nStep) < 0 ) {
+				dn.__hide();
 				if( cb ) {
 					cb();
 				}
@@ -404,18 +406,19 @@ Object.defineProperty( Node.prototype, "__fadeOut", {
 */
 Object.defineProperty( Node.prototype, "__fadeIn", {
 	value : function( ms, cb ) {
+		var dn = this;
 		var ms = ( typeof ms == "number" ) ? ms : 250;
 		var cb = ( typeof cb == "function" ) ? ms : cb;
 		var nStep = 25 / ms;
-		this.style.opacity = this.style.opacity || 0;
-		this.__show();
+		dn.style.opacity = this.style.opacity || 0;
+		dn.__show();
 		( function fader() {
-			var n = Number( this.style.opacity ) + nStep;
-			this.style.opacity = n;
+			var n = Number( dn.style.opacity ) + nStep;
+			dn.style.opacity = n;
 			if( n > 1 ) {
-				this.style.opacity = 1;
-				if( fn ) {
-					fn();
+				dn.style.opacity = 1;
+				if( cb ) {
+					cb();
 				}
 			}
 			else {
@@ -693,4 +696,9 @@ this.Element && function( oPrototype ) {
 	};
 }() );
 
+
+// global shortcut for document body
+window[ "__find" ] = function( css, cb ) {
+	return document.body[ "__find" ]( css, cb );
+}
 

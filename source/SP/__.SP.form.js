@@ -20,7 +20,7 @@ __.SP.form = {
 		}
 		else if( /NewForm\.aspx|EditForm\.aspx/.test( url ) ) {
 			if( x instanceof Element ) {
-				var dnRow = x.__find( "tr" );
+				var dnRow = x.__closest( "tr" );
 				var sField = dnRow.__find( "h3" ).id;
 				var dnValue = ( x.value ) ? x : dnRow.__find( "input,textarea" );
 				var v = dnValue.value;
