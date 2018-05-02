@@ -1,14 +1,14 @@
 __.SP.form = {
 	getField : function( x ) { // x: either internal name or DOM node inside field row
-		var dnForm = __.dn_( "#WebPartWPQ2" );
+		var dnForm = document.body.__find( "#WebPartWPQ2" );
 		var url = self.location.href;
 		if( /DispForm\.aspx/.test( url ) ) {
 			if( typeof x == "string" ) {
-				var dnTitle = __.dn_( 'a[name="SPBookmark_' + x + '"]', dnForm );
-				var dnRow = __._dn( "tr", dnTitle );
-				var dnValue = __.dn_( "td.ms-formbody", dnRow );
+				var dnTitle = dnForm.__find( 'a[name="SPBookmark_' + x + '"]' );
+				var dnRow = dnTitle.__find( "tr", dnTitle );
+				var dnValue = dnRow.__find( "td.ms-formbody" );
 				var v = ( dnValue.textContent )
-					? __.s.tokenize( dnValue.textContent )
+					? dnValue.textContent.__tokenize()
 					: null;
 				return {
 					  dnTitle : dnTitle
@@ -20,9 +20,9 @@ __.SP.form = {
 		}
 		else if( /NewForm\.aspx|EditForm\.aspx/.test( url ) ) {
 			if( x instanceof Element ) {
-				var dnRow = __._dn( "tr", x );
-				var sField = __.dn_( "h3", dnRow ).id;
-				var dnValue = ( x.value ) ? x : __.dn_( "input,textarea", dnRow );
+				var dnRow = x.__find( "tr" );
+				var sField = dnRow.__find( "h3" ).id;
+				var dnValue = ( x.value ) ? x : dnRow.__find( "input,textarea" );
 				var v = dnValue.value;
 				return {
 					  sField : sField

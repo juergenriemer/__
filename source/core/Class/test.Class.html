@@ -1,5 +1,13 @@
 <html>
-<script src="__.Class.js"></script>
+<script>
+if( /\?min/.test( self.location.href ) ) {
+	document.write( '<sc'+'ript src="__.core.min.js"></sc'+'ript>' );
+}
+else {
+	document.write( '<sc'+'ript src="__.core.js"></sc'+'ript>' );
+}
+</script>
+
 <body>
 <h3>Unit tests for __.Class.js</h3>
 <div id="output"></div>

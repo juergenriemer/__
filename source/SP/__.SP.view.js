@@ -84,7 +84,7 @@ __.SP.view.deleteFields = function( args ) {
 		else {
 			for( var ix=0; ix<oFields.get_count(); ix++ ) {
 				var sField = oFields.getItemAtIndex( ix );
-				var b = __.l.contains( args.lsFields, sField );
+				var b = args.lsFields.__contains( sField );
 				if( b ) {
 					oFields.remove( sField );
 				}

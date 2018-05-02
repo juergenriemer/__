@@ -1,7 +1,12 @@
 <html>
-<!--script src="D:\jriemer\GitHub\__\__.js"></script-->
-<script src="__.DOM.js"></script>
-
+<script>
+if( /\?min/.test( self.location.href ) ) {
+	document.write( '<sc'+'ript src="__.DOM.min.js"></sc'+'ript>' );
+}
+else {
+	document.write( '<sc'+'ript src="__.DOM.js"></sc'+'ript>' );
+}
+</script>
 <body>
 <style>
 .one {
@@ -9,7 +14,6 @@
 }
 </style>
 
-<script>console.log(4)</script>
 <div id="result" style="xposition:fixed;width:90%;height:200px;border:1px solid blue;overflow:auto"></div>
 <h2>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</h2>
 <h2>xxx</h2>
@@ -32,7 +36,7 @@
 <div id="output"><h1>Unit test __.DOM.js</h1></div>
 
 <script>
-var dnResult = document.body.find( "#result" );
+var dnResult = document.body.__find( "#result" );
 assert = function( h, eh, s ) {
 	if( h === eh ) {
 		sResult = "OK: " + s + "<br>";
@@ -46,10 +50,10 @@ assert = function( h, eh, s ) {
 	dnResult.innerHTML = sResult + dnResult.innerHTML; 
 }
 
-dnOutput = document.body.find( "#output" );
+dnOutput = document.body.__find( "#output" );
 h = dnOutput.innerHTML;
 eh = "<h1>Unit test __.DOM.js</h1>";
-assert( h, eh, "__.dn_ (id)" );
+assert( h, eh, "__ (id)" );
 
 // query
 var h = " \
@@ -74,379 +78,379 @@ var h = " \
 ";
 
 var dnNavi = document.body.__append( h );
-console.log( document.body.__append );
-console.log( dnNavi );
 var dnMenu = dnNavi[ 1 ];
 var dnFooter = dnNavi[ 2 ];
 
 es = 'two.two';
-s = dnMenu.find( ".active" ).textContent.trim();
-assert( s, es, "__.dn_ (css selector class )" );
+s = dnMenu.__find( ".active" ).textContent.trim();
+assert( s, es, "__find (css selector class )" );
 
 es = 'two.two';
-s = dnMenu.find( "[href='#2_2']" ).textContent;
-assert( s, es, "__.dn_ (css selector attr )" );
+s = dnMenu.__find( "[href='#2_2']" ).textContent;
+assert( s, es, "__find (css selector attr )" );
 
 es = 'two.two';
-s = dnMenu.find( ".active [href='#2_2']" ).textContent;
-assert( s, es, "__.dn_ (css selector class/attr )" );
+s = dnMenu.__find( ".active [href='#2_2']" ).textContent;
+assert( s, es, "__find (css selector class/attr )" );
 
 es = 'two.onetwo.two';
 s = '';
-dnMenu.find( "ul>li:nth-child(2)>ul>li", function( dn ) {
+dnMenu.__find( "ul>li:nth-child(2)>ul>li", function( dn ) {
 	s += dn.textContent.trim();
 } )
-assert( s, es, "__.dn_ (css selector direct rout)" );
+assert( s, es, "__find (css selector direct rout)" );
 
 es = 'onetwotwo.onetwo.twothree';
 s = '';
 
-dnMenu.find( "li.lvl_one", function( dn ) {
+dnMenu.__find( "li.lvl_one", function( dn ) {
 	s += dn.textContent.replace( /\s/g, "" );
 } )
-assert( s, es, "__.dn_ (css selector li.lvl_one)" );
+assert( s, es, "__find (css selector li.lvl_one)" );
 
 
-// xxx.closest
+// dn.__closest
 
-var dnActiveMenu = dnMenu.find( ".active" );
-assert( dnActiveMenu.closest( "div" ).id, "menu", "xxx.closest (menu)" );
+var dnActiveMenu = dnMenu.__find( ".active" );
+assert( dnActiveMenu.__closest( "div" ).id, "menu", "__closest (menu)" );
 
-var dnActiveFooter = dnFooter.find( ".active" );
-assert( dnActiveFooter.closest( "div" ).id, "footer", "xxx.closest (footer)" );
+var dnActiveFooter = dnFooter.__find( ".active" );
+assert( dnActiveFooter.__closest( "div" ).id, "footer", "__closest (footer)" );
 
-console.log( "only document?" );
-var dnLink = document.body.find( "[href='#2_2']" );
+var dnLink = document.body.__find( "[href='#2_2']" );
 
-var bClass = dnLink.closest( "li" ).classList.contains( "active" );
-assert( bClass, true, "xxx.closest (li)" );
+var bClass = dnLink.__closest( "li" ).classList.contains( "active" );
+assert( bClass, true, "__closest (li)" );
 
-var bClass = dnLink.closest( "li.lvl_one" ).classList.contains( "test" );
-assert( bClass, true, "xxx.closest (li.lvl_one)" );
+var bClass = dnLink.__closest( "li.lvl_one" ).classList.contains( "test" );
+assert( bClass, true, "__closest (li.lvl_one)" );
 
-// __.dn.show/__.dn.hide
+// dn.__show/dn.__hide
+dnLink.__hide();
+assert( dnLink.style.display, "none", "dn.__hide(inline)" );
 
-__.dn.hide( dnLink );
-assert( dnLink.style.display, "none", "__.dn.hide(inline)" );
-__.dn.show( dnLink );
-assert( dnLink.style.display, "inline", "__.dn.show(inline)" );
+dnLink.__show();
+assert( dnLink.style.display, "inline", "dn.__show(inline)" );
 
-__.dn.hide( dnMenu );
-assert( dnMenu.style.display, "none", "__.dn.hide(block)" );
-__.dn.show( dnMenu );
-assert( dnMenu.style.display, "block", "__.dn.show(block)" );
+dnMenu.__hide();
+assert( dnMenu.style.display, "none", "dn.__hide(block)" );
 
-// __.dn.ix
+dnMenu.__show();
+assert( dnMenu.style.display, "block", "dn.__show(block)" );
 
-var dnFooterLink = document.body.find( "[href='#f3']" );
-assert( __.dn.ix( dnFooterLink ), 2, "__.dn.ix (dnFooterLink)" );
+// dn.__ix
 
-assert( __.dn.ix( dnLink.closest( "li" ) ), 1, "__.dn.ix (dnLink)" );
+var dnFooterLink = document.body.__find( "[href='#f3']" );
+assert( dnFooterLink.__ix( dnFooterLink ), 2, "dn.__ix (dnFooterLink)" );
 
-// __.dn.x/y/dx/dz
-__.dn.x( dnMenu, "100" );
-__.dn.y( dnMenu, "200" );
-__.dn.dx( dnMenu, "400" );
-__.dn.dy( dnMenu, "400" );
-__.dn.css( document.body, "padding", 0 );
-__.dn.css( document.body, "margin", 0 );
-__.dn.css( document.body, "background", "#efefef" );
-assert( __.dn.x( dnMenu ), 100, "__.dn.x (dnMenu)" );
-assert( __.dn.y( dnMenu ), 200, "__.dn.y (dnMenu)" );
-assert( __.dn.dx( dnMenu ), 400, "__.dn.dx (dnMenu)" );
-assert( __.dn.dy( dnMenu ), 400, "__.dn.dy (dnMenu)" );
+assert( dnLink.__closest( "li" ).__ix(), 1, "dn.__ix (dnLink)" );
 
-// __.dn.each/dn.remove
+// dn.__x/__y/__dx/__dz
+dnMenu.__x( "100" );
+dnMenu.__y( "200" );
+dnMenu.__dx( "400" );
+dnMenu.__dy( "400" );
+document.body.__css( "padding", 0 );
+document.body.__css( "margin", 0 );
+document.body.__css( "background", "#efefef" );
+assert( dnMenu.__x(), 100, "dn.__x (dnMenu)" );
+assert( dnMenu.__y(), 200, "dn.__y (dnMenu)" );
+assert( dnMenu.__dx(), 400, "dn.__dx (dnMenu)" );
+assert( dnMenu.__dy(), 400, "dn.__dy (dnMenu)" );
+
+// __.dn.each/dn.__remove
 
 var en = 2;
-var n = dnMenu.find( "ul" ).length;
-assert( n, en, "__.dn_ (tagname)" );
+var n = dnMenu.__find( "ul" ).length;
+assert( n, en, "__find (tagname)" );
 
 __.dn.each( dnNavi, function( dn ) {
-	dn.remove();
+	dn.__remove();
 } )
-assert( document.body.find( "#menu" ), null, "__.dn.each/del (menu)" );
-assert( document.body.find( "#footer" ), null, "__.dn.each/del (footer)" );
+assert( document.body.__find( "#menu" ), null, "__.dn.each/del (menu)" );
+assert( document.body.__find( "#footer" ), null, "__.dn.each/del (footer)" );
 
 
-dnH1 = document.body.find( "h1" );
+dnH1 = document.body.__find( "h1" );
 s = dnH1.innerHTML;
 es = "Unit test __.DOM.js";
-assert( s, es, "__.dn_ (tagname)" );
+assert( s, es, "__find (tagname)" );
 
 // create/move in document body 
 
-//var dnTop = __.dn.prepend( "<div>prepend</div>" );
+//var dnTop = document.body.prepend( "<div>prepend</div>" );
 // does not return node! var dnSani = document.body.__prepend( "<div id='sani'>xxx</div>" );
 
-//var dnBottom = __.dn.append( "<div>prepend</div>" );
+//var dnBottom = __append( "<div>prepend</div>" );
 
 // create/move in nodes 
 
 dnAppend = dnOutput.__append( "<b>append</b>" );
 h = dnOutput.innerHTML;
 eh = "<h1>Unit test __.DOM.js</h1><b>append</b>";
-assert( h, eh, "__.dn.append (string)" );
+assert( h, eh, "__append (string)" );
 
-
-dnPrepend = document.body.__prepend( "<b>prepend</b>", dnOutput );
+dnPrepend = dnOutput.__prepend( "<b>prepend</b>" );
 h = dnOutput.innerHTML;
 eh = "<b>prepend</b><h1>Unit test __.DOM.js</h1><b>append</b>";
-assert( h, eh, "__.dn.prepend (string)" );
+assert( h, eh, "__prepend (string)" );
 
-dnBefore = dnH1.__before( "<i>before</i>", dnH1 );
+dnBefore = dnH1.__before( "<i>before</i>" );
 h = dnOutput.innerHTML;
 eh = "<b>prepend</b><i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>";
-assert( h, eh, "__.dn.before (string)" );
+assert( h, eh, "__before (string)" );
 
 dnAfter = dnH1.__after( '<i class="after">after</i>' );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i>before</i><h1>Unit test __.DOM.js</h1><i class="after">after</i><b>append</b>';
-assert( h, eh, "__.dn.after (string)" );
+assert( h, eh, "__after (string)" );
 
 // move 
-dnClass = document.body.find( ".after" );
+dnClass = document.body.__find( ".after" );
 s = dnClass.textContent;
 es = "after";
-assert( s, es, "__.dn_ (classname)" );
+assert( s, es, "__find (classname)" );
 
 dnBefore.__append( dnClass );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i>before<i class="after">after</i></i><h1>Unit test __.DOM.js</h1><b>append</b>';
-assert( h, eh, "__.dn.append (node)" );
+assert( h, eh, "__append (node)" );
 
 dnBefore.__before( dnClass );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i class="after">after</i><i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>';
-assert( h, eh, "__.dn.before (node)" );
+assert( h, eh, "__before (node)" );
 
 dnBefore.__prepend( dnClass );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i><i class="after">after</i>before</i><h1>Unit test __.DOM.js</h1><b>append</b>';
-assert( h, eh, "__.dn.prepend (node)" );
+assert( h, eh, "__prepend (node)" );
 
 dnBefore.__after( dnClass );
 h = dnOutput.innerHTML;
 eh = '<b>prepend</b><i>before</i><i class="after">after</i><h1>Unit test __.DOM.js</h1><b>append</b>';
-assert( h, eh, "__.dn.after (node)" );
+assert( h, eh, "__after (node)" );
 
 // add to document
 dnOutput_2 = document.body.__append( "<div><h1>output2</h1></div>" );
 s = dnOutput_2.innerHTML;
 es = "<h1>output2</h1>";
-assert( s, es, "__.dn.append (to document)" );
+assert( s, es, "__append (to document)" );
 
 // multiple nodes as string 
-dnH1_2 = dnOutput_2.find( "h1" );
+dnH1_2 = dnOutput_2.__find( "h1" );
 dnAppend = dnH1_2.__append( "<b>1</b><i>2</i>" );
 h = dnOutput_2.innerHTML;
 eh = "<h1>output2<b>1</b><i>2</i></h1>";
-assert( h, eh, "__.dn.append (multiple string)" );
+assert( h, eh, "__append (multiple string)" );
 
 dnPrepend = dnH1_2.__prepend( "<b>3</b><i>4</i>" );
 h = dnOutput_2.innerHTML;
 eh = "<h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1>";
-assert( h, eh, "__.dn.prepend (multiple string)" );
+assert( h, eh, "__prepend (multiple string)" );
 
 dnBefore = dnH1_2.__before( "<b>5</b><i>6</i>" );
 h = dnOutput_2.innerHTML;
 eh = "<b>5</b><i>6</i><h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1>";
-assert( h, eh, "__.dn.before (multiple string)" );
+assert( h, eh, "__before (multiple string)" );
 
 dnAfter = dnH1_2.__after( "<b>7</b><i>8</i>" );
 h = dnOutput_2.innerHTML;
 eh = "<b>5</b><i>6</i><h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1><b>7</b><i>8</i>";
-assert( h, eh, "__.dn.after (multiple string)" );
+assert( h, eh, "__after (multiple string)" );
 
 // moving single dom node
 var dnTarget = document.body.__append( '<div><div class="inner"><b>middle</b></div></div>' );
 var dnMove = document.body.__append( "<b>MOVE</b>" );
-var dnInner = dnTarget.find( ".inner" );
+var dnInner = dnTarget.__find( ".inner" );
 
 dnInner.__before( dnMove );
 h = dnTarget.innerHTML;
 eh = '<b>MOVE</b><div class="inner"><b>middle</b></div>';
-assert( h, eh, "__.dn.before (single DOM node)" );
+assert( h, eh, "__before (single DOM node)" );
 
 dnInner.__prepend( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>MOVE</b><b>middle</b></div>';
-assert( h, eh, "__.dn.prepend (single DOM node)" );
+assert( h, eh, "__prepend (single DOM node)" );
 
 dnInner.__append( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b><b>MOVE</b></div>';
-assert( h, eh, "__.dn.append (single DOM node)" );
+assert( h, eh, "__append (single DOM node)" );
 
 dnInner.__after( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b></div><b>MOVE</b>';
-assert( h, eh, "__.dn.after (single DOM node)" );
+assert( h, eh, "__after (single DOM node)" );
 
 // moving multiple dom nodes
-dnTarget.remove();
-dnMove.remove();
+dnTarget.__remove();
+dnMove.__remove();
 var dnTarget = document.body.__append( '<div><div class="inner"><b>middle</b></div></div>' );
 
 var dnMove = document.body.__append( "<b>MOVE</b><i>YES</i>" );
-var dnInner = dnTarget.find( ".inner" );
+var dnInner = dnTarget.__find( ".inner" );
 
 dnInner.__before( dnMove );
 h = dnTarget.innerHTML;
 eh = '<b>MOVE</b><i>YES</i><div class="inner"><b>middle</b></div>';
-assert( h, eh, "__.dn.before (multiple DOM node)" );
+assert( h, eh, "__before (multiple DOM node)" );
 
 dnInner.__prepend( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>MOVE</b><i>YES</i><b>middle</b></div>';
-assert( h, eh, "__.dn.prepend (multiple DOM node)" );
+assert( h, eh, "__prepend (multiple DOM node)" );
 
 dnInner.__append( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b><b>MOVE</b><i>YES</i></div>';
-assert( h, eh, "__.dn.append (multiple DOM node)" );
+assert( h, eh, "__append (multiple DOM node)" );
 
 dnInner.__after( dnMove );
 h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b></div><b>MOVE</b><i>YES</i>';
-assert( h, eh, "__.dn.after (multiple DOM node)" );
+assert( h, eh, "__after (multiple DOM node)" );
 
-var dnScrollDiv = document.body.find( "#xxx" );
-var dnScrollDivTop = dnScrollDiv.find( ".top" );
-var dnScrollDivBottom = dnScrollDiv.find( ".bottom" );
+var dnScrollDiv = document.body.__find( "#xxx" );
+var dnScrollDivTop = dnScrollDiv.__find( ".top" );
+var dnScrollDivBottom = dnScrollDiv.__find( ".bottom" );
 
 setTimeout( function() {
-	__.dn.scroll.to( "top" );
-	__.dn.scroll.to( "left" );
-	__.dn.scroll.to( dnScrollDiv, "top" );
-	__.dn.scroll.to( dnScrollDiv, "left" );
+	document.body.__scrollTo( "top" );
+	document.body.__scrollTo( "left" );
+	dnScrollDiv.__scrollTo( "top" );
+	dnScrollDiv.__scrollTo( "left" );
 }, 0 );
+
+
 setTimeout( function() {
-	__.dn.scroll.on( dnScrollDiv, function( aInfo ) {
-		assert( aInfo.bBottom, true, "__.dn.scroll.on (node bottom-bBbottom)" );
-		assert( aInfo.bTop, false, "__.dn.scroll.on (node bottom-bTop)" );
-		assert( aInfo.bLeft, true, "__.dn.scroll.on (node bottom-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (node bottom-bRight)" );
-		__.dn.scroll.off( dnScrollDiv );
-	}, 5 );
-	__.dn.scroll.to( dnScrollDiv, "bottom" );
+	dnScrollDiv.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, true, "dn.__onScroll (node bottom-bBbottom)" );
+		assert( aInfo.bTop, false, "dn.__onScroll (node bottom-bTop)" );
+		assert( aInfo.bLeft, true, "dn.__onScroll (node bottom-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (node bottom-bRight)" );
+		dnScrollDiv.__offScroll();
+	}, 50 );
+	dnScrollDiv.__scrollTo( "bottom" );
 }, 100 );
 setTimeout( function() {
-	__.dn.scroll.on( dnScrollDiv, function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (node top-bBottom)" );
-		assert( aInfo.bTop, true, "__.dn.scroll.on (node top-bTop)" );
-		assert( aInfo.bLeft, true, "__.dn.scroll.on (node top-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (node top-bRight)" );
-		__.dn.scroll.off( dnScrollDiv );
-	}, 5 );
-	__.dn.scroll.to( dnScrollDiv, "top" );
+	dnScrollDiv.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (node top-bBottom)" );
+		assert( aInfo.bTop, true, "dn.__onScroll (node top-bTop)" );
+		assert( aInfo.bLeft, true, "dn.__onScroll (node top-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (node top-bRight)" );
+		dnScrollDiv.__offScroll();
+	}, 50 );
+	dnScrollDiv.__scrollTo( "top" );
 }, 200 );
 setTimeout( function() {
-	__.dn.scroll.on( dnScrollDiv, function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (node right-bBottom)" );
-		assert( aInfo.bTop, true, "__.dn.scroll.on (node right-bTop)" );
-		assert( aInfo.bLeft, false, "__.dn.scroll.on (node right-bLeft)" );
-		assert( aInfo.bRight, true, "__.dn.scroll.on (node right-bRight)" );
-		__.dn.scroll.off( dnScrollDiv );
-	}, 5 );
-	__.dn.scroll.to( dnScrollDiv, "right" );
+	dnScrollDiv.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (node right-bBottom)" );
+		assert( aInfo.bTop, true, "dn.__onScroll (node right-bTop)" );
+		assert( aInfo.bLeft, false, "dn.__onScroll (node right-bLeft)" );
+		assert( aInfo.bRight, true, "dn.__onScroll (node right-bRight)" );
+		dnScrollDiv.__offScroll();
+	}, 50 );
+	dnScrollDiv.__scrollTo( "right" );
 }, 300);
 setTimeout( function() {
-	__.dn.scroll.on( dnScrollDiv, function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (node left-bBottom)" );
-		assert( aInfo.bTop, true, "__.dn.scroll.on (node left-bTop)" );
-		assert( aInfo.bLeft, true, "__.dn.scroll.on (node left-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (node left-bRight)" );
-		__.dn.scroll.off( dnScrollDiv );
+	dnScrollDiv.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (node left-bBottom)" );
+		assert( aInfo.bTop, true, "dn.__onScroll (node left-bTop)" );
+		assert( aInfo.bLeft, true, "dn.__onScroll (node left-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (node left-bRight)" );
+		dnScrollDiv.__offScroll();
 	}, 5 );
-	__.dn.scroll.to( dnScrollDiv, "left" );
+	dnScrollDiv.__scrollTo( "left" );
 }, 400 );
 setTimeout( function() {
-	__.dn.scroll.on( dnScrollDiv, function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (node x-bBottom)" );
-		assert( aInfo.bTop, true, "__.dn.scroll.on (node x-bTop)" );
-		assert( aInfo.bLeft, false, "__.dn.scroll.on (node x-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (node x-bRight)" );
-		__.dn.scroll.off( dnScrollDiv );
+	dnScrollDiv.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (node x-bBottom)" );
+		assert( aInfo.bTop, true, "dn.__onScroll (node x-bTop)" );
+		assert( aInfo.bLeft, false, "dn.__onScroll (node x-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (node x-bRight)" );
+		dnScrollDiv.__offScroll();
 	}, 5 );
-	__.dn.scroll.to( dnScrollDiv, "x", 10 );
+	dnScrollDiv.__scrollTo( "x", 10 );
 }, 500 );
 setTimeout( function() {
-	__.dn.scroll.on( dnScrollDiv, function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (node y-bBottom)" );
-		assert( aInfo.bTop, false, "__.dn.scroll.on (node y-bTop)" );
-		assert( aInfo.bLeft, false, "__.dn.scroll.on (node y-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (node y-bRight)" );
-		__.dn.scroll.off( dnScrollDiv );
+	dnScrollDiv.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (node y-bBottom)" );
+		assert( aInfo.bTop, false, "dn.__onScroll (node y-bTop)" );
+		assert( aInfo.bLeft, false, "dn.__onScroll (node y-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (node y-bRight)" );
+		dnScrollDiv.__offScroll();
 	}, 5 );
-	__.dn.scroll.to( dnScrollDiv, "y", 10 );
+	dnScrollDiv.__scrollTo( "y", 10 );
 }, 600 );
 
+
+
 // scroll on window
-setTimeout( function() {
-	__.dn.scroll.on( function( aInfo ) {
-		assert( aInfo.bBottom, true, "__.dn.scroll.on (window bottom-bBbottom)" );
-		assert( aInfo.bTop, false, "__.dn.scroll.on (window bottom-bTop)" );
-		assert( aInfo.bLeft, true, "__.dn.scroll.on (window bottom-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (window bottom-bRight)" );
-		__.dn.scroll.off();
-	}, 5 );
-	__.dn.scroll.to( "bottom" );
-}, 700 );
-
-setTimeout( function() {
-	__.dn.scroll.on( function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (window top-bBottom)" );
-		assert( aInfo.bTop, true, "__.dn.scroll.on (window top-bTop)" );
-		assert( aInfo.bLeft, true, "__.dn.scroll.on (window top-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (window top-bRight)" );
-		__.dn.scroll.off();
-	}, 5 );
-	__.dn.scroll.to( "top" );
-}, 800 );
-setTimeout( function() {
-	__.dn.scroll.on( function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (window right-bBottom)" );
-		assert( aInfo.bTop, true, "__.dn.scroll.on (window right-bTop)" );
-		assert( aInfo.bLeft, false, "__.dn.scroll.on (window right-bLeft)" );
-		assert( aInfo.bRight, true, "__.dn.scroll.on (window right-bRight)" );
-		__.dn.scroll.off();
-	}, 5 );
-	__.dn.scroll.to( "right" );
-}, 900);
-setTimeout( function() {
-	__.dn.scroll.on( function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (window left-bBottom)" );
-		assert( aInfo.bTop, true, "__.dn.scroll.on (window left-bTop)" );
-		assert( aInfo.bLeft, true, "__.dn.scroll.on (window left-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (window left-bRight)" );
-		__.dn.scroll.off();
-	}, 5 );
-	__.dn.scroll.to( "left" );
-}, 1000 );
-setTimeout( function() {
-	__.dn.scroll.on( function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (window x-bBottom)" );
-		assert( aInfo.bTop, true, "__.dn.scroll.on (window x-bTop)" );
-		assert( aInfo.bLeft, false, "__.dn.scroll.on (window x-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (window x-bRight)" );
-		__.dn.scroll.off();
-	}, 5 );
-	__.dn.scroll.to( "x", 10 );
-}, 1100 );
-setTimeout( function() {
-	__.dn.scroll.on( function( aInfo ) {
-		assert( aInfo.bBottom, false, "__.dn.scroll.on (window y-bBottom)" );
-		assert( aInfo.bTop, false, "__.dn.scroll.on (window y-bTop)" );
-		assert( aInfo.bLeft, false, "__.dn.scroll.on (window y-bLeft)" );
-		assert( aInfo.bRight, false, "__.dn.scroll.on (window y-bRight)" );
-		__.dn.scroll.off();
-	}, 5 );
-	__.dn.scroll.to( "y", 10 );
-}, 1200 );
 
 
 
+setTimeout( function() {
+	document.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, true, "dn.__onScroll (window bottom-bBbottom)" );
+		assert( aInfo.bTop, false, "dn.__onScroll (window bottom-bTop)" );
+		assert( aInfo.bLeft, true, "dn.__onScroll (window bottom-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (window bottom-bRight)" );
+		document.__offScroll();
+	}, 5 );
+	document.body.__scrollTo( "bottom" );
+}, 1700 );
+setTimeout( function() {
+	document.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (window top-bBottom)" );
+		assert( aInfo.bTop, true, "dn.__onScroll (window top-bTop)" );
+		assert( aInfo.bLeft, true, "dn.__onScroll (window top-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (window top-bRight)" );
+		document.__offScroll();
+	}, 5 );
+	document.body.__scrollTo( "top" );
+}, 1800 );
+setTimeout( function() {
+	document.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (window right-bBottom)" );
+		assert( aInfo.bTop, true, "dn.__onScroll (window right-bTop)" );
+		assert( aInfo.bLeft, false, "dn.__onScroll (window right-bLeft)" );
+		assert( aInfo.bRight, true, "dn.__onScroll (window right-bRight)" );
+		document.__offScroll();
+	}, 5 );
+	document.body.__scrollTo( "right" );
+}, 1900);
+setTimeout( function() {
+	document.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (window left-bBottom)" );
+		assert( aInfo.bTop, true, "dn.__onScroll (window left-bTop)" );
+		assert( aInfo.bLeft, true, "dn.__onScroll (window left-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (window left-bRight)" );
+		document.__offScroll();
+	}, 5 );
+	document.body.__scrollTo( "left" );
+}, 2000 );
+setTimeout( function() {
+	document.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (window x-bBottom)" );
+		assert( aInfo.bTop, true, "dn.__onScroll (window x-bTop)" );
+		assert( aInfo.bLeft, false, "dn.__onScroll (window x-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (window x-bRight)" );
+		document.__offScroll();
+	}, 5 );
+	document.body.__scrollTo( "x", 10 );
+}, 2100 );
+setTimeout( function() {
+	document.__onScroll( function( aInfo ) {
+		assert( aInfo.bBottom, false, "dn.__onScroll (window y-bBottom)" );
+		assert( aInfo.bTop, false, "dn.__onScroll (window y-bTop)" );
+		assert( aInfo.bLeft, false, "dn.__onScroll (window y-bLeft)" );
+		assert( aInfo.bRight, false, "dn.__onScroll (window y-bRight)" );
+		document.__offScroll();
+	}, 5 );
+	document.body.__scrollTo( "y", 10 );
+}, 2200 );
 
 </script>
 </body>

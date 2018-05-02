@@ -41,7 +41,7 @@ top.__.SP.Error = __.Class.extend( {
 		};
 	}
 	, log : function() {
-		var sException = __.o.s( this.oError );
+		var sException = this.oError.__toString();
 		if( ! sException ) {
 			sException = "[fallback]" + this.oError.sError + this.oError.sStack + this.oError.url;
 		}

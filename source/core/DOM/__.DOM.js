@@ -1,60 +1,12 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @output_file_name __.min.js
-// @js_externs var __; __.dn_; __._dn; __.dn; __.dn.each; __.dn.del; __.dn.before;__.dn.append;__.dn.prepend; __.dn.after; __.dn.show; __.dn.hide; __.dn.ix; __.dn.x; __.dn.y; __.dn.dx; __.dn.dy; __.dn.fade_; __.dn._fade; __.dn.css; __.css.h; __.dn.scroll; __.dn.scroll.to; __.dn.scroll.on; __.dn.scroll.off;
+// @js_externs var __hide; var __show; var __cbScroll; var __; __.dn; __.dn.each; __.dn._move; __.dn.move; __.dn.move_;
 // ==/ClosureCompiler==
-// version 1.5
-/**
- * @version 1.0
- * @namespace __
- */
 
-if( typeof __ == "undefined" ) {
-	__ = {};
-}
-
-if( typeof __.utils == "undefined" ) {
-	__.utils = {};
-}
-	/**
-	 * Receives either an element or an array and a callback function.
-	 * <br>
-	 * In case of an array it iterates and invokes the callback on each element.
-	 * In case an element it invokes the callback directly.
-	 * <br>
-	 * The callback is invoked with two parameters: the element and its index.
-	 * @memberof __.dn
-	 * @method each
-	 * @example var ldn = __.dn_( ".links" );
-	 * __.dn.each( ldn, function( dn, ix ) {
-	 *     console.log( ix + ". " + dn.tagName ); 
-	 * } );
-	 * @example var dn1 = __.dn_( "[href='#one']" );
-	 * var dn2 = __.dn_( "[href='#two']" );
-	 * var dn3 = __.dn_( "[href='#three']" );
-	 * var ldn = [ dn1, dn2, dn3 ];
-	 * __.dn.each( ldn, function( dn ) {
-	 *     dn.style.color = "red";
-	 * } );
-	 * @example __.dn.each( __.dn_( "a" ), function( dn ) {
-	 *     dn.style.color = "red";
-	 * } );
-	 * @param {Array|Element} xdn Array of nodes or a single node 
-	 * @param {Function} fn function to be invoked against nodes
-	 */
-__.utils.each = function( xdn, fn ) {
-	if( xdn ) {
-		var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
-		var c = ldn.length;
-		for( var ix=0; ix<c; ix++ ) {
-			fn( ldn[ ix ], ix );
-		}
-	}
-}
-
-__.dn = {
-
-};
+this.__hide = function() {}
+this.__show = function() {}
+this.__cbScroll = function() {}
 
 /**
  * Takes a CSS selector string and queries the DOM for matching nodes.
@@ -70,14 +22,14 @@ __.dn = {
  * An optional callback function to be applied on returned nodes can be passed on which
  * will be invoked with two parameters: the single node and its index of the array.
  * @memberof Node
- * @method find
- * @example var dnMenu = document.body.find( "#menu" );
- * @example var ldnLinks = dnMenu.find( "a.footer" );
- * @example dnMenu.find( "a.footer", function( dn, ix ) {
+ * @method __find
+ * @example var dnMenu = document.body.__find( "#menu" );
+ * @example var ldnLinks = dnMenu.__find( "a.footer" );
+ * @example dnMenu.__find( "a.footer", function( dn, ix ) {
  *       dn.style.color = "red";
  *       dn.style.border = ix + "px solid green";
  *  } );
- * @example document.body.find( "[href]", function( dn ) {
+ * @example document.body.__find( "[href]", function( dn ) {
  *       dn.setAttribute( "href", "#" );
  *  } );
  * @param {String} css CSS selector string
@@ -85,7 +37,7 @@ __.dn = {
  * @returns {Element|Array} A DOM node or a list of DOM nodes or null if CSS selector could not be found
  */
 
-Object.defineProperty( Node.prototype, "find", {
+Object.defineProperty( Node.prototype, "__find", {
 	value : function( css, cb ) {
 		var dn = ( this.tagName.toUpperCase() == "BODY" )
 			? document
@@ -110,7 +62,7 @@ Object.defineProperty( Node.prototype, "find", {
 			? [].slice.call( xdn ) : xdn;
 		if( xdn ) {
 			if( cb ) {
-				__.utils.each( xdn, cb );
+				__.dn.each( xdn, cb );
 			}
 			var c = xdn.length;
 			if ( ! isNaN( c ) ) {
@@ -128,11 +80,11 @@ Object.defineProperty( Node.prototype, "find", {
 /**
 * Deletes a DOM node.
 * @memberof Node
-* @method remove
-* @example var dnForm = document.body.find( "form" );
-* dnForm.remove();
+* @method __remove
+* @example var dnForm = document.body.__find( "form" );
+* dnForm.__remove();
 */
-Object.defineProperty( Node.prototype, "remove", {
+Object.defineProperty( Node.prototype, "__remove", {
 	value : function() {
 		this.parentNode.removeChild( this );
 	}
@@ -158,12 +110,11 @@ Object.defineProperty( Node.prototype, "remove", {
  * @param {Function} [cb] callback function
  * @returns {Element} A DOM node or null if CSS selector could not be found
  */
-Object.defineProperty( Node.prototype, "closest", {
+Object.defineProperty( Node.prototype, "__closest", {
 	value : function( css, cb ) {
-console.log( ">>>>>>>>>" );
 		var dnClosest = this.closest( css );
 		if( cb ) {
-			__.utils.each( dnClosest, cb );
+			__.dn.each( dnClosest, cb );
 		}
 		return dnClosest
 	}
@@ -217,7 +168,7 @@ Object.defineProperty( Node.prototype, "__append", {
 Object.defineProperty( Node.prototype, "__prepend", {
 	value : function( h_or_dn, cb ) {
 		if( this.firstChild ) {
-			return __.dn._add_( h_or_dn, this, cb, "_move" );
+			return __.dn._add_( h_or_dn, this.firstChild, cb, "_move" );
 		}
 		else {
 			return __.dn._add_( h_or_dn, this, cb, "move" );
@@ -242,7 +193,7 @@ Object.defineProperty( Node.prototype, "__prepend", {
 
 Object.defineProperty( Node.prototype, "__before", {
 	value : function( h_or_dn, cb ) {
-		return __.dn._add_( h_or_dn, cb, "_move" );
+		return __.dn._add_( h_or_dn, this, cb, "_move" );
 	}
 } );
 
@@ -264,178 +215,176 @@ Object.defineProperty( Node.prototype, "__before", {
 
 Object.defineProperty( Node.prototype, "__after", {
 	value : function( h_or_dn, cb ) {
-		return __.dn._add_( h_or_dn, cb, "move_" );
+		return __.dn._add_( h_or_dn, this, cb, "move_" );
+	}
+} );
+
+
+
+/**
+* Shows a DOM node.
+* It sets the display attribute of a DOM node to "block" or "inline" depending on its original state.
+* @memberof Node
+* @method __show
+* @example dn.__show();
+*/
+Object.defineProperty( Node.prototype, "__show", {
+	value : function() {
+		var sDisplay = ( this.hasAttribute( "__.display" ) )
+			? this.getAttribute( "__.display" )
+			: "block";
+		this.style.display = sDisplay;
 	}
 } );
 
 /**
- * Provides methods that operate on DOM nodes.
- * @memberof __
- * @type {object}
- * @namespace __.dn
- */
-__.dn = {
-a:{}
-	/**
-	* <pre>
-	* Shows a DOM node.
-	* It sets the display attribute of a DOM node to "block" or "inline" depending on its original state.
-	* </pre>
-	* @memberof __.dn
-	* @method show
-	* @example __.dn.show( dnInline );
-	* @param {Element} dn DOM node to be shown
-	*/
-	, show : function( dn ) {
-		var sDisplay = ( dn.hasAttribute( "__.display" ) )
-			? dn.getAttribute( "__.display" )
-			: "block";
-		dn.style.display = sDisplay;
-	}
-	/**
-	* <pre>
-	* Hides a DOM node.
-	* It sets the display attribute of a DOM node to "none" preserving the previous value.
-	* </pre>
-	* @memberof __.dn
-	* @method hide
-	* @example __.dn.hide( dnInline );
-	* @param {Element} dn DOM node to be hidden
-	*/
-	, hide : function( dn ) {
-		if( dn.style.display == "none" ) {
+* Hides a DOM node.
+* It sets the display attribute of a DOM node to "none" preserving the previous value.
+* @memberof Node
+* @method __hide
+* @example dn.__hide();
+*/
+Object.defineProperty( Node.prototype, "__hide", {
+	value : function() {
+		if( this.style.display == "none" ) {
 			return;
 		}
-		var sDisplay = getComputedStyle( dn ).display;
-		dn.setAttribute( "__.display", sDisplay ); 
-		dn.style.display = "none";
+		var sDisplay = getComputedStyle( this ).display;
+		this.setAttribute( "__.display", sDisplay );
+		this.style.display = "none";
 	}
-	/**
-	* <pre>
-	* Returns the index of a DOM node in its parent's children list.
-	* </pre>
-	* @memberof __.dn
-	* @method ix 
-	* @example __.dn.ix( dnLI );
-	* @param {Element} dn DOM node
-	*/
-	, ix : function( dn ) {
+} );
+
+/**
+* Returns the index of a DOM node in its parent's children list.
+* @memberof Node
+* @method __ix
+* @example dn.__ix();
+* @returns {Number} index of DOM node
+*/
+Object.defineProperty( Node.prototype, "__ix", {
+	value : function() {
 		var ix = 0;
+		var dn = this;
 		while( ( dn = dn.previousElementSibling ) != null ) {
 			ix++;
 		}
 		return ix;
 	}
-	/**
-	* <pre>
-	* Gets or sets the x-position of a DOM element
-	* </pre>
-	* @memberof __.dn
-	* @method x 
-	* @example __.dn.x( dn, 300 );
-	* @example var x = __.dn.x( dn );
-	* @param {Element} dn DOM node
-	* @param {Integer} [n] x-position in pixels
-	* @returns {Element} x-position in pixels
-	*/
-	, x : function( dn, n ) {
+} );
+
+/**
+* Gets or sets the x-position of a DOM element.
+* @memberof Node
+* @method __x
+* @example dn.__x( 300 );
+* @example var x = dn.__x();
+* @param {Element} dn DOM node
+* @param {Integer} [n] x-position in pixels
+* @returns {Element} x-position in pixels
+*/
+Object.defineProperty( Node.prototype, "__x", {
+	value : function( n ) {
 		if( n ) {
-			if( ! /absolute|fixed/.test( self.getComputedStyle( dn ).position ) ) {
-				dn.style.position = "absolute";
+			if( ! /absolute|fixed/.test( self.getComputedStyle( this ).position ) ) {
+				this.style.position = "absolute";
 			}
-			dn.style.left = parseInt( n ) + "px";
+			this.style.left = parseInt( n ) + "px";
 		}
 		else {
-			return dn.getBoundingClientRect().left;
+			return this.getBoundingClientRect().left;
 		}
 	}
-	/**
-	* <pre>
-	* Gets or sets the y-position of a DOM element
-	* </pre>
-	* @memberof __.dn
-	* @method y 
-	* @example __.dn.x( dn, 300 );
-	* @example var y = __.dn.y( dn );
-	* @param {Element} dn DOM node
-	* @param {Integer} [n] y-position in pixels
-	* @returns {Element} y-position in pixels
-	*/
-	, y : function( dn, n ) {
+} );
+
+/**
+* Gets or sets the y-position of a DOM element.
+* @memberof Node
+* @method __y 
+* @example dn.__y( 300 );
+* @example var y = dn.__y();
+* @param {Element} dn DOM node
+* @param {Integer} [n] y-position in pixels
+* @returns {Element} y-position in pixels
+*/
+Object.defineProperty( Node.prototype, "__y", {
+	value : function( n ) {
 		if( n ) {
-			if( ! /absolute|fixed/.test( self.getComputedStyle( dn ).position ) ) {
-				dn.style.position = "absolute";
+			if( ! /absolute|fixed/.test( self.getComputedStyle( this ).position ) ) {
+				this.style.position = "absolute";
 			}
-			dn.style.top = parseInt( n ) + "px";
+			this.style.top = parseInt( n ) + "px";
 		}
 		else {
-			return dn.getBoundingClientRect().top;
+			return this.getBoundingClientRect().top;
 		}
 	}
-	/**
-	* <pre>
-	* Gets or sets the width of a DOM element
-	* </pre>
-	* @memberof __.dn
-	* @method dx 
-	* @example __.dn.dx( dn, 300 );
-	* @example var dx = __.dn.dx( dn );
-	* @param {Element} dn DOM node
-	* @param {Integer} [n] width in pixels
-	* @returns {Element} width in pixels
-	*/
-	, dx : function( dn, dx ) {
+} );
+
+/**
+* Gets or sets the width of a DOM element.
+* @memberof Node
+* @method __dx
+* @example dn.__dx( 300 );
+* @example var dx = dn.__dx();
+* @param {Element} dn DOM node
+* @param {Integer} [n] width in pixels
+* @returns {Element} width in pixels
+*/
+Object.defineProperty( Node.prototype, "__dx", {
+	value : function( dx ) {
 		if( dx ) {
-			dn.style.width = parseInt( dx ) + "px";
+			this.style.width = parseInt( dx ) + "px";
 		}
 		else {
-			return dn.getBoundingClientRect().width;
+			return this.getBoundingClientRect().width;
 		}
 	}
-	/**
-	* <pre>
-	* Gets or sets the height of a DOM element
-	* </pre>
-	* @memberof __.dn
-	* @method dy 
-	* @example __.dn.dy( dn, 300 );
-	* @example var dy = __.dn.dy( dn );
-	* @param {Element} dn DOM node
-	* @param {Integer} [n] height in pixels
-	* @returns {Element} height in pixels
-	*/
-	, dy : function( dn, dy ) {
+} );
+
+/**
+* Gets or sets the height of a DOM element.
+* @memberof Node
+* @method __dy
+* @example dn.__dy( 300 );
+* @example var dy = dn.__dy();
+* @param {Element} dn DOM node
+* @param {Integer} [n] height in pixels
+* @returns {Element} height in pixels
+*/
+Object.defineProperty( Node.prototype, "__dy", {
+	value : function( dy ) {
 		if( dy ) {
-			dn.style.height = parseInt( dy ) + "px";
+			this.style.height = parseInt( dy ) + "px";
 		}
 		else {
-			return dn.getBoundingClientRect().height;
+			return this.getBoundingClientRect().height;
 		}
 	}
-	/**
-	* <pre>
-	* Lets an element fade out
-	* </pre>
-	* @memberof __.dn
-	* @method fade_
-	* @example __.dn.fade_( dn );
-	* @example __.dn.fade_ = __.dn.fadeOut( dn, 25, function() {
-	*     __.dn.del( dn );
-	* } );
-	* @param {Element} dn DOM node
-	* @param {Integer} [ms] milliseconds it should take to fade out
-	* @param {Function} callback function to be invoked after element was faded out.
-	*/
-	, fade_ : function( dn, x1, x2 ) {
-		var ms = ( typeof x1 == "number" ) ? x1 : 250;
-		var fn = ( typeof x1 == "function" ) ? x1 : x2;
+} );
+
+/**
+* Lets an element fade out.
+* @memberof Node
+* @method __fadeOut
+* @example dn.__fadeOut();
+* @example dn.__fadeOut( 25, function() {
+*     dn.__remove();
+* } );
+* @param {Integer} [ms] milliseconds it should take to fade out
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+Object.defineProperty( Node.prototype, "__fadeOut", {
+	value : function( ms, cb ) {
+		var ms = ( typeof ms == "number" ) ? ms : 250;
+		var cb = ( typeof cb == "function" ) ? ms : cb;
 		var nStep = 25 / ms;
-		dn.style.opacity = dn.style.opacity || 1;
+		this.style.opacity = this.style.opacity || 1;
 		( function fader() {
-			if( ( dn.style.opacity -= nStep) < 0 ) {
-				__.dn.hide( dn );
-				if( fn ) {
-					fn();
+			if( ( this.style.opacity -= nStep) < 0 ) {
+				this.__hide();
+				if( cb ) {
+					cb();
 				}
 			}
 			else {
@@ -443,29 +392,28 @@ a:{}
 			}
 		} )();
 	}
-	/**
-	* <pre>
-	* Lets an element fade in
-	* </pre>
-	* @memberof __.dn
-	* @method _fade
-	* @example __.dn._fade( dn );
-	* @example __.dn._fade = __.dn.fadeOut( dn, 1000 );
-	* @param {Element} dn DOM node
-	* @param {Integer} [ms] milliseconds it should take to fade in 
-	* @param {Function} callback function to be invoked after element was faded in.
-	*/
-	, _fade : function( dn, x1, x2 ) {
-		var ms = ( typeof x1 == "number" ) ? x1 : 250;
-		var fn = ( typeof x1 == "function" ) ? x1 : x2;
+} );
+
+/**
+* Lets an element fade in.
+* @memberof Node
+* @method __fadeIn
+* @example dn.__fadeIn();
+* @param {Integer} [ms] milliseconds it should take to fade out
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+Object.defineProperty( Node.prototype, "__fadeIn", {
+	value : function( ms, cb ) {
+		var ms = ( typeof ms == "number" ) ? ms : 250;
+		var cb = ( typeof cb == "function" ) ? ms : cb;
 		var nStep = 25 / ms;
-		dn.style.opacity = dn.style.opacity || 0;
-		__.dn.show( dn );
+		this.style.opacity = this.style.opacity || 0;
+		this.__show();
 		( function fader() {
-			var n = Number( dn.style.opacity ) + nStep;
-			dn.style.opacity = n;
+			var n = Number( this.style.opacity ) + nStep;
+			this.style.opacity = n;
 			if( n > 1 ) {
-				dn.style.opacity = 1;
+				this.style.opacity = 1;
 				if( fn ) {
 					fn();
 				}
@@ -475,52 +423,153 @@ a:{}
 			}
 		} )();
 	}
-	/**
-	* <pre>
-	* Gets or sets a css attribute
-	* </pre>
-	* @memberof __.dn
-	* @method css
-	* @example __.dn.css( dn, "color", "red" );
-	* @example var sColor = __.dn.css( dn, "color" );
-	* @param {Element} dn DOM node
-	* @param {String} k name of attribute
-	* @param {String} [v] optional value of attribute
-	* @returns {Element} value of attribute
-	*/
-	, css : function( dn, k, v ) {
+} );
+
+/**
+* Gets or sets a css attribute
+* @memberof Node
+* @method __css
+* @example dn.__css( "color", "red" );
+* @example var sColor = dn.__css( "color" );
+* @param {String} k name of attribute
+* @param {String} [v] optional value of attribute
+* @returns {Element} value of attribute
+*/
+Object.defineProperty( Node.prototype, "__css", {
+	value : function( k, v ) {
 		if( ! v ) {
-			return self.getComputedStyle( dn )[ k ];
+			return self.getComputedStyle( this )[ k ];
 		}
-		dn.style[ k ] = v;
+		this.style[ k ] = v;
 	}
-	/**
-	 * Receives either an element or an array and a callback function.
-	 * <br>
-	 * In case of an array it iterates and invokes the callback on each element.
-	 * In case an element it invokes the callback directly.
-	 * <br>
-	 * The callback is invoked with two parameters: the element and its index.
-	 * @memberof __.dn
-	 * @method each
-	 * @example var ldn = __.dn_( ".links" );
-	 * __.dn.each( ldn, function( dn, ix ) {
-	 *     console.log( ix + ". " + dn.tagName ); 
-	 * } );
-	 * @example var dn1 = __.dn_( "[href='#one']" );
-	 * var dn2 = __.dn_( "[href='#two']" );
-	 * var dn3 = __.dn_( "[href='#three']" );
-	 * var ldn = [ dn1, dn2, dn3 ];
-	 * __.dn.each( ldn, function( dn ) {
-	 *     dn.style.color = "red";
-	 * } );
-	 * @example __.dn.each( __.dn_( "a" ), function( dn ) {
-	 *     dn.style.color = "red";
-	 * } );
-	 * @param {Array|Element} xdn Array of nodes or a single node 
-	 * @param {Function} fn function to be invoked against nodes
-	 */
-	, each : function( xdn, fn ) {
+} );
+
+/**
+* Scrolls the page or a DOM node to a specific x or y position or 
+* directly to the top, left, bottom or right.
+* <br>Expected positions: x, y, top, left, bottom, right
+* @memberof Node
+* @method __scrollTo
+* @example dn.__scrollTo( "bottom" ); // scroll page to bottom
+* @example dn.__scrollTo( "x", 100 ); // scroll menu node 100 px to the right
+* @param {String} sPos position to scroll to (x,y,bottom,top,left,right)
+* @param {Number} [nPos] A position value in pixels (in case of x,y)
+*/
+Object.defineProperty( Node.prototype, "__scrollTo", {
+	value : function( sPos, nPos ) {
+		switch( sPos ) {
+			case "x" :
+				this.scrollLeft = nPos;
+			break;
+			case "y" :
+				this.scrollTop = nPos;
+			break;
+			case "bottom" :
+				this.scrollTop = this.scrollHeight;
+			break;
+			case "top" :
+				this.scrollTop = 0;
+			break;
+			case "left" :
+				this.scrollLeft = 0;
+			break;
+			case "right" :
+				this.scrollLeft = this.scrollWidth;
+			break;
+		}
+	}
+} );
+
+/**
+* Registers to the scroll event of either a DOM node or the entire page.
+* <br>
+* A callback function is invoked with a data object providing information
+* about the current position which is, if not manually set, called every
+* 300 milliseconds.
+* @memberof Node
+* @method __onScroll
+* @example dn.__onScroll( function( aInfo ) {
+*     if( aInfo.bBottom ) {
+*         alert( "scrolled to bottom" );
+*     }
+* } );
+* @example dn.__onScroll( function() {
+*     positionMenu();
+* }, 1000 );
+* @param {Function} cb a callback function
+* @param {Number} [msInterval] A notification delay in milliseconds
+* @returns {Object} Information about the current position
+* <pre class='return-object'>
+* x | (Number) | current x position
+* y | (Number) | current y position
+* dx | (Number) | current width
+* dy | (Number) | current height
+* bTop | (Boolean) | flag to indicate whether scrolled to top
+* bBottom | (Boolean) | flag to indicate whether scrolled to bottom
+* bLeft | (Boolean) | flag to indicate whether scrolled to left 
+* bRigth | (Boolean) | flag to indicate whether scrolled to right
+* </pre>
+*/
+Object.defineProperty( Node.prototype, "__onScroll", {
+	value : function( cb, msInterval ) {
+		var msInterval = msInterval || 300;
+		var cbScroll = function() {
+			var dn = ( this == document ) ? document.body : this;
+			if( dn.__hd ) {
+				clearInterval( dn.__hd );
+			}
+			dn.__hd = setTimeout( function() {
+				var xcur = dn.scrollHeight;
+				var x = dn.scrollTop
+				var dx = dn.clientHeight 
+				var ycur = dn.scrollWidth;
+				var y = dn.scrollLeft
+				var dy = dn.clientWidth
+				cb( {
+					  "x" : xcur
+					, "y" : ycur
+					, "dy" : dy
+					, "dx" : dx
+					, "bTop" : ( x == 0 )
+					, "bBottom" : ( xcur == ( x + dx ) )
+					, "bLeft" : ( y == 0 )
+					, "bRight" : ( ycur == ( y + dy ) )
+				} );
+			}, msInterval );
+		};
+		this.__cbScroll = cbScroll;
+		this.addEventListener( "scroll", this.__cbScroll );
+	}
+} );
+
+/**
+* Unregisters from a scroll event of either a DOM node or the entire page.
+* <br>
+* @memberof Node
+* @method dn.offScroll
+* @example dn.offScroll();
+*/
+Object.defineProperty( Node.prototype, "__offScroll", {
+	value : function() {
+		this.removeEventListener( "scroll", this.__cbScroll );
+		this.__cbScroll = null;
+	}
+} );
+
+
+
+
+
+/**
+ * Internal helper methods for DOM manipulation
+ */
+
+if( typeof __ == "undefined" ) {
+	__ = {};
+}
+
+__.dn = {
+	  each : function( xdn, fn ) {
 		if( xdn ) {
 			var ldn = ( ! isNaN( xdn.length ) ) ? xdn : [ xdn ];
 			var c = ldn.length;
@@ -538,7 +587,7 @@ a:{}
 	}
 	, _move : function( dnMove, dnTarget ) {
 		if( dnMove instanceof Array ) {
-			this.each( dnMove, function( dn ) {
+			__.dn.each( dnMove, function( dn ) {
 				dnTarget.parentNode.insertBefore( dn, dnTarget );
 			} );
 		}
@@ -548,7 +597,7 @@ a:{}
 	  }
 	, move : function( dnMove, dnTarget ) {
 		if( dnMove instanceof Array ) {
-			this.each( dnMove, function( dn ) {
+			__.dn.each( dnMove, function( dn ) {
 				dnTarget.appendChild( dn );
 			} );
 		}
@@ -558,7 +607,7 @@ a:{}
 	  }
 	, move_ : function( dnMove, dnTarget ) {
 		if( dnMove instanceof Array ) {
-			this.each( dnMove, function( dn ) {
+			__.dn.each( dnMove, function( dn ) {
 				dnTarget.parentNode.insertBefore( dn, dnTarget.nextSibling );
 				dnTarget = dn;
 			} );
@@ -576,7 +625,7 @@ a:{}
 		}	
 		else {
 			if( h_or_dn.length ) {
-				this.each( h_or_dn, function( dn ) {
+				__.dn.each( h_or_dn, function( dn ) {
 					dnCreator.appendChild( dn );
 				} );
 			}
@@ -587,139 +636,61 @@ a:{}
 		var xdn = [].slice.call( dnCreator.children );
 		xdn = ( xdn instanceof Array && xdn.length == 1 ) ? xdn[ 0 ] : xdn;
 		if( fn ) {
-			this.each( xdn, fn );
+			__.dn.each( xdn, fn );
 		}
 		__.dn[ sfn ]( xdn, dnRoot );
 		return xdn;
 	}
 };
 
-/**
- * @namespace __.dn.scroll
- * @memberof __.dn
- */
 
-__.dn.scroll = {};
-/**
-* Scrolls the page or a DOM node to a specific x or y position or 
-* directly to the top, left, bottom or right.
-* <br>Expected positions: x, y, top, left, bottom, right
-* @memberof __.dn.scroll
-* @method to 
-* @example __.dn.scroll.to( "bottom" ); // scroll page to bottom
-* @example __.dn.scroll.to( dnMenu, "x", 100 ); // scroll menu node 100 px to the right
-* @param {Element|String} dn_or_pos Either a DOM node or a position (if no DOM node is passed on the entire window is selected)
-* @param {String|Number} pos_or_px Either a position or a position value in pixels
-* @param {Number} [px] A position value in pixels
-*/
-__.dn.scroll.to = function( dn_or_pos, pos_or_px, px ) {
-	var dn = ( typeof dn_or_pos == "string" ) ? document.body : dn_or_pos;
-	var sPos = ( typeof dn_or_pos == "string" ) ? dn_or_pos : pos_or_px;
-	var nPos = ( typeof pos_or_px == "number" ) ? pos_or_px : px;
-	switch( sPos ) {
-		case "x" :
-			dn.scrollLeft = nPos;
-		break;
-		case "y" :
-			dn.scrollTop = nPos;
-		break;
-		case "bottom" :
-			dn.scrollTop = dn.scrollHeight;
-		break;
-		case "top" :
-			dn.scrollTop = 0;
-		break;
-		case "left" :
-			dn.scrollLeft = 0;
-		break;
-		case "right" :
-			dn.scrollLeft = dn.scrollWidth;
-		break;
+/* *** Polyfills *** */
+/* matches */
+this.Element && function( oPrototype ) {
+	oPrototype.matches = oPrototype.matches ||
+	oPrototype.matchesSelector ||
+	oPrototype.webkitMatchesSelector ||
+	oPrototype.msMatchesSelector ||
+	function( sCSS ) {
+		var dn = this;
+		var ldn = ( dn.parentNode || dn.document ).querySelectorAll( sCSS );
+		var ix = -1;
+		while( ldn[ ++ix ] && ldn[ ix ] != dn ){
+			// just loop until hit the end
+		};
+		return ( ldn[ ix ] ) ? true : false;
 	}
-};
+}( Element.prototype );
 
-/**
-* Registers to the scroll event of either a DOM node or the entire page.
-* <br>
-* A callback function is invoked with a data object providing information
-* about the current position which is, if not manually set, called every
-* 300 milliseconds.
-* @memberof __.dn.scroll
-* @method on
-* @example __.dn.scroll.on( dnMenu, function( aInfo ) {
-*     if( aInfo.bBottom ) {
-*         alert( "scrolled to bottom" );
-*     }
-* } );
-* @example __.dn.scroll.on( function() {
-*     positionMenu();
-* }, 1000 );
-* @param {Element|String} dn_or_cb Either a DOM node or a callback function (if no DOM node is passed on the entire window is selected)
-* @param {String|Number} cb_or_ms Either a callback function or a custom notification delay in milliseconds
-* @param {Number} [ms] A notification delay in milliseconds
-* @returns {Object} Information about the current position
-* <pre class='return-object'>
-* x | (Number) | current x position
-* y | (Number) | current y position
-* dx | (Number) | current width
-* dy | (Number) | current height
-* bTop | (Boolean) | flag to indicate whether scrolled to top
-* bBottom | (Boolean) | flag to indicate whether scrolled to bottom
-* bLeft | (Boolean) | flag to indicate whether scrolled to left 
-* bRigth | (Boolean) | flag to indicate whether scrolled to right
-* </pre>
-*/
-__.dn.scroll.on = function( dn_or_cb, cb_or_ms, ms ) {
-	var dn = ( typeof dn_or_cb == "function" )
-		? document
-		: dn_or_cb;
-	var fn = ( typeof dn_or_cb == "function" )
-		? dn_or_cb
-		: cb_or_ms;
-	var msInterval = ( typeof cb_or_ms == "number" )
-		? cb_or_ms
-		: ( ms )
-			? ms
-			: 300;
-	var cbScroll = function() {
-		dn = ( dn == document ) ? document.body : dn; 
-		if( dn.__hd ) {
-			clearInterval( dn.__hd );
+/* closest */
+this.Element && function( oPrototype ) {
+	oPrototype.closest = oPrototype.closest || function( sCSS ) {
+		var dn = this;
+		while( dn.matches && ! dn.matches( sCSS ) ) {
+			dn = dn.parentNode;
 		}
-		dn.__hd = setTimeout( function() {
-			var xcur = dn.scrollHeight;
-			var x = dn.scrollTop
-			var dx = dn.clientHeight 
-			var ycur = dn.scrollWidth;
-			var y = dn.scrollLeft
-			var dy = dn.clientWidth
-			fn( {
-				  x : xcur
-				, y : ycur
-				, dy : dy
-				, dx : dx
-				, bTop : ( x == 0 )
-				, bBottom : ( xcur == ( x + dx ) )
-				, bLeft : ( y == 0 )
-				, bRight : ( ycur == ( y + dy ) )
-			} );
-		}, msInterval );
+		return ( dn.matches ) ? dn : null;
+	}
+}( Element.prototype );
+
+/* classList.toggle */
+
+( function() {
+	function ClassList( el ) {
+		this.element = el;
+	}
+	ClassList.prototype = {
+		toggle : function( name ) {
+			if( this.contains( name ) ) {
+				this.remove( name );
+				return false;
+			}
+			else {
+				this.add( name );
+				return true;
+			}
+		}
 	};
-	dn.__cbScroll = cbScroll;
-	dn.addEventListener( "scroll", dn.__cbScroll );
-}
+}() );
 
 
-/**
-* Unregisters from a scroll event of either a DOM node or the entire page.
-* <br>
-* @memberof __.dn.scroll
-* @method off
-* @example __.dn.scroll.off( dnMenu );
-* @example __.dn.scroll.off();
-* @param {Element} [dn] A DOM node for which we no longer want to get notified. (if no DOM node is passed on the entire window is selected)
-*/
-__.dn.scroll.off = function( dn ) {
-	dn = dn || document;
-	dn.removeEventListener( "scroll", dn.__cbScroll );
-}

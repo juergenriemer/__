@@ -37,7 +37,7 @@ __.SP.grid = {
 	 * @returns {Node} DOM node of the list webpart
 	 */
 	, dnWebpart : function() {
-		return __.dn_( "#scriptWPQ2" );
+		return document.body.__find( "#scriptWPQ2" );
 	}
 	/**
 	 * Returns DOM node of the list webpart's main table
@@ -47,7 +47,7 @@ __.SP.grid = {
 	 * @returns {Node} DOM node of the main table
 	 */
 	, dnGrid : function() {
-		return __.dn_( "table[summary]" );
+		return document.body.__find( "table[summary]" );
 	}
 	/**
 	 * Returns item data of the currently selected items.<br>
@@ -67,7 +67,7 @@ __.SP.grid = {
 		var oData = __.SP.grid.oData();
 		var loItems = SP.ListOperation.Selection.getSelectedItems();
 		loItems.forEach( function( oItem ) {
-			__.o.add( oItem, oData[ oItem.id ] );
+			oItem.__add( oData[ oItem.id ] );
 		} );
 		return loItems;
 	}
@@ -79,9 +79,9 @@ __.SP.grid = {
 	 * @example __.SP.grid.clearSelection();
 	 */
 	, clearSelection : function() {
-		__.dn_( ".s4-itm-selected", function( dn, ix ) {
+		document.body.__find( ".s4-itm-selected", function( dn, ix ) {
 			setTimeout( function() {
-				__.dn_( ".ms-selectitem-span", dn ).click();
+				dn.__find( ".ms-selectitem-span" ).click();
 			}, ix );
 		} );
 	}
@@ -124,7 +124,7 @@ __.SP.grid = {
 		ms = ms || 0;
 		console.log( ">>>>>>>>>>>" + ms );
 		setTimeout( function() {
-			var dn = __.dn_( "#ManualRefresh" );
+			var dn = document.body.__find( "#ManualRefresh" );
 			if( dn ) {
 				dn.click();
 			}
