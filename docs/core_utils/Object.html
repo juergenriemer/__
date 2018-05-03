@@ -264,9 +264,7 @@ h4.name span {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var oOrig = { sName : "John", nAge : 44 }
-var oNew = { email : "john@example.com", id : 123 }
-oOrig.__add( oNew );</code></pre>
+    <pre class="prettyprint"><code>var oOrig = { sName : "John", nAge : 44 }var oNew = { email : "john@example.com", id : 123 }oOrig.__add( oNew );</code></pre>
 
 
 
@@ -404,8 +402,7 @@ oOrig.__add( oNew );</code></pre>
 
         
 <div class="param-desc">
-    returns an object of two objects holding
-an array of differences found in the second object.
+    returns an object of two objects holdingan array of differences found in the second object.
 </div>
 
 
@@ -432,9 +429,7 @@ an array of differences found in the second object.
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o1 = { sName : "John", nAge : 44 };
-var o2 = { sName : "John", nAge : 23, bMarried : true };
-var oDiff = o1.__compareTo( o2 );</code></pre>
+    <pre class="prettyprint"><code>var o1 = { sName : "John", nAge : 44 };var o2 = { sName : "John", nAge : 23, bMarried : true };var oDiff = o1.__compareTo( o2 );</code></pre>
 
 
 
@@ -547,8 +542,7 @@ var oDiff = o1.__compareTo( o2 );</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
-var oNew = o.__copy();</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }var oNew = o.__copy();</code></pre>
 
 
 
@@ -686,8 +680,7 @@ var oNew = o.__copy();</code></pre>
 
         
 <div class="param-desc">
-    returns an object of two objects holding
-an array of differences found for each of the two object passed on or null if they are identical
+    returns an object of two objects holdingan array of differences found for each of the two object passed on or null if they are identical
 </div>
 
 
@@ -714,9 +707,7 @@ an array of differences found for each of the two object passed on or null if th
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o1 = { sName : "John", nAge : 44 };
-var o2 = { sName : "John", nAge : 23, bMarried : true };
-var oDiff = o1.__diff( o2 );</code></pre>
+    <pre class="prettyprint"><code>var o1 = { sName : "John", nAge : 44 };var o2 = { sName : "John", nAge : 23, bMarried : true };var oDiff = o1.__diff( o2 );</code></pre>
 
 
 
@@ -901,9 +892,7 @@ var oDiff = o1.__diff( o2 );</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o1 = { sName : "John", nAge : 44 };
-var o2 = { sName : "John", nAge : 44 };
-var bEqual = o.__equal( o1 );</code></pre>
+    <pre class="prettyprint"><code>var o1 = { sName : "John", nAge : 44 };var o2 = { sName : "John", nAge : 44 };var bEqual = o.__equal( o1 );</code></pre>
 
 
 
@@ -1016,8 +1005,7 @@ var bEqual = o.__equal( o1 );</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var kv = { "country" : "Belgium" }
-var k = kv.__getKey(); // key</code></pre>
+    <pre class="prettyprint"><code>var kv = { "country" : "Belgium" }var k = kv.__getKey(); // key</code></pre>
 
 
 
@@ -1130,8 +1118,7 @@ var k = kv.__getKey(); // key</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
-var lk = o.__getKeys(); // [ "sName", "nAge" ]</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }var lk = o.__getKeys(); // [ "sName", "nAge" ]</code></pre>
 
 
 
@@ -1244,8 +1231,7 @@ var lk = o.__getKeys(); // [ "sName", "nAge" ]</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o = {};
-var bEmpty = o.__isEmpty();</code></pre>
+    <pre class="prettyprint"><code>var o = {};var bEmpty = o.__isEmpty();</code></pre>
 
 
 
@@ -1358,8 +1344,7 @@ var bEmpty = o.__isEmpty();</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
-var c =o.__kCount(); // 2</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }var c =o.__kCount(); // 2</code></pre>
 
 
 
@@ -1522,8 +1507,7 @@ var c =o.__kCount(); // 2</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
-o.__kRename( "sName", "sFirstName" );</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }o.__kRename( "sName", "sFirstName" );</code></pre>
 
 
 
@@ -1541,9 +1525,7 @@ o.__kRename( "sName", "sFirstName" );</code></pre>
 
 
 <div class="description">
-    Retrieve the structure of an object including its string size
-array of arrays containing key paths as string and a sorted 
-copy of the object passed on
+    Retrieve the structure of an object including its string sizearray of arrays containing key paths as string and a sorted copy of the object passed on
 </div>
 
 
@@ -1690,8 +1672,7 @@ copy of the object passed on
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 };
-var oStruc = o1.__struc();</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 };var oStruc = o1.__struc();</code></pre>
 
 
 
@@ -1709,8 +1690,7 @@ var oStruc = o1.__struc();</code></pre>
 
 
 <div class="description">
-    Converts an object into a string
-Uses JSON.stringify therefore returns null in case of circular references
+    Converts an object into a stringUses JSON.stringify therefore returns null in case of circular references
 </div>
 
 
@@ -1805,8 +1785,7 @@ Uses JSON.stringify therefore returns null in case of circular references
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }
-var s = o.__toString();</code></pre>
+    <pre class="prettyprint"><code>var o = { sName : "John", nAge : 44 }var s = o.__toString();</code></pre>
 
 
 
@@ -1832,6 +1811,7 @@ var s = o.__toString();</code></pre>
     <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.cookie.html">cookie</a></li><li><a href="-__.e.html">e</a></li><li><a href="-__.url.html">url</a></li><li><a href="Array.html">Array</a></li><li><a href="Number.html">Number</a></li><li><a href="Object.html">Object</a></li><li><a href="String.html">String</a></li></ul>
 </nav>
 <script>
+/*
 var dnNav = document.querySelector( "nav" );
 var ldnNamespaces = dnNav.querySelectorAll( "li a" );
 var c = ldnNamespaces.length;
@@ -1872,11 +1852,67 @@ for( var ix=0; ix<c; ix++ ) {
 	dnLI.appendChild( dnA );
 	dnMethods.appendChild( dnLI );
 }
+*/
+// get DOM nodes
+// right navigation panel
+var dnNav = document.querySelector( "nav" );
+// custom methods menu
+var dnMethods = document.getElementById( "methods" );
+// custom methods count
+var dnMethodCount = document.getElementById( "method-count" );
+
+// show structure in namespace links
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	if( lsParts && lsParts[ 1 ] ) {
+		dn.textContent = lsParts[ 1 ];
+	}
+}
+
+// show/hide custom methods menu if we have methods
+// and render number of methods
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+
+// populate methods menu with links to methods found in 
+// the current page
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+
+
 </script>
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 03 2018 08:21:53 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 03 2018 15:46:54 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

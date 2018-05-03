@@ -7,7 +7,7 @@ __.Common.Urls = {
 			sharepoint : 'https://sharepoint.osce.org/',
 			mySite : 'https://sp-selfservice.osce.org/',
 			midtier : 'https://ws-sharepoint.osce.org/WebService.asmx/',
-			sputils : 'http://sputils-ssom.osce.org/'
+			sputils : 'https://sputils-ssom.osce.org/'
 		}
 		, test : {
 			rso : 'https://test-rso.osce.org/',
@@ -15,7 +15,7 @@ __.Common.Urls = {
 			sharepoint : 'https://test-jarvis.osce.org/',
 			mySite : 'https://test-sp-selfservice.osce.org/',
 			midtier : 'https://test-ws-sharepoint.osce.org/WebService.asmx/',
-			sputils : 'http://sputils-ssom-test.osce.org/'
+			sputils : 'https://sputils-ssom-test.osce.org/'
 			
 		}
 		, dev : {
@@ -24,7 +24,7 @@ __.Common.Urls = {
 			sharepoint : 'https://dev-sharepoint.osce.org/',
 			mySite : 'https://dev-sp-selfservice.osce.org/',
 			midtier : 'https://dev-ws-sharepoint.osce.org/WebService.asmx/',
-			sputils : 'http://sputils-ssom-dev.osce.org/'
+			sputils : 'https://sputils-ssom-dev.osce.org/'
 		}
 	}
 	, get : function( sDomain ) {

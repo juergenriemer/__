@@ -13,7 +13,9 @@ for( var ix=0; ix<c; ix++ ) {
 	var dn = ldnNamespaces[ ix ];
 	var sHref = dn.href;
 	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
-	dn.textContent = lsParts[ 1 ];
+	if( lsParts && lsParts[ 1 ] ) {
+		dn.textContent = lsParts[ 1 ];
+	}
 }
 
 // show/hide custom methods menu if we have methods
