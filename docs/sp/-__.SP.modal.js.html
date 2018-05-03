@@ -144,7 +144,7 @@ __.SP.modal = {
 		h += "&lt;p class='separator'>&lt;/p>";
 		h += this.buttons( args );
 		h += "&lt;/div>";
-		this.dn = __.dn.append( h );
+		this.dn = document.body.__append( h );
 		this.behaviour( this.dn, args );
 		var kv = {
 			  title : args.sTitle
@@ -161,21 +161,21 @@ __.SP.modal = {
 			this.processing();
 		}
 		if( args.bNoButtons ) {
-			__.dn_( ".osce-buttons", this.dn ).style.display = "none";
+			this.dn.__find( ".osce-buttons" ).style.display = "none";
 		}
 		SP.UI.ModalDialog.showModalDialog( kv );
 		return this;
 	}
 	, behaviour : function( dn, args ) {
 		var that = this;
-		var dnOk = __.dn_( "input[value='" + args.sOk + "']", this.dn );
+		var dnOk = this.dn.__find( "input[value='" + args.sOk + "']" );
 		if( dnOk &amp;&amp; args.fnact ) {
 			dnOk.addEventListener( "click", function() {
 				that.processing();
 				args.fnact( that );
 			} );
 		}
-		var dnCancel = __.dn_( "input[value='" + args.sCancel + "']", this.dn );
+		var dnCancel = this.dn.__find( "input[value='" + args.sCancel + "']" );
 		if( dnCancel ) {
 			dnCancel.addEventListener( "click", function() {
 				__.SP.modal.cancel();
@@ -183,15 +183,15 @@ __.SP.modal = {
 		}
 		// set focus on first input field
 		setTimeout( function() {
-			var dnInput = __.dn_( "input", that.dn );
+			var dnInput = that.dn.__find( "input" );
 			if( dnInput &amp;&amp; dnInput[ 0 ] &amp;&amp; dnInput[ 0 ].focus ) {
 				dnInput[ 0 ].focus();
 			}
 		}, 1500 );
 	}
 	, message : function( s ) {
-		var dnMessage = __.dn_( ".osce-message", this.dn );
-		var dnLoading = __.dn_( ".osce-loading", this.dn );
+		var dnMessage = this.dn.__find( ".osce-message" );
+		var dnLoading = this.dn.__find( ".osce-loading" );
 		if( s ) {
 			dnMessage.textContent = s;
 			dnMessage.style.display = "block";
@@ -222,24 +222,22 @@ __.SP.modal = {
 		return h;
 	}
 	, stopProcessing : function() {
-		var dnLoading = __.dn_( ".osce-loading", this.dn );
+		var dnLoading = this.dn.__find( ".osce-loading" );
 		dnLoading.style.display = "none";
-		//__.dn._fade( dnLoading );
 	}
 	, processing : function() {
-		var dnLoading = __.dn_( ".osce-loading", this.dn );
+		var dnLoading = this.dn.__find( ".osce-loading" );
 		dnLoading.style.display = "block";
-		//__.dn._fade( dnLoading );
 	}
 	, progress : function( s ) {
-		var dnMessage = __.dn_( ".osce-loading > span", this.dn );
+		var dnMessage = this.dn.__find( ".osce-loading > span" );
 		dnMessage.textContent = s;
 	}
 	, close : function() {
 		SP.UI.ModalDialog.commonModalDialogClose( 1 );
 	}
 	, cancel : function() {
-		var dnClose = __.dn_( ".ms-dlgCloseBtn" );
+		var dnClose = document.body.__find( ".ms-dlgCloseBtn" );
 		if( dnClose &amp;&amp; dnClose.click ) {
 			dnClose.click();
 		}
@@ -305,11 +303,11 @@ __.SP.modal = {
 	}
 	, closeAll : function() {
 		console.log( 'closeall' );
-		__.dn_( ".ms-dlgContent", function( dnModal ) {
-			__.dn.del( dnModal );
+		document.body.__find( ".ms-dlgContent", function( dnModal ) {
+			dnModal.__remove();
 		} );
-		__.dn_( ".ms-dlgOverlay", function( dnBlend ) {
-			__.dn.del( dnBlend );
+		document.body.__find( ".ms-dlgOverlay", function( dnBlend ) {
+			dnBlend.__remove();
 		} );
 	}
 	/**
@@ -320,7 +318,7 @@ __.SP.modal = {
 	 * @returns {Boolean} true if a modal window is currently displayed
 	 */
 	, bExists : function() {
-		return __.dn_( ".ms-dlgContent" );
+		return document.body.__find( ".ms-dlgContent" );
 	}
 	/**
 	 * Resizes the current modal window to fit the content.
@@ -347,7 +345,7 @@ __.SP.modal = {
 	<h3><a href="../index.html">Home</a></h3>
 	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
 	<ul id="methods"></ul>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 <script>
 var dnNav = document.querySelector( "nav" );
@@ -394,7 +392,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 27 2018 06:55:12 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 03 2018 08:05:27 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: __.SP.webpart.js</title>
+    <title>JSDoc: Source: __.SP.permission.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -40,7 +40,7 @@ h4.name span {
 
 <div id="main">
 
-    <h1 class="page-title">Source: __.SP.webpart.js</h1>
+    <h1 class="page-title">Source: __.SP.permission.js</h1>
 
     
 
@@ -49,82 +49,88 @@ h4.name span {
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>// ==ClosureCompiler==
-// @compilation_level ADVANCED_OPTIMIZATIONS
-// @js_externs var __; __.SP; __.SP.webpart; __.SP.webpart.settings; 
-// ==/ClosureCompiler==
-
-
-/**
- * @namespace __.SP.webpart
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace __.SP.group
  * @memberof __.SP
  */
-__.SP.webpart = {
-	/**
-	 * Updates settings of a webpart.
-	 * @memberof __.SP.webpart
-	 * @method settings
-	 * @todo complete example
-	 * @todo provide list of properties available
-	 * @example
-	 * __.SP.item.create( {
-	 * 	  path : "path to aspx page?"
-	 *	, ixWP : 2
-	 *	, kv : {
-	 * 		JSLink? : "path/to/jslink"
-	 * 	}
-	 * } );
-	 * @param {Object} args a parameter object holding the following values
-	 * @param {String} args.path path to aspx page holding the webpart
-	 * @param {Number} [args.ixWP] index of webpart if page has multiple (default is: 0)
-	 * @param {String} [args.kv] key/value pairs of properties to update
-	 */
-	  settings : function( args ) { // path, ixWP, kv
-		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
-		var path = _spPageContextInfo.webServerRelativeUrl + args.path;
-		var oFile = ctx.get_web().getFileByServerRelativeUrl( path );
-		var oWPM = oFile.getLimitedWebPartManager( SP.WebParts.PersonalizationScope.shared );
-		var loWP = oWPM.get_webParts();
-		ctx.load( loWP );
-		__.SP.exec( ctx, loWP, function( loWP ) {
-			if( loWP.sError ) {
-				async.reject( loWP.sError );
-			}
-			else {
-				var oDef = null;
-				oDef = loWP.get_item( args.ixWP || 0 );
-				if( ! oDef ) {
-					async.reject( { sError : "No webpart with index: " + args.ixWP } );
-				}
-				else {
-					var oProp = oDef.get_webPart().get_properties();
-					ctx.load( oProp );
-					__.SP.exec( ctx, oProp, function( oProp ) {
-						if( oProp.sError ) {
-							async.reject( oProp.sError );
-						}
-						else {
-							for( var k in args.kv ) {
-								var v = args.kv[ k ];
-								oProp.set_item( k, v );
-							}
-							oDef.saveWebPartChanges();
-							ctx.load( oDef );
-							__.SP.exec( ctx, oDef, function( o ) {
-								if( o.sError ) {
-									async.reject( o.sError );
-								}
-								else {
-									async.resolve();
-								}
-							} );
-						}
-					} );
-				}
-			}
-		} );
+
+__.SP.group = {};
+
+/**
+ * Creates a new SharePoint group
+ * @memberof __.SP.group
+ * @method add
+ * @async 
+ * @instance
+ * @example
+ * __.SP.group.add( {
+ *       sName : "TaskAdmins"
+ *     , sDescription : "users that can administer Tasks" 	
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sName name of the group
+ * @param {String} [args.sDescription] description of the group
+ * @returns {Object} Resolved promise holding the following values 
+ * &lt;pre class='return-object'>
+ * oGroup | (Object) | SP object of created group
+ * &lt;/pre>
+ */
+__.SP.group.add = function( args ) {
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx();
+	var oWeb = ctx.get_web();
+	var oCreate = new SP.GroupCreationInformation();
+	oCreate.set_title( args.sName );
+	if( args.sDescription ) {
+		oCreate.set_description( args.sDescription );
 	}
+	oGroup = oWeb.get_siteGroups().add( oCreate );
+	ctx.load( oGroup );
+	__.SP.exec( ctx, oGroup, function( oGroup ) {
+		if( oGroup.sError ) {
+			async.reject( oGroup );
+		}
+		else {
+			async.resolve();
+		}
+	} );
+}
+
+/**
+ * Adds a user to a SharePoint group
+ * @memberof __.SP.group
+ * @method addUser
+ * @async 
+ * @instance
+ * @example
+ * __.SP.group.add( {
+ *       sName : "OSCE-test\\jriemer"
+ *     , sGroup : "TaskAdmins"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sUser domain/login of user
+ * @param {String} args.sGroup name of the group
+ * @returns {Object} Resolved promise holding the following values 
+ * &lt;pre class='return-object'>
+ * oUser | (Object) | SP object of added user
+ * &lt;/pre>
+ */
+__.SP.group.addUser = function( args ) {
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx();
+	var oUser = ctx.get_web().ensureUser( args.sUser );
+	var oGroup = ctx.get_web().get_siteGroups().getByName( args.sGroup );
+	oGroup.get_users().addUser( oUser );
+	ctx.load( oUser );
+	ctx.load( oGroup );
+	__.SP.exec( ctx, oUser, function( oUser ) {
+		if( oUser.sError ) {
+			async.reject( oUser );
+		}
+		else {
+			async.resolve();
+		}
+	} );
 }
 </code></pre>
         </article>

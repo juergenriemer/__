@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: __.SP.taxonomy.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<style>
+.prettyprint {
+	width : 100%;
+}
+h1 {
+	font-size : 2em;
+}
+h4.name {
+	margin-top : 2em;
+	font-size : 1.7em;
+	border-bottom : 1px dashed #c0c0c0;
+}
+h4.name span.signature {
+	font-size : 70%;
+	padding : 5px;
+}
+h4.name span {
+	font-size : 50%;
+}
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
+</style>
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: __.SP.taxonomy.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace __.SP.taxonomy
+ * @memberof __.SP
+ */
+
+__.SP.taxonomy = {};
+// holds loaded taxonomies
+__.SP.taxonomy.aTerms = {};
+// holds all used taxonomy terms
+__.SP.taxonomy.oTermInfo = null;
+
+/**
+ * Sets a taxonomy term in an add or edit form.
+ * @memberof __.SP.taxonomy
+ * @method setTermInForm
+ * @instance
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sField name of the list's field
+ * @param {String} args.sTerm name of the taxonomy term
+ * @param {String} args.guid guid of the taxonomy term
+ * @example __.SP.taxonomy.setTermInForm( {
+ *	  sField : "Country"
+ *	, sTerm : "Albania"
+ *	, guid : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+ * } );
+ */
+__.SP.taxonomy.setTermInForm = function( args ) {
+	var h;
+	if( args.guid ) {
+		var v = args.sTerm + "|" + args.guid;
+		document.body.__find( "#" + args.sField + "_\\$input" ).value = v;
+		h = "&lt;span class='valid-text'>" + args.sTerm + "&lt;/span>";
+	}
+	else {
+		h  = '&lt;span class="invalid-text" ';
+		h += 'title="The term is not a valid term">' + args.sTerm + '&lt;/span>';
+	}
+	document.body.__find( "#" + args.sField + "_\\$containereditableRegion" ).innerHTML = h;
+	__.Async.promise( args ).resolve();
+}
+
+
+/**
+ * Loads the hidden taxonomy term list for the current site with their site IDs, guid and names.&lt;br>
+ * It store them in a data object "__.SP.taxonomy.oTermInfo" using the internal ID as key.
+ * @memberof __.SP.taxonomy
+ * @method getTermIds
+ * @async
+ * @instance
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sField name of the list's field
+ * @param {String} args.sTerm name of the taxonomy term
+ * @param {String} args.guid guid of the taxonomy term
+ * @example __.SP.taxonomy.getTermIds();
+ */
+__.SP.taxonomy.getTermIds = function( args ) {
+	var async = __.Async.promise( args );
+	// if we already loaded the term list we resolve
+	if( __.SP.taxonomy.oTermInfo ) {
+		async.resolve();
+		return;
+	}
+	// otherwise we read the term list
+	async.then( __.SP.list, "read", {
+		  sList : "TaxonomyHiddenList"
+		, lsFields : [ "IdForTerm", "ID", "Title" ]
+	}, "Read taxonomy term id list" )
+	async.then( function( args ) {
+		__.SP.taxonomy.oTermInfo = {};
+		args.lkv.forEach( function( kv ) {
+			__.SP.taxonomy.oTermInfo[ kv.ID ] = {
+				  id : kv.ID
+				, sName : kv.Title
+				, guid : kv.IdForTerm
+			};
+		} );
+		__.Async.promise( args ).resolve();
+	}, "Extract term id data" )
+	async.resolve();
+}
+
+/**
+ * Reads term info from the site's hidden taxonomy list.
+ * @memberof __.SP.taxonomy
+ * @method termInfo
+ * @instance
+ * @param {Number|String} id_or_guid_or_name Either the ID, the guid or the name of a taxonomy term.
+ * @example __.SP.taxonomy.termInfo( "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+);
+ * @returns {Object} data object of the term
+ * &lt;pre class='return-object'>
+ * id | (Number) | internal ID of the term
+ * guid | (String) | guid of the term
+ * sName | (String) | name of the term
+ * &lt;/pre>
+ */
+__.SP.taxonomy.termInfo = function( id_or_guid_or_name ) {
+	// in case of index we return immediately for this is the
+	// key of the term info object
+	if( typeof id_or_guid_or_name == "number" ) {
+		return __.SP.taxonomy.oTermInfo[ id_or_guid_or_name ] || null;
+	}
+	// now lets check if input is term name or its guid and
+	// assign the proper key
+	var k = ( __.SP.bGuid( id_or_guid_or_name ) ) ? "guid" : "sName";
+	// then iterate through the term object and look for the
+	// machting entry
+	for( var id in __.SP.taxonomy.oTermInfo ) {
+		var aTermInfo = __.SP.taxonomy.oTermInfo[ id ];
+		if( aTermInfo[ k ] === id_or_guid_or_name ) {
+			// and send back if found
+			return aTermInfo;
+		}
+	}
+	// otherwise we send back null
+	return null;
+}
+
+/**
+ * Loads an entire taxonomy and creates structures for easy lookup by name,
+ * guid and labels (i.e. synonyms).&lt;br>
+ * It also creates a linked list for parent/children relationships.
+ * It returns the lookup objects as well as stores them into the data 
+ * object "__.SP.taxonomy.aTerms" for later reference
+ * @memberof __.SP.taxonomy
+ * @method load
+ * @async
+ * @instance
+ * @todo rename sTermSet to guidTermset
+ * @todo create object definition of lookup object
+ * @example __.SP.taxonomy.load( {
+ * 	sTermSet : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sTermSet guid of the term set
+ * @param {String} [args.sTermStore] name of term store (default is "Managed Metadata Service")
+ * @returns {Object} Resolved promise holding the following values 
+ * &lt;pre class='return-object'>
+ * aTerms | (Object) | lookup table for term names
+ * aGuids | (Object) | lookup table for term guids
+ * aLabels | (Object) | lookup table for term labels
+ * aChildren | (Object) | lookup table for parent/children relationship
+ * &lt;/pre>
+ */
+__.SP.taxonomy.load = function( args ) {
+	var async = __.Async.promise( args );
+	// first check if we already loaded the taxonomy
+	var oTerms = __.SP.taxonomy.aTerms[ args.sTermSet ];
+	if( oTerms ) {
+		async.resolve( { oTerms : oTerms } );
+		return;
+	}
+	var ctx = __.SP.ctx();
+	var sTermStore = args.sTermStore || "Managed Metadata Service";
+	var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
+	var oStore = oTax.get_termStores().getByName( sTermStore );
+	var oSet = oStore.getTermSet( args.sTermSet );
+	var oTerms = oSet.getAllTerms();
+	ctx.load( oTerms, 'Include(Parent,Id,Name)');
+	__.SP.exec( ctx, oTerms, function( oTerms ) {
+		if( oTerms.sError ) {
+			async.reject( oTerms.sError );
+		}
+		else {
+			var loTerms = oTerms.getEnumerator();
+			var aTerms = {};
+			var aGuids = {};
+			var aLabels = {};
+			var aChildren = {};
+			var sLastTerm = "";
+			while( loTerms.moveNext() ) {
+				var oTerm = loTerms.get_current();
+				var oParent = oTerm.get_parent();
+				var sMain = oTerm.get_name();
+				var sLastTerm = sMain;
+				var guid = oTerm.get_id().toString();
+				if( ! oParent.get_serverObjectIsNull() ) {
+					idParent = oParent.get_id().toString();
+					if( ! aChildren[ idParent ] ) {
+						aChildren[ idParent ] = [];
+					}
+					aChildren[ idParent ].push( guid );
+				}
+				aTerms[ sMain ] = {
+					  guid : guid
+					, lsLabels : []
+				};
+				aGuids[ guid ] = sMain;
+				var oLabels = oTerm.getAllLabels( 1033 );
+				ctx.load( oLabels );
+				__.SP.exec( ctx, oLabels, function( oLabels, sMain ) {
+					var loLabels = oLabels.getEnumerator();
+					var sTerm = "";
+					var vLookup = {};
+					while( loLabels.moveNext() ) {
+						var oLabel = loLabels.get_current();
+						var sLabel = oLabel.get_value();
+						if( aTerms[ sLabel ] ) {
+							sTerm = sLabel;
+							vLookup = {
+								  sTerm : sTerm
+								, guid : aTerms[ sTerm ].guid
+							};
+							aLabels[ sLabel ] = vLookup;
+							aLabels[ sLabel.__tokenize() ] = vLookup;
+						}
+						else {
+							aTerms[ sTerm ].lsLabels.push( sLabel );
+							aLabels[ sLabel ] = vLookup;
+							aLabels[ sLabel.__tokenize() ] = vLookup;
+						}
+					}
+					if( ( sLastTerm == sTerm ) ) {
+						var aResult = {
+							  aTerms : aTerms
+							, aGuids : aGuids
+							, aLabels : aLabels
+							, aChildren : aChildren
+						}
+						__.SP.taxonomy.aTerms[ args.sTermSet ] = aResult;
+						async.resolve( { oTerms : aResult } );
+					}
+				} );
+				// add the otherway around
+			}
+		}
+	} );
+};
+
+/**
+ * Retrieves all children term guids for a given parent term of a term set.
+ * NB: The taxonomy needs to be loaded beforehand.
+ * @memberof __.SP.taxonomy
+ * @method children
+ * @instance
+ * @todo rename idTermSet and idParent to guidTermset and guidParent
+ * @example __.SP.taxonomy.children( {
+ * 	  idTermSet : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+ * 	, idParent : "13a5103e-ee20-44ce-a164-35943e9df08e"
+ * } );
+ * @param {String} idTermSet guid of the term set
+ * @param {String} idParent guid of the parent term
+ * @returns {Array} array of guids of all children terms
+ */
+__.SP.taxonomy.children = function( args ) {
+	var oStore = __.SP.taxonomy.aTerms[ args.idTermSet ];
+	var l = [];
+	var add = function( id ) {
+		if( id != args.idParent ) {
+			l.push( id );
+		}
+		var lid = oStore.aChildren[ id ];
+		if( lid ) {
+			lid.forEach( function( id ) {
+				add( id );
+			} );
+		}
+		return l;
+	}
+	var lid = add( args.idParent );
+	return lid;
+};
+
+/**
+ * Adds a term to a term set.
+ * &lt;br>NB: it only adds them on the first level (only root nodes).
+ * @memberof __.SP.taxonomy
+ * @method addTerm
+ * @async
+ * @instance
+ * @todo rename sTermSet to guidTermset
+ * @example __.SP.taxonomy.addTerm( {
+ * 	  lsTerms : [ "Neverland", "Oz" ]
+ * 	, sTermSet : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.lsTerms Array of the terms to be added.
+ * @param {String} args.sTermSet guid of the term set
+ */
+__.SP.taxonomy.addTerm = function( args ) {
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx();
+	var sTermStore = args.sTermStore || "Managed Metadata Service";
+	var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
+	var oStore = oTax.get_termStores().getByName( sTermStore );
+	var oSet = oStore.getTermSet( args.sTermSet );
+	args.lsTerms.forEach( function( sTerm ) {
+		oSet.createTerm( sTerm, 1033, SP.Guid.newGuid().toString() );
+	} );
+	ctx.load( oSet );
+	__.SP.exec( ctx, oSet, function( oSet ) {
+		if( oSet.sError ) {
+			async.reject( oSet.sError );
+		}
+		else {
+			async.resolve();
+		}
+	} );
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+	<h3><a href="../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+<script>
+var dnNav = document.querySelector( "nav" );
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	dn.textContent = lsParts[ 1 ];
+}
+
+var dnMethods = document.getElementById( "methods" );
+var dnMethodCount = document.getElementById( "method-count" );
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+</script>
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 03 2018 08:05:27 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+<script src="custom.js"> </script>
+</body>
+</html>

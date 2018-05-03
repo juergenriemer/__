@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: __.SP.user.js</title>
+    <title>JSDoc: Source: __.SP.ribbon.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -40,7 +40,7 @@ h4.name span {
 
 <div id="main">
 
-    <h1 class="page-title">Source: __.SP.user.js</h1>
+    <h1 class="page-title">Source: __.SP.ribbon.js</h1>
 
     
 
@@ -50,90 +50,96 @@ h4.name span {
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @namespace __.SP.user
+ * @namespace __.SP.ribbon
  * @memberof __.SP
  */
 
-__.SP.user = {};
+__.SP.ribbon = {};
 
-// Stores user info for consequtive calls to current()
-__.SP.user.aInfo = {
-	  id : -1
-	, sLogin : "na"
-	, mail : "na"
-	, bAdmin : false
-	, lsGroups : []
-	, bLoaded : false
+/**
+ * Reloads the current ribbon, refreshing their active states. In case it fails to reload the ribbon it reloads the page
+ * @memberof __.SP.ribbon
+ * @method reload
+ * @instance
+ * @example
+ * __.SP.ribbon.reload();
+ */
+__.SP.ribbon.reload = function() {
+	try {
+		SP.Ribbon.PageManager.get_instance().get_ribbon().refresh();
+	} catch( e ) {
+		self.location.reload();
+	}
 };
 
 /**
- * Gets information on the currently logged in user
- * @memberof __.SP.user
- * @method current
+ * Creates a new icon in a ribbon
+ * @memberof __.SP.ribbon
+ * @method addIcon
+ * @async 
  * @instance
- * @async
  * @example
- * __.SP.user.current();
- * @returns {Object} Resolved promise holding the following values 
- * &lt;pre class='return-object'>
- * aUserInfo | (Object) | key/value pair of properties
- * kv.id | (String) | id of the user
- * kv.sLogin | (Array) | domain/login of the user
- * kv.mail | (String) | email of the user
- * kv.bAdmin | (Number) | number of rows displayed
- * kv.lsGroups | (Array) | array of SharePoint group names the user is member of
- * &lt;/pre>
+ * n/a atm
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name of the list 
+ * @param {String} args.sRibbon name of the list's ribbon 
+ * @param {String} args.sSegment name of the ribbon's segement 
+ * @param {String} args.sLabel label of the icon
+ * @param {String} args.sDescription description of the icon
+ * @param {String} args.sAction inline JavaScript of the onclick action
+ * @param {String} args.sEnabled inline JavaScript to identify whether icon is acitve
+ * @param {String} args.urlIcon16 URL of the small icon image
+ * @param {String} args.urlIcon32 URL of the large icon image
+ * @param {String} args.sToolTipTitle title of the tooltip
+ * @param {String} args.sToolTipDescription description of the tooltip
+ * @note list of list's ribbons: https://msdn.microsoft.com/en-us/library/office/bb802730.aspx
+ * @note list of ribbon's segments: https://msdn.microsoft.com/en-us/library/ee537543(office.14).aspx or: to get the segment use browser inspector and check the ID of the segement in UI
+ * @returns {Object} Resolved promise
  */
-__.SP.user.current = function( args ) {
-	var that = this;
+__.SP.ribbon.addIcon = function( args ) {
 	var async = __.Async.promise( args );
-	if( this.aInfo ) {
-		async.resolve( { aUserInfo : this.aInfo } );
-		return;
+	var ctx = __.SP.ctx();
+	var oList = __.SP.list.get( ctx, args.sList );
+	var oIcon = oList.get_userCustomActions().add();
+	oIcon.set_location( args.sRibbon );
+	var sCommand = args.sLabel.toLowerCase();
+	sCommand = sCommand.replace( /\s/g, "_" );
+	var xml = '&lt;CommandUIExtension xmlns="http://schemas.microsoft.com/sharepoint/">';
+	xml += '&lt;CommandUIDefinitions>';
+	xml += '&lt;CommandUIDefinition Location="' + args.sSegment + '.Controls._children">';
+	xml += '&lt;Button Id="Ribbon.' + args.sRibbon + '.' + args.sSegment + '.' + sCommand + '" ';
+	xml += 'Command="' + sCommand + '" ';
+	xml += 'Sequence="' + ( args.nSequence || 0 ) + '" ';
+	xml += 'Image16by16="' + args.urlIcon16 + '" ';
+	xml += 'Image32by32="' + args.urlIcon32 + '" ';
+	xml += 'Description="' + args.sDescription + '" ';
+	xml += 'LabelText="' + args.sLabel + '" ';
+	xml += 'ToolTipTitle="' + ( args.sToolTipTitle || "" ) + '" ';
+	xml += 'ToolTipDescription="' + ( args.sToolTipDescription || "" ) + '" ';
+	xml += 'TemplateAlias="o1"/>';
+	xml += '&lt;/CommandUIDefinition>';
+	xml += '&lt;/CommandUIDefinitions>';
+	xml += '&lt;CommandUIHandlers>';
+	xml += '&lt;CommandUIHandler Command="' + sCommand + '" ';
+	xml += 'CommandAction="' + args.sAction + '" ';
+	if( args.sEnabled ) {
+		xml += 'EnabledScript="' + args.sEnabled + '" ';
 	}
-	var _getCurrentUserInfo = function() {
-		var ctx = __.SP.ctx();
-		var oUser = ctx.get_web().get_currentUser();
-		var oGroups = oUser.get_groups();
-		ctx.load( oUser );
-		ctx.load( oGroups );
-		__.SP.exec( ctx, [ oUser, oGroups ], function( lo ) {
-			var oUser = lo[ 0 ];
-			var oGroups = lo[ 1 ];
-			if( oUser.sError ) {
-				async.resolve( "Could not load user info", oUser );
-			}
-			else if( oGroups.sError ) {
-				async.resolve( "Could not load users group info", oGroups );
-			}
-			else {
-				that.aInfo = {
-					  id : oUser.get_id()
-					, sLogin : oUser.get_loginName()
-					, mail : oUser.get_email()
-					, bAdmin : oUser.get_isSiteAdmin()
-					, lsGroups : []
-					, bLoaded : false
-				}
-				var loGroups = oGroups.getEnumerator();
-				while( loGroups.moveNext() ) {
-					var oGroup= loGroups.get_current();
-					that.aInfo.lsGroups.push( oGroup.get_title() );
-				}
-				async.resolve( { aUserInfo : that.aInfo } );
-			}
-		} );
-	}
-	SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
-		SP.SOD.executeFunc('userprofile', 'SP.UserProfiles.PeopleManager', function() {
-			_getCurrentUserInfo();
-		} )
-	} )
+	xml += '/>';
+	xml += '&lt;/CommandUIHandlers>';
+	xml += '&lt;/CommandUIExtension>';
+	oIcon.set_commandUIExtension( xml );
+	oIcon.update();
+	ctx.load( oList, "UserCustomActions" );
+	__.SP.exec( ctx, oList, function( oList ) {
+		if( oList.sError ) {
+			async.reject();
+		}
+		else {
+			async.resolve();
+		}
+	} );
 };
-
-__.SP.user.current();
-
-console.log( __.SP.user )
 </code></pre>
         </article>
     </section>

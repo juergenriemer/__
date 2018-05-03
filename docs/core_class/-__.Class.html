@@ -94,7 +94,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Class.js.html">__.Class.js</a>, <a href="-__.Class.js.html#line15">line 15</a>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line15">line 15</a>
     </li></ul></dd>
     
 
@@ -126,6 +126,152 @@ h4.name span {
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".extend"><span class="type-signature">(static) </span>extend<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a new class by extending from the base class (__.Class) or
+inheriting from an existing class.<br>
+If the class has a method called "init" it will invoke it on creation of an instace.<br>
+In case of inheritance you can call a parent's method by using the "_super" method.<br>
+Static attributes and methods are created by appending to the class constructor function.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    class object to chain loading of mixins
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>// a base class
+var Person = __.Class.extend( {
+     sName : null
+   , init : function( args ) {
+        this.sName = args.sName;
+        Person.cPerson++;
+   }
+   , say : function() {
+      return "My name is " + this.sName;
+   }
+} );
+// static attribute
+Person.cPerson = 0
+// static function
+Person.report = function() {
+    return Person.cPerson + " person(s) created";
+}
+var tom = __.Class.instantiate( Person, { sName : "Tom" } );
+tom.say(); // "My name is Tom"
+Person.report(); // "1 person(s) created"</code></pre>
+
+    <pre class="prettyprint"><code>// an extended class
+var Soldier = Person.extend( {
+   salute : function() {
+      return this.say() + ", Sir";
+   }
+} );
+var tom = __.Class.instantiate( Soldier, { sName : "Major Tom" } );
+tom.salute(); // "My name is Major Tom, Sir"
+Person.report(); // "2 person(s) created"</code></pre>
+
+
 
         
             
@@ -402,6 +548,129 @@ tim.say(); // Hi, I am Tim</code></pre>
     
 
     
+    <h4 class="name" id=".instantiate"><span class="type-signature">(static) </span>instantiate<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a new instance of a class.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line168">line 168</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    instance of a class object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>Person = __.Class.extend( {
+     sName : null
+   , init : function( args ) {
+      this.sName = args.sName;
+}
+   , say : function() {
+      return "Hi, I am " + this.sName;
+   }
+} );
+tim = __.Class.instantiate( Person, { sName : "Tim" } );
+tim.say(); // Hi, I am Tim</code></pre>
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id=".mixin"><span class="type-signature">(static) </span>mixin<span class="signature">(objects)</span><span class="type-signature"></span></h4>
     
 
@@ -507,6 +776,173 @@ method or attribute names.
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="-__.Class.js.html">__.Class.js</a>, <a href="-__.Class.js.html#line116">line 116</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var Minecraft = {
+      say : function() {
+        return "Mojang";
+    }
+    , craft : function() {
+        return "wooden sword";
+    }
+};
+var Ingress = {
+      say : function() {
+        return "Ingress";
+    }
+    , capture : function() {
+        return "portal green";
+    }
+};
+var Player = __.Class.extend( {
+    say : function() {
+       return "Hi";
+    }
+}).mixin( Minecraft, Ingress );
+var player = __.Class.instantiate( Player );
+player.say(); // Hi
+player.craft(); // wooden sword
+player.capture(); // portal green</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".mixin"><span class="type-signature">(static) </span>mixin<span class="signature">(objects)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Mixes in additional behaviour to the class. It expects plain objects in the
+arguments (Other class objects cannot be mixed in).
+Mixin object members will not overwrite class members in case of same
+method or attribute names.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>objects</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Any number of objects to be mixed in.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -728,6 +1164,1466 @@ player.say(); // "Hi, Teammate"</code></pre>
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="_super"><span class="type-signature"></span>_super<span class="signature">(sMethod<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Provides a hook into the parent's object to call the overridden (super) method.<br />
+NB: Since we use callee/caller this will not work in xtrict mode.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sMethod</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Name of the parent method</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var Person = __.Class.extend( {
+   say : function() {
+      return "Hi";
+   }
+} );
+var Player = Person.extend( {
+   say : function() {
+      return this._super( "say" ) + ", Teammate";
+   }
+} );
+var player = __.Class.instantiate( Player );
+player.say(); // "Hi, Teammate"</code></pre>
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="-__.html">__</a>.</span>Class</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.Class.js.html">__.Class.js</a>, <a href="-__.Class.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".extend"><span class="type-signature">(static) </span>extend<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a new class by extending from the base class (__.Class) or
+inheriting from an existing class.<br>
+If the class has a method called "init" it will invoke it on creation of an instace.<br>
+In case of inheritance you can call a parent's method by using the "_super" method.<br>
+Static attributes and methods are created by appending to the class constructor function.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    class object to chain loading of mixins
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>// a base class
+var Person = __.Class.extend( {
+     sName : null
+   , init : function( args ) {
+        this.sName = args.sName;
+        Person.cPerson++;
+   }
+   , say : function() {
+      return "My name is " + this.sName;
+   }
+} );
+// static attribute
+Person.cPerson = 0
+// static function
+Person.report = function() {
+    return Person.cPerson + " person(s) created";
+}
+var tom = __.Class.instantiate( Person, { sName : "Tom" } );
+tom.say(); // "My name is Tom"
+Person.report(); // "1 person(s) created"</code></pre>
+
+    <pre class="prettyprint"><code>// an extended class
+var Soldier = Person.extend( {
+   salute : function() {
+      return this.say() + ", Sir";
+   }
+} );
+var tom = __.Class.instantiate( Soldier, { sName : "Major Tom" } );
+tom.salute(); // "My name is Major Tom, Sir"
+Person.report(); // "2 person(s) created"</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".extend"><span class="type-signature">(static) </span>extend<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a new class by extending from the base class (__.Class) or
+inheriting from an existing class.<br>
+If the class has a method called "init" it will invoke it on creation of an instace.<br>
+In case of inheritance you can call a parent's method by using the "_super" method.<br>
+Static attributes and methods are created by appending to the class constructor function.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.Class.js.html">__.Class.js</a>, <a href="-__.Class.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    class object to chain loading of mixins
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>// a base class
+var Person = __.Class.extend( {
+     sName : null
+   , init : function( args ) {
+        this.sName = args.sName;
+        Person.cPerson++;
+   }
+   , say : function() {
+      return "My name is " + this.sName;
+   }
+} );
+// static attribute
+Person.cPerson = 0
+// static function
+Person.report = function() {
+    return Person.cPerson + " person(s) created";
+}
+var tom = __.Class.instantiate( Person, { sName : "Tom" } );
+tom.say(); // "My name is Tom"
+Person.report(); // "1 person(s) created"</code></pre>
+
+    <pre class="prettyprint"><code>// an extended class
+var Soldier = Person.extend( {
+   salute : function() {
+      return this.say() + ", Sir";
+   }
+} );
+var tom = __.Class.instantiate( Soldier, { sName : "Major Tom" } );
+tom.salute(); // "My name is Major Tom, Sir"
+Person.report(); // "2 person(s) created"</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".instantiate"><span class="type-signature">(static) </span>instantiate<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a new instance of a class.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.Class.js.html">__.Class.js</a>, <a href="-__.Class.js.html#line168">line 168</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    instance of a class object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>Person = __.Class.extend( {
+     sName : null
+   , init : function( args ) {
+      this.sName = args.sName;
+}
+   , say : function() {
+      return "Hi, I am " + this.sName;
+   }
+} );
+tim = __.Class.instantiate( Person, { sName : "Tim" } );
+tim.say(); // Hi, I am Tim</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".instantiate"><span class="type-signature">(static) </span>instantiate<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a new instance of a class.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line168">line 168</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    instance of a class object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>Person = __.Class.extend( {
+     sName : null
+   , init : function( args ) {
+      this.sName = args.sName;
+}
+   , say : function() {
+      return "Hi, I am " + this.sName;
+   }
+} );
+tim = __.Class.instantiate( Person, { sName : "Tim" } );
+tim.say(); // Hi, I am Tim</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".mixin"><span class="type-signature">(static) </span>mixin<span class="signature">(objects)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Mixes in additional behaviour to the class. It expects plain objects in the
+arguments (Other class objects cannot be mixed in).
+Mixin object members will not overwrite class members in case of same
+method or attribute names.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>objects</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Any number of objects to be mixed in.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.Class.js.html">__.Class.js</a>, <a href="-__.Class.js.html#line116">line 116</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var Minecraft = {
+      say : function() {
+        return "Mojang";
+    }
+    , craft : function() {
+        return "wooden sword";
+    }
+};
+var Ingress = {
+      say : function() {
+        return "Ingress";
+    }
+    , capture : function() {
+        return "portal green";
+    }
+};
+var Player = __.Class.extend( {
+    say : function() {
+       return "Hi";
+    }
+}).mixin( Minecraft, Ingress );
+var player = __.Class.instantiate( Player );
+player.say(); // Hi
+player.craft(); // wooden sword
+player.capture(); // portal green</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".mixin"><span class="type-signature">(static) </span>mixin<span class="signature">(objects)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Mixes in additional behaviour to the class. It expects plain objects in the
+arguments (Other class objects cannot be mixed in).
+Mixin object members will not overwrite class members in case of same
+method or attribute names.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>objects</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Any number of objects to be mixed in.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line116">line 116</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var Minecraft = {
+      say : function() {
+        return "Mojang";
+    }
+    , craft : function() {
+        return "wooden sword";
+    }
+};
+var Ingress = {
+      say : function() {
+        return "Ingress";
+    }
+    , capture : function() {
+        return "portal green";
+    }
+};
+var Player = __.Class.extend( {
+    say : function() {
+       return "Hi";
+    }
+}).mixin( Minecraft, Ingress );
+var player = __.Class.instantiate( Player );
+player.say(); // Hi
+player.craft(); // wooden sword
+player.capture(); // portal green</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="_super"><span class="type-signature"></span>_super<span class="signature">(sMethod<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Provides a hook into the parent's object to call the overridden (super) method.<br />
+NB: Since we use callee/caller this will not work in xtrict mode.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sMethod</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Name of the parent method</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.Class.js.html">__.Class.js</a>, <a href="-__.Class.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var Person = __.Class.extend( {
+   say : function() {
+      return "Hi";
+   }
+} );
+var Player = Person.extend( {
+   say : function() {
+      return this._super( "say" ) + ", Teammate";
+   }
+} );
+var player = __.Class.instantiate( Player );
+player.say(); // "Hi, Teammate"</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="_super"><span class="type-signature"></span>_super<span class="signature">(sMethod<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Provides a hook into the parent's object to call the overridden (super) method.<br />
+NB: Since we use callee/caller this will not work in xtrict mode.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sMethod</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Name of the parent method</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.class.min.js.html">__.class.min.js</a>, <a href="-__.class.min.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var Person = __.Class.extend( {
+   say : function() {
+      return "Hi";
+   }
+} );
+var Player = Person.extend( {
+   say : function() {
+      return this._super( "say" ) + ", Teammate";
+   }
+} );
+var player = __.Class.instantiate( Player );
+player.say(); // "Hi, Teammate"</code></pre>
+
+
+
+        
     
 
     
@@ -793,7 +2689,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 27 2018 06:55:10 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 03 2018 08:05:25 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
