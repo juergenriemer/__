@@ -9,6 +9,12 @@ this.__show = function() {}
 this.__cbScroll = function() {}
 
 /**
+ * Provides methods that operate on DOM nodes 
+ * @namespace Node
+ */
+
+
+/**
  * Takes a CSS selector string and queries the DOM for matching nodes. If not used as node method it will assume document.body.
  * <br>
  * It returns a single DOM node if just one node was found.
