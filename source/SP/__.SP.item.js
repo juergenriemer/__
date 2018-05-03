@@ -11,14 +11,18 @@
 
 __.SP.item = {
 	/**
-	 * Creates an item in a list
+	 * Creates an item in a list with a set of key/value pairs.
+	 * NB: The method is incomplete and does not cater for all possible 
+	 * field types.
 	 * @memberof __.SP.item
 	 * @method create
 	 * @example
 	 * __.SP.item.create( {
 	 * 	  sList : "Shared Documents"
-	 *	, lsFields : [ "Title", "ID" ]
-	 *	, xmlQuery : "<Query><Where><FieldRef Name='ID' /><Lt><Value Type='Number'>5</Value></Lt></Where></Query>"
+	 *	, kv : {
+	 *             Title : "new item"
+	 *           , Description : "a new item"
+	 *      } 
 	 * } );
 	 * @param {Object} args a parameter object holding the following values
 	 * @param {String} args.sList name or guid of a list
@@ -30,9 +34,6 @@ __.SP.item = {
 	 * <pre class='return-object'>
 	 * lkv | (Object) | array of key value pairs
 	 * </pre>
-	 */
-	/** 
-	 * Create an item.
 	 */
 	  create : function( args ) { // sList, kv
 		var async = __.Async.promise( args );

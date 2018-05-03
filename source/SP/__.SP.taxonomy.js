@@ -1,10 +1,30 @@
-__.SP.taxonomy = {
-	  aTerms : {} // holds loaded taxonomies
-	, oTermInfo : null // holds all used taxonomy terms
-};
+/**
+ * @namespace __.SP.taxonomy
+ * @memberof __.SP
+ */
 
-// __.SP.taxonomy.setTermInForm( { sField : "Country", sTerm : "Albania", guid : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78" } );
-__.SP.taxonomy.setTermInForm = function( args ) { // sField, sTerm, guid
+__.SP.taxonomy = {};
+// holds loaded taxonomies
+__.SP.taxonomy.aTerms = {};
+// holds all used taxonomy terms
+__.SP.taxonomy.oTermInfo = null;
+
+/**
+ * Sets a taxonomy term in an add or edit form.
+ * @memberof __.SP.taxonomy
+ * @method setTermInForm
+ * @instance
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sField name of the list's field
+ * @param {String} args.sTerm name of the taxonomy term
+ * @param {String} args.guid guid of the taxonomy term
+ * @example __.SP.taxonomy.setTermInForm( {
+ *	  sField : "Country"
+ *	, sTerm : "Albania"
+ *	, guid : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+ * } );
+ */
+__.SP.taxonomy.setTermInForm = function( args ) {
 	var h;
 	if( args.guid ) {
 		var v = args.sTerm + "|" + args.guid;
@@ -20,14 +40,27 @@ __.SP.taxonomy.setTermInForm = function( args ) { // sField, sTerm, guid
 }
 
 
+/**
+ * Loads the hidden taxonomy term list for the current site with their site IDs, guid and names.<br>
+ * It store them in a data object "__.SP.taxonomy.oTermInfo" using the internal ID as key.
+ * @memberof __.SP.taxonomy
+ * @method getTermIds
+ * @async
+ * @instance
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sField name of the list's field
+ * @param {String} args.sTerm name of the taxonomy term
+ * @param {String} args.guid guid of the taxonomy term
+ * @example __.SP.taxonomy.getTermIds();
+ */
 __.SP.taxonomy.getTermIds = function( args ) {
 	var async = __.Async.promise( args );
+	// if we already loaded the term list we resolve
 	if( __.SP.taxonomy.oTermInfo ) {
-		console.log( 'fresh from cache' );
 		async.resolve();
 		return;
 	}
-	console.log( "LOADDDDDDDDDDDDDDDDD" );
+	// otherwise we read the term list
 	async.then( __.SP.list, "read", {
 		  sList : "TaxonomyHiddenList"
 		, lsFields : [ "IdForTerm", "ID", "Title" ]
@@ -46,21 +79,35 @@ __.SP.taxonomy.getTermIds = function( args ) {
 	async.resolve();
 }
 
-// __.SP.taxonomy.getTerm( 1 ).sName;
-__.SP.taxonomy.termInfo = function( x ) { // x can be either of the follow three: ID, GUID or TERM NAME
+/**
+ * Reads term info from the site's hidden taxonomy list.
+ * @memberof __.SP.taxonomy
+ * @method termInfo
+ * @instance
+ * @param {Number|String} id_or_guid_or_name Either the ID, the guid or the name of a taxonomy term.
+ * @example __.SP.taxonomy.termInfo( "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+);
+ * @returns {Object} data object of the term
+ * <pre class='return-object'>
+ * id | (Number) | internal ID of the term
+ * guid | (String) | guid of the term
+ * sName | (String) | name of the term
+ * </pre>
+ */
+__.SP.taxonomy.termInfo = function( id_or_guid_or_name ) {
 	// in case of index we return immediately for this is the
 	// key of the term info object
-	if( typeof x == "number" ) {
-		return __.SP.taxonomy.oTermInfo[ x ] || null;
+	if( typeof id_or_guid_or_name == "number" ) {
+		return __.SP.taxonomy.oTermInfo[ id_or_guid_or_name ] || null;
 	}
 	// now lets check if input is term name or its guid and
 	// assign the proper key
-	var k = ( __.SP.bGuid( x ) ) ? "guid" : "sName";
+	var k = ( __.SP.bGuid( id_or_guid_or_name ) ) ? "guid" : "sName";
 	// then iterate through the term object and look for the
 	// machting entry
 	for( var id in __.SP.taxonomy.oTermInfo ) {
 		var aTermInfo = __.SP.taxonomy.oTermInfo[ id ];
-		if( aTermInfo[ k ] === x ) {
+		if( aTermInfo[ k ] === id_or_guid_or_name ) {
 			// and send back if found
 			return aTermInfo;
 		}
@@ -69,8 +116,32 @@ __.SP.taxonomy.termInfo = function( x ) { // x can be either of the follow three
 	return null;
 }
 
-// __.SP.taxonomy.load( { sTermSet : O$C3.Tax.guidTermSet.MainCategory } )
-// cons it:  __.SP.taxonomy.aTerms[ O$C3.Tax.guidTermSet.MainCategory ] );
+/**
+ * Loads an entire taxonomy and creates structures for easy lookup by name,
+ * guid and labels (i.e. synonyms).<br>
+ * It also creates a linked list for parent/children relationships.
+ * It returns the lookup objects as well as stores them into the data 
+ * object "__.SP.taxonomy.aTerms" for later reference
+ * @memberof __.SP.taxonomy
+ * @method load
+ * @async
+ * @instance
+ * @todo rename sTermSet to guidTermset
+ * @todo create object definition of lookup object
+ * @example __.SP.taxonomy.load( {
+ * 	sTermSet : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sTermSet guid of the term set
+ * @param {String} [args.sTermStore] name of term store (default is "Managed Metadata Service")
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * aTerms | (Object) | lookup table for term names
+ * aGuids | (Object) | lookup table for term guids
+ * aLabels | (Object) | lookup table for term labels
+ * aChildren | (Object) | lookup table for parent/children relationship
+ * </pre>
+ */
 __.SP.taxonomy.load = function( args ) {
 	var async = __.Async.promise( args );
 	// first check if we already loaded the taxonomy
@@ -146,7 +217,6 @@ __.SP.taxonomy.load = function( args ) {
 							, aLabels : aLabels
 							, aChildren : aChildren
 						}
-						console.log( "!!!!!!!!!!!!!!!! LOADED" );
 						__.SP.taxonomy.aTerms[ args.sTermSet ] = aResult;
 						async.resolve( { oTerms : aResult } );
 					}
@@ -157,8 +227,22 @@ __.SP.taxonomy.load = function( args ) {
 	} );
 };
 
-// __.SP.taxonomy.children( { idTermSet : O$C3.Tax.guidTermSet.MainCategory, idParent : "13a5103e-ee20-44ce-a164-35943e9df08e" } )
-__.SP.taxonomy.children = function( args ) { // idTermSet, idParent
+/**
+ * Retrieves all children term guids for a given parent term of a term set.
+ * NB: The taxonomy needs to be loaded beforehand.
+ * @memberof __.SP.taxonomy
+ * @method children
+ * @instance
+ * @todo rename idTermSet and idParent to guidTermset and guidParent
+ * @example __.SP.taxonomy.children( {
+ * 	  idTermSet : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+ * 	, idParent : "13a5103e-ee20-44ce-a164-35943e9df08e"
+ * } );
+ * @param {String} idTermSet guid of the term set
+ * @param {String} idParent guid of the parent term
+ * @returns {Array} array of guids of all children terms
+ */
+__.SP.taxonomy.children = function( args ) {
 	var oStore = __.SP.taxonomy.aTerms[ args.idTermSet ];
 	var l = [];
 	var add = function( id ) {
@@ -177,7 +261,22 @@ __.SP.taxonomy.children = function( args ) { // idTermSet, idParent
 	return lid;
 };
 
-//__.SP.taxonomy.addTerm( { lsTerms : [ "Neverland", "Oz" ] ,  sTermSet : O$C3.Tax.guidTermSet.Country } )
+/**
+ * Adds a term to a term set.
+ * <br>NB: it only adds them on the first level (only root nodes).
+ * @memberof __.SP.taxonomy
+ * @method addTerm
+ * @async
+ * @instance
+ * @todo rename sTermSet to guidTermset
+ * @example __.SP.taxonomy.addTerm( {
+ * 	  lsTerms : [ "Neverland", "Oz" ]
+ * 	, sTermSet : "40690fe5-fd6d-4c27-bb52-b0d60a9e7d78"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.lsTerms Array of the terms to be added.
+ * @param {String} args.sTermSet guid of the term set
+ */
 __.SP.taxonomy.addTerm = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -190,7 +289,6 @@ __.SP.taxonomy.addTerm = function( args ) {
 	} );
 	ctx.load( oSet );
 	__.SP.exec( ctx, oSet, function( oSet ) {
-		console.log( oSet );
 		if( oSet.sError ) {
 			async.reject( oSet.sError );
 		}
@@ -199,10 +297,4 @@ __.SP.taxonomy.addTerm = function( args ) {
 		}
 	} );
 }
-
-__.SP.taxonomy.search = function( args ) {
-};
-
-__.SP.taxonomy.search = function( args ) {
-};
 

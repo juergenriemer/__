@@ -1,5 +1,32 @@
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @js_externs var __; __.SP; __.SP.webpart; __.SP.webpart.settings; 
+// ==/ClosureCompiler==
+
+
+/**
+ * @namespace __.SP.webpart
+ * @memberof __.SP
+ */
 __.SP.webpart = {
-	/** 
+	/**
+	 * Updates settings of a webpart.
+	 * @memberof __.SP.webpart
+	 * @method settings
+	 * @todo complete example
+	 * @todo provide list of properties available
+	 * @example
+	 * __.SP.item.create( {
+	 * 	  path : "path to aspx page?"
+	 *	, ixWP : 2
+	 *	, kv : {
+	 * 		JSLink? : "path/to/jslink"
+	 * 	}
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.path path to aspx page holding the webpart
+	 * @param {Number} [args.ixWP] index of webpart if page has multiple (default is: 0)
+	 * @param {String} [args.kv] key/value pairs of properties to update
 	 */
 	  settings : function( args ) { // path, ixWP, kv
 		var async = __.Async.promise( args );
@@ -38,7 +65,6 @@ __.SP.webpart = {
 									async.reject( o.sError );
 								}
 								else {
-									//async.resolve( oProp.get_item( k ) );
 									async.resolve();
 								}
 							} );

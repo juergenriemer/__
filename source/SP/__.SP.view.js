@@ -1,5 +1,32 @@
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @js_externs var __; __.SP; __.SP.view; 
+// ==/ClosureCompiler==
+
+
+/**
+ * @namespace __.SP.view
+ * @memberof __.SP
+ */
 __.SP.view = {};
-// __.SP.view.list( { sList:"OSCE Contacts"} );
+
+/**
+ * Get all views of a list.
+ * @memberof __.SP.view
+ * @method list
+ * @instance
+ * @async
+ * @example
+ * __.SP.view.list( {
+ *     sList : "OSCE Contacts"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * lsViews | (Array) | array of view names
+ * </pre>
+ */
 __.SP.view.list = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -22,8 +49,32 @@ __.SP.view.list = function( args ) {
 	} );
 }
 
-// __.SP.view.read( { sList : "OSCE Contacts", sView : "OSG Contacts" } );
-// sends back guid, fields, url, rows, query
+/**
+ * Get information on a particular view.
+ * @memberof __.SP.view
+ * @method read
+ * @instance
+ * @async
+ * @example
+ * __.SP.view.read( {
+ *       sList : "OSCE Contacts"
+ *     , sView : "All items"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.sView name of the view
+ * @returns {Object} Resolved promise holding the following values 
+ * <pre class='return-object'>
+ * kv | (Object) | key/value pair of properties
+ * kv.guid | (String) | guid of the view
+ * kv.lsFields | (Array) | array of fields shown in the view
+ * kv.urlJSLink | (String) | url to the jsLink file
+ * kv.nRows | (Number) | number of rows displayed
+ * kv.bPaging | (String) | flag indicating whether the view has pagination
+ * kv.sTotal | (String) | name of field for which totals are generated (NB: only one, the first field is returned ATM)
+ * kv.xmlQuery | (String) | CAML Query of the view
+ * </pre>
+ */
 __.SP.view.read = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -66,7 +117,23 @@ __.SP.view.read = function( args ) {
 	} );
 }
 
-// __.SP.view.deleteFields( { sList : "OSCE Contacts", sView : "All contacts", lsFields : ["Company"] } );
+/**
+ * Deletes fields displayed in a view
+ * @memberof __.SP.view
+ * @method deleteFields
+ * @instance
+ * @async
+ * @example
+ * __.SP.view.deleteFields( {
+ *       sList : "OSCE Contacts"
+ *     , sView : "All items"
+ *     , lsFields : [ "Title", "ID" ]
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.sView name of the view
+ * @param {Array} args.lsFields array of field names to be removed from the view's display
+ */
 __.SP.view.deleteFields = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -102,11 +169,36 @@ __.SP.view.deleteFields = function( args ) {
 	} );
 }
 // __.SP.view.add( { sList:"OSCE Contacts",sView:"test_me",lsFields:["Title","Country","Company"],xmlQuery:'<OrderBy><FieldRef Name="Title" /></OrderBy><Where><Eq><FieldRef Name="FrontOffice" /><Value Type="Text">OCEEA</Value></Eq></Where>'} );
-__.SP.view.add = function( args ) { // sList, sView, xmlQuery, bPublic, jsLink, lsFields
+/**
+ * Adds a new view to a list
+ * @memberof __.SP.view
+ * @instance
+ * @async
+ * @method add
+ * @example
+ * __.SP.view.deleteFields( {
+ *       sList : "OSCE Contacts"
+ *     , sView : "All items"
+ *     , lsFields : [ "Title", "ID" ]
+ *     , xmlQuery : '<OrderBy><FieldRef Name="Title" /></OrderBy><Where><Eq><FieldRef Name="Title" /><Value Type="Text">Hi Mom</Value></Eq></Where>'
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.sView name of the view
+ * @param {Array} args.lsFields array of field names to be displayed in the view
+ * @param {String} [args.sTotal] field name for which totals should be displayed (NB: ATM only one field is supported)
+ * @param {String} [args.jsLink] URL of a JSLink file to be loaded with this view.
+ * @param {Boolean} [args.bPublic] flag whether the view is public or personal (default is false/personal)
+ * @param {Boolean} [args.bDefaultView] flag whether the view is set to be default (default is false)
+ * @param {Number} [args.nRows] number of items to be shown on one page (default is 10)
+ * @param {Boolean} [args.bPaging] flag whether the view shows pagination (default is false)
+ */
+__.SP.view.add = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oViews = oList.get_views();
+	// REF: refactor bPersonal.. its confusing
 	var bPersonal = ( args.bPublic ) ? false : true;
 	ctx.load( oViews );
 	__.SP.exec( ctx, oViews, function( oViews ) {
@@ -183,7 +275,22 @@ __.SP.view.add = function( args ) { // sList, sView, xmlQuery, bPublic, jsLink, 
 	} );
 };
 
-// __.SP.view.del( { sList : "OSCE Contacts", sView : "test_me" } );
+/**
+ * Deletes a view from a list
+ * @memberof __.SP.view
+ * @method del
+ * @instance
+ * @async
+ * @todo rename to remove
+ * @example
+ * __.SP.view.del( {
+ *       sList : "OSCE Contacts"
+ *     , sView : "All Items"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.sView name of the view
+ */
 __.SP.view.del = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
@@ -207,8 +314,27 @@ __.SP.view.del = function( args ) {
 	} );
 };
 
-// __.SP.view.update({ sList:"OSCE Contacts", sView: "b", jsLink : "~sitecollection/SiteAssets/list_view.js?v=1" } )
-__.SP.view.update = function( args ) { // sList, sView, [jsLink], xmlQuery, lsfields, sTotal
+/**
+ * Updates properties of a view
+ * @memberof __.SP.view
+ * @method update
+ * @instance
+ * @async
+ * @example
+ * __.SP.view.update( {
+ *       sList : "OSCE Contacts"
+ *     , sView : "All Items"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.sView name of the view
+ * @param {String} [args.xmlQuery] CAML of the view
+ * @param {String} [args.jsLink] Url of a JS Link file
+ * @param {Number} [args.nRows] number of items shown in one result page
+ * @param {String} [args.sTotal] name of field that should be counted
+ * @param {Array} [args.lsFields] array of fields that should be displayed
+ */
+__.SP.view.update = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
@@ -235,7 +361,7 @@ __.SP.view.update = function( args ) { // sList, sView, [jsLink], xmlQuery, lsfi
 	ctx.load( oFields );
 	__.SP.exec( ctx, oView, function( oView ) {
 		if( oView.sError ) {
-			async.reject( oView );
+			async.reject( oView.sError );
 		}
 		else {
 			if( args.lsFields ) {
@@ -255,22 +381,38 @@ __.SP.view.update = function( args ) { // sList, sView, [jsLink], xmlQuery, lsfi
 				ctx.load( oFields );
 				__.SP.exec( ctx, oFields, function( oFields ) {
 					if( oView.sError ) {
-						async.reject( oFields );
+						async.reject( oFields.sError );
 					}
 					else {
-						async.resolve( oFields );
+						async.resolve();
 					}
 				} );
 			}
 			else {
-				async.resolve( oView );
+				async.resolve();
 			}
 		}
 	} );
 }
 
-// __.SP.view.copy({ sList:"OSCE Contacts", sOldView: "OSG Contacts", sNewView : "xxx" } );
-__.SP.view.copy = function( args ) { // sList, sOldView, sNewView
+/**
+ * Copies an existing view under a new name
+ * @memberof __.SP.view
+ * @method copy
+ * @instance
+ * @async
+ * @example
+ * __.SP.view.update( {
+ *       sList : "OSCE Contacts"
+ *     , sOldView : "All Items"
+ *     , sNewView : "All Items Two"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.sOldView name of the existing view
+ * @param {String} args.sNewView name of the new view
+ */
+__.SP.view.copy = function( args ) {
 	var async = __.Async.promise( args );
 	var ctx = __.SP.ctx();
 	var oList = __.SP.list.get( ctx, args.sList );
@@ -290,7 +432,7 @@ __.SP.view.copy = function( args ) { // sList, sOldView, sNewView
 					async.reject( oView );
 				}
 				else {
-					async.resolve( oView );
+					async.resolve();
 				}
 			} );
 		}
