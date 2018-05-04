@@ -36,12 +36,16 @@ else {
 <div id="output"><h1>Unit test __.DOM.js</h1></div>
 
 <script>
-var dnResult = document.body.__find( "#result" );
+var dnResult = __find( "#result" );
+cAsserts = 0;
+bErrors = false;
 assert = function( h, eh, s ) {
+	cAsserts++;
 	if( h === eh ) {
 		sResult = "OK: " + s + "<br>";
 	}	
 	else {
+		bErrors = true;
 		sResult = "ERR: " + s + "<br>";
 		console.warn( "ERR: " + s );
 		console.warn( "actually", h );
@@ -50,7 +54,7 @@ assert = function( h, eh, s ) {
 	dnResult.innerHTML = sResult + dnResult.innerHTML; 
 }
 
-dnOutput = document.body.__find( "#output" );
+dnOutput = __find( "#output" );
 h = dnOutput.innerHTML;
 eh = "<h1>Unit test __.DOM.js</h1>";
 assert( h, eh, "__ (id)" );
@@ -77,7 +81,7 @@ var h = " \
 	</div> \
 ";
 
-var dnNavi = document.body.__append( h );
+var dnNavi = __append( h );
 var dnMenu = dnNavi[ 1 ];
 var dnFooter = dnNavi[ 2 ];
 
@@ -117,7 +121,7 @@ assert( dnActiveMenu.__closest( "div" ).id, "menu", "__closest (menu)" );
 var dnActiveFooter = dnFooter.__find( ".active" );
 assert( dnActiveFooter.__closest( "div" ).id, "footer", "__closest (footer)" );
 
-var dnLink = document.body.__find( "[href='#2_2']" );
+var dnLink = __find( "[href='#2_2']" );
 
 var bClass = dnLink.__closest( "li" ).classList.contains( "active" );
 assert( bClass, true, "__closest (li)" );
@@ -140,7 +144,7 @@ assert( dnMenu.style.display, "block", "dn.__show(block)" );
 
 // dn.__ix
 
-var dnFooterLink = document.body.__find( "[href='#f3']" );
+var dnFooterLink = __find( "[href='#f3']" );
 assert( dnFooterLink.__ix( dnFooterLink ), 2, "dn.__ix (dnFooterLink)" );
 
 assert( dnLink.__closest( "li" ).__ix(), 1, "dn.__ix (dnLink)" );
@@ -150,11 +154,11 @@ dnMenu.__x( "100" );
 dnMenu.__y( "200" );
 dnMenu.__dx( "400" );
 dnMenu.__dy( "400" );
-document.body.__css( "padding", 0 );
-document.body.__css( "margin", 0 );
-document.body.__css( "background", "#efefef" );
-assert( dnMenu.__x(), 100, "dn.__x (dnMenu)" );
-assert( dnMenu.__y(), 200, "dn.__y (dnMenu)" );
+__css( "padding", 0 );
+__css( "margin", 0 );
+__css( "background", "#efefef" );
+assert( dnMenu.__x(), 90, "dn.__x (dnMenu)" );
+assert( dnMenu.__y(), 190, "dn.__y (dnMenu)" );
 assert( dnMenu.__dx(), 400, "dn.__dx (dnMenu)" );
 assert( dnMenu.__dy(), 400, "dn.__dy (dnMenu)" );
 
@@ -167,19 +171,19 @@ assert( n, en, "__find (tagname)" );
 __.dn.each( dnNavi, function( dn ) {
 	dn.__remove();
 } )
-assert( document.body.__find( "#menu" ), null, "__.dn.each/del (menu)" );
-assert( document.body.__find( "#footer" ), null, "__.dn.each/del (footer)" );
+assert( __find( "#menu" ), null, "__.dn.each/del (menu)" );
+assert( __find( "#footer" ), null, "__.dn.each/del (footer)" );
 
 
-dnH1 = document.body.__find( "h1" );
+dnH1 = __find( "h1" );
 s = dnH1.innerHTML;
 es = "Unit test __.DOM.js";
 assert( s, es, "__find (tagname)" );
 
 // create/move in document body 
 
-//var dnTop = document.body.prepend( "<div>prepend</div>" );
-// does not return node! var dnSani = document.body.__prepend( "<div id='sani'>xxx</div>" );
+//var dnTop = prepend( "<div>prepend</div>" );
+// does not return node! var dnSani = __prepend( "<div id='sani'>xxx</div>" );
 
 //var dnBottom = __append( "<div>prepend</div>" );
 
@@ -206,7 +210,7 @@ eh = '<b>prepend</b><i>before</i><h1>Unit test __.DOM.js</h1><i class="after">af
 assert( h, eh, "__after (string)" );
 
 // move 
-dnClass = document.body.__find( ".after" );
+dnClass = __find( ".after" );
 s = dnClass.textContent;
 es = "after";
 assert( s, es, "__find (classname)" );
@@ -232,7 +236,7 @@ eh = '<b>prepend</b><i>before</i><i class="after">after</i><h1>Unit test __.DOM.
 assert( h, eh, "__after (node)" );
 
 // add to document
-dnOutput_2 = document.body.__append( "<div><h1>output2</h1></div>" );
+dnOutput_2 = __append( "<div><h1>output2</h1></div>" );
 s = dnOutput_2.innerHTML;
 es = "<h1>output2</h1>";
 assert( s, es, "__append (to document)" );
@@ -260,8 +264,8 @@ eh = "<b>5</b><i>6</i><h1><b>3</b><i>4</i>output2<b>1</b><i>2</i></h1><b>7</b><i
 assert( h, eh, "__after (multiple string)" );
 
 // moving single dom node
-var dnTarget = document.body.__append( '<div><div class="inner"><b>middle</b></div></div>' );
-var dnMove = document.body.__append( "<b>MOVE</b>" );
+var dnTarget = __append( '<div><div class="inner"><b>middle</b></div></div>' );
+var dnMove = __append( "<b>MOVE</b>" );
 var dnInner = dnTarget.__find( ".inner" );
 
 dnInner.__before( dnMove );
@@ -287,9 +291,9 @@ assert( h, eh, "__after (single DOM node)" );
 // moving multiple dom nodes
 dnTarget.__remove();
 dnMove.__remove();
-var dnTarget = document.body.__append( '<div><div class="inner"><b>middle</b></div></div>' );
+var dnTarget = __append( '<div><div class="inner"><b>middle</b></div></div>' );
 
-var dnMove = document.body.__append( "<b>MOVE</b><i>YES</i>" );
+var dnMove = __append( "<b>MOVE</b><i>YES</i>" );
 var dnInner = dnTarget.__find( ".inner" );
 
 dnInner.__before( dnMove );
@@ -312,13 +316,13 @@ h = dnTarget.innerHTML;
 eh = '<div class="inner"><b>middle</b></div><b>MOVE</b><i>YES</i>';
 assert( h, eh, "__after (multiple DOM node)" );
 
-var dnScrollDiv = document.body.__find( "#xxx" );
+var dnScrollDiv = __find( "#xxx" );
 var dnScrollDivTop = dnScrollDiv.__find( ".top" );
 var dnScrollDivBottom = dnScrollDiv.__find( ".bottom" );
 
 setTimeout( function() {
-	document.body.__scrollTo( "top" );
-	document.body.__scrollTo( "left" );
+	__scrollTo( "top" );
+	__scrollTo( "left" );
 	dnScrollDiv.__scrollTo( "top" );
 	dnScrollDiv.__scrollTo( "left" );
 }, 0 );
@@ -399,7 +403,7 @@ setTimeout( function() {
 		assert( aInfo.bRight, false, "dn.__onScroll (window bottom-bRight)" );
 		document.__offScroll();
 	}, 5 );
-	document.body.__scrollTo( "bottom" );
+	__scrollTo( "bottom" );
 }, 1700 );
 setTimeout( function() {
 	document.__onScroll( function( aInfo ) {
@@ -409,7 +413,7 @@ setTimeout( function() {
 		assert( aInfo.bRight, false, "dn.__onScroll (window top-bRight)" );
 		document.__offScroll();
 	}, 5 );
-	document.body.__scrollTo( "top" );
+	__scrollTo( "top" );
 }, 1800 );
 setTimeout( function() {
 	document.__onScroll( function( aInfo ) {
@@ -419,7 +423,7 @@ setTimeout( function() {
 		assert( aInfo.bRight, true, "dn.__onScroll (window right-bRight)" );
 		document.__offScroll();
 	}, 5 );
-	document.body.__scrollTo( "right" );
+	__scrollTo( "right" );
 }, 1900);
 setTimeout( function() {
 	document.__onScroll( function( aInfo ) {
@@ -429,7 +433,7 @@ setTimeout( function() {
 		assert( aInfo.bRight, false, "dn.__onScroll (window left-bRight)" );
 		document.__offScroll();
 	}, 5 );
-	document.body.__scrollTo( "left" );
+	__scrollTo( "left" );
 }, 2000 );
 setTimeout( function() {
 	document.__onScroll( function( aInfo ) {
@@ -439,7 +443,7 @@ setTimeout( function() {
 		assert( aInfo.bRight, false, "dn.__onScroll (window x-bRight)" );
 		document.__offScroll();
 	}, 5 );
-	document.body.__scrollTo( "x", 10 );
+	__scrollTo( "x", 10 );
 }, 2100 );
 setTimeout( function() {
 	document.__onScroll( function( aInfo ) {
@@ -449,9 +453,26 @@ setTimeout( function() {
 		assert( aInfo.bRight, false, "dn.__onScroll (window y-bRight)" );
 		document.__offScroll();
 	}, 5 );
-	document.body.__scrollTo( "y", 10 );
+	__scrollTo( "y", 10 );
 }, 2200 );
 
+// __each 
+
+var sTags = "";
+__find( "div" ).__each( function( dn ) {
+	sTags += dn.tagName;
+} )
+assert( sTags, "DIVDIVDIVDIVDIVDIV", "dn.__each" );
+
+ecAsserts = 95
+setTimeout( function() {
+	if( cAsserts == ecAsserts && ! bErrors ) {
+		document.body.style.background = "green";
+	}		
+	else {
+		document.body.style.background = "red";
+	}
+}, 3000 );
 </script>
 </body>
 </html>

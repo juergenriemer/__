@@ -1,13 +1,15 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
-// @js_externs var __; __.SP; __.SP.view; 
+// @js_externs var __; __.SP; __.SP.view; __.SP.read; __.SP.deleteFields; __.SP.add; __.SP.del; __.SP.update; __.SP.copy;
 // ==/ClosureCompiler==
 
 
 /**
+ * Methods that deal with SharePoint list views
  * @namespace __.SP.view
  * @memberof __.SP
  */
+
 __.SP.view = {};
 
 /**

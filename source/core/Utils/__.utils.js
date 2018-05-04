@@ -1,17 +1,12 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @output_file_name __.utils.min.js
-// @js_externs var __toJson; var __compareTo; var __struc; var __remove; var __toString; var __; __.e; __.e.stop; __.utils; __.css; __.utils.dt; __.utils.dt.date; __.cookie; __.cookie.get; __.cookie.set; __.cookie.del; __.url; __.url.oParams; __.misc; __.misc.isIE;
+// @js_externs var __; __.e; __.e.stop; __.utils; __.css; __.utils.dt; __.utils.dt.date; __.cookie; __.cookie.get; __.cookie.set; __.cookie.del; __.url; __.url.oParams; __.misc; __.misc.isIE;
 // ==/ClosureCompiler==
 /**
  * @namespace __
  */
 
-this.__compareTo = function() {}
-this.__struc = function() {}
-this.__remove = function() {}
-this.__toString = function() {}
-this.__toJson = function() {}
 
 if( typeof __ == "undefined" ) {
 	__ = {};
@@ -169,7 +164,7 @@ Object.defineProperty( String.prototype, "__isUrl", {
  * Converts an object into a string
  * Uses JSON.stringify therefore returns null in case of circular references
  * @memberof Object
- * @method __toString()
+ * @method __toString
  * @example var o = { sName : "John", nAge : 44 }
  * var s = o.__toString();
  * @returns {string} String representation of the object.
@@ -206,9 +201,9 @@ Object.defineProperty( Object.prototype, "__struc", {
 			var _b = ( b && b.sort ) ? b.sort() : b;
 			return _a > _b;
 		};
-		var s = this.__toString();
+		var s = this[ "__toString" ]();
 		var nLength = s.length;
-		var _o = s.__toJson();
+		var _o = s[ "__toJson" ]();
 		if( _o && _o.sort ) {
 			_o.sort( presort ).sort();
 		}
@@ -248,7 +243,7 @@ Object.defineProperty( Object.prototype, "__struc", {
  */
 Object.defineProperty( Object.prototype, "__equal", {
 	value : function( oOther ) {
-		return this.__compareTo( oOther ).isEqual;
+		return this[ "__compareTo" ]( oOther ).isEqual;
 	}
 } );
 
@@ -267,8 +262,8 @@ Object.defineProperty( Object.prototype, "__compareTo", {
 	value : function( o2 ) {
 		var isEqual = true;
 		var ldiff = [];
-		var oStruc1 = this.__struc();
-		var oStruc2 = o2.__struc();
+		var oStruc1 = this[ "__struc" ]();
+		var oStruc2 = o2[ "__struc" ]();
 		if( oStruc1.nLength !== oStruc2.nLength ) {
 			ldiff.push( [ "length", ,oStruc1.nLength, oStruc2.nLength ] );
 			isEqual = false;
@@ -322,11 +317,11 @@ Object.defineProperty( Object.prototype, "__compareTo", {
  */
 Object.defineProperty( Object.prototype, "__diff", {
 	value : function( o2 ) {
-		var ldiff1 = this.__compareTo( o2 );
+		var ldiff1 = this[ "__compareTo" ]( o2 );
 		if( ldiff1.isEqual ) {
 			return null;
 		}
-		var ldiff2 = o2.__compareTo( this ); 
+		var ldiff2 = o2[ "__compareTo" ]( this ); 
 		return {
 			  "o1" : ldiff1.ldiff
 			, "o2" : ldiff2.ldiff
@@ -556,7 +551,7 @@ Object.defineProperty( Array.prototype, "__remove", {
 		var ix = this.indexOf( el );
 		if( ix > -1 ) {
 			this.splice( ix, 1 );
-			this.__remove( el );
+			this[ "__remove" ]( el );
 		}
 	}
 

@@ -12,13 +12,17 @@ else {
 <h3>Unit tests for __.Utils.js</h3>
 <div id="output"></div>
 <script>
-cOkAssert = 0;
-cErrAssert = 0;
+cAsserts = 0;
+bError = false;
+msCheck = 0;
+ecAsserts = 160; 
 assert = function( x1, x2, s ) {
+	cAsserts++;
 	var dn = document.getElementById( "output" );
 	var b = true;
 	if( x1 && typeof x1 == "object" && typeof s == "string" ) {
 		if( x1.__diff( x2 ) ) {
+			bError = true;
 			console.warn( 'ERR: ' + s );
 			console.warn( "expected:", x2 );
 			console.warn( "result:", x1 );
@@ -33,6 +37,7 @@ assert = function( x1, x2, s ) {
 	}
 	else {
 		if( x1 !== x2 ) {
+			bError = true;
 			console.warn( 'ERR: ' + s );
 			console.warn( "expected:", x2 );
 			console.warn( "result:", x1 );
@@ -44,6 +49,15 @@ assert = function( x1, x2, s ) {
 	}
 	dn.innerHTML += s + "<br>";
 }
+setTimeout( function() {
+	if( cAsserts == ecAsserts && ! bError ) {
+		document.body.style.background = "green";
+	}		
+	else {
+		document.body.style.background = "red";
+	}
+}, msCheck );
+
 // STRING
 
 // __.s.o
@@ -785,6 +799,7 @@ assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 6" )
 var o1 = [{a:1},[99,-1,"g"]];
 var o2 = [{a:1},["g",99,-1]];
 assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 7" )
+
 
 </script>
 </body>

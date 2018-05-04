@@ -1,12 +1,8 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
-// @output_file_name __.min.js
-// @js_externs var __hide; var __show; var __cbScroll; var __; __.dn; __.dn.each; __.dn._move; __.dn.move; __.dn.move_;
+// @output_file_name __.dom.min.js
+// @js_externs var __; __.dn; __.dn.each; __.dn._move; __.dn.move; __.dn.move_;
 // ==/ClosureCompiler==
-
-this.__hide = function() {}
-this.__show = function() {}
-this.__cbScroll = function() {}
 
 /**
  * Provides methods that operate on DOM nodes 
@@ -14,6 +10,14 @@ this.__cbScroll = function() {}
  */
 
 
+Object.defineProperty( Array.prototype, "__each", {
+	value : function( cb ) {
+		var cNodes = this.length;
+		for( var ix=0; ix<cNodes; ix++ ) {
+			cb( this[ ix ] );
+		}
+	}
+} );
 /**
  * Takes a CSS selector string and queries the DOM for matching nodes. If not used as node method it will assume document.body.
  * <br>
@@ -390,7 +394,7 @@ Object.defineProperty( Node.prototype, "__fadeOut", {
 		dn.style.opacity = dn.style.opacity || 1;
 		( function fader() {
 			if( ( dn.style.opacity -= nStep) < 0 ) {
-				dn.__hide();
+				dn[ "__hide" ]();
 				if( cb ) {
 					cb();
 				}
@@ -417,7 +421,7 @@ Object.defineProperty( Node.prototype, "__fadeIn", {
 		var cb = ( typeof cb == "function" ) ? ms : cb;
 		var nStep = 25 / ms;
 		dn.style.opacity = this.style.opacity || 0;
-		dn.__show();
+		dn[ "__show" ]();
 		( function fader() {
 			var n = Number( dn.style.opacity ) + nStep;
 			dn.style.opacity = n;
@@ -546,8 +550,8 @@ Object.defineProperty( Node.prototype, "__onScroll", {
 				} );
 			}, msInterval );
 		};
-		this.__cbScroll = cbScroll;
-		this.addEventListener( "scroll", this.__cbScroll );
+		this[ "__cbScroll" ] = cbScroll;
+		this.addEventListener( "scroll", this[ "__cbScroll" ] );
 	}
 } );
 
@@ -708,3 +712,26 @@ window[ "__find" ] = function( css, cb ) {
 	return document.body[ "__find" ]( css, cb );
 }
 
+window[ "__append" ] = function( h_or_dn, cb ) {
+	return document.body[ "__append" ]( h_or_dn, cb );
+}
+
+window[ "__prepend" ] = function( h_or_dn, cb ) {
+	return document.body[ "__prepend" ]( h_or_dn, cb );
+}
+
+window[ "__css" ] = function( k, v ) {
+	return document.body[ "__css" ]( k, v );
+}
+
+window[ "__scrollTo" ] = function( sPos, nPos ) {
+	document.body[ "__scrollTo" ]( sPos, nPos );
+}
+
+window[ "__onScroll" ] = function( cb, msInterval ) {
+	document.body[ "__onScroll" ]( cb, msInterval );
+}
+
+window[ "__offScroll" ] = function() {
+	document.body[ "__offScroll" ]();
+}
