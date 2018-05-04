@@ -311,4 +311,23 @@ __.SP.item = {
 	}
 };
 
+/*
+ *
+ var ctx = new SP.ClientContext.get_current();
+var oBooksList = ctx.get_web().get_lists().getByTitle('Actions');
+var oItem = oBooksList.getItemById(1);
+ctx.load(oItem, 'EffectiveBasePermissions' )
 
+    ctx.load(oItem);
+
+ ctx.executeQueryAsync(function(){
+        if (oItem.get_effectiveBasePermissions().has(SP.PermissionKind.editListItems)){
+            console.log("user has edit permission");
+        }else{
+             console.log("user doesn't have edit permission");
+        }   
+    }, function(sender, args){
+        console.log('request failed ' + args.get_message() + '\n'+ args.get_stackTrace());
+})
+
+*/

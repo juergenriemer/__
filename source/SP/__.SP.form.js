@@ -62,5 +62,4 @@ __.SP.form.getField = function( s_or_dn ) {
 			}
 		}
 	}
-}
 };

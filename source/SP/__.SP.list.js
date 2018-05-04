@@ -25,11 +25,10 @@ __.SP.list = {
 	  get : function( ctx, x ) {
 		var oList = null;
 		var oLists = ctx.get_web().get_lists();
-		if( /^{/.test( x ) ) {
-			var ls = x.match( /{(.*)}/ );
-			if( ls.length == 2 ) {
-				oList = oLists.getById( ls[ 1 ] );
-			}
+		// remove any curly brackets if present
+		x = x.replace( /{|}/g, "" )
+		if( __.SP.bGuid( x ) ) {
+			oList = oLists.getById( x );
 		}
 		else {
 			oList = oLists.getByTitle( x );
@@ -871,3 +870,29 @@ __.SP.list.field.setJsLink= function( args ) { // sList, [sField], urlJsLink
 		}
 	} );
 };
+
+
+/*
+ * get edir rights
+    var web,clientContext,currentUser,oList,perMask;
+
+    clientContext = new SP.ClientContext.get_current();
+    web = clientContext.get_web();
+    currentUser = web.get_currentUser();   
+    oList = web.get_lists().getByTitle('Actions');
+    clientContext.load(oList,'EffectiveBasePermissions');
+    clientContext.load(currentUser); 
+    clientContext.load(web);           
+
+    clientContext.executeQueryAsync(function(){
+        if (oList.get_effectiveBasePermissions().has(SP.PermissionKind.editListItems)){
+            console.log("user has edit permission");
+        }else{
+             console.log("user doesn't have edit permission");
+        }   
+    }, function(sender, args){
+        console.log('request failed ' + args.get_message() + '\n'+ args.get_stackTrace());
+    });
+
+
+*/
