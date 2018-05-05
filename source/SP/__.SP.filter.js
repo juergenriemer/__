@@ -1,3 +1,19 @@
+/**
+ * __.SP.Filter creates a new filter panel for a list.
+ * <br>By default it is rendered in the left panel next to the list view.
+ * <br>The user can perform filter searches, save them as personal views
+ * and control visibility of filter fields.
+ * @memberof __.SP
+ * @class __.SP.Filter
+ * @param {Object} args a parameter object holding the following values
+ * @property {String} args.sList name of list for which we want to create a filter
+ * @param {Array} args.loFields list of field objects {oField} that constitute the filter
+ * @property {Function}  [args.cbCreate] callback to be invoked when the filter gets created
+ * @property {Function}  [args.cbClear] callback to be invoked when the user clears the filter
+ * @property {String}  [args.defaultView] name of the default view
+ * @todo rename defaultView to sdftView;
+ * @example n/a
+ */
 __.SP.filter = {};
 __.SP.Filter = __.Class.extend( {
 	  dnRoot : null

@@ -1,20 +1,13 @@
 pathVS = "C:\\Users\\admin_jriemer\\Projects\\";
-pathBuilds = "..\\builds\\";
-pathDocs = "..\\docs\\";
-pathSource = "..\\source\\";
+pathBuilds = "../builds/";
+pathDocs = "../docs/jsdoc/";
+pathSource = "../source/";
 
 // -------------------------
 path = require('path');
 fs = require( "fs" );
 extend = require( "util" )._extend;
 const exec = require("child_process").exec
-exec( "dir", ( error, stdout, stderr ) => {
-	console.log( stdout );
-	console.log( stderr );
-	if( error !== null ) {
-		console.log( error );
-	}
-} );
 
 Compile = {
 	  x : 0
@@ -64,6 +57,30 @@ Compile = {
 		O$C3 = null;
 		return aAppInfo;
 	}
+	, createFolder : function( path ) {
+		if (!fs.existsSync(path)){
+			fs.mkdirSync(path);
+		}
+
+	}
+	, deleteFolder : function( path ) {
+		var that = this;
+		if (fs.existsSync(path)) {
+			fs.readdirSync(path).forEach(function(file, index){
+				var curPath = path + "/" + file;
+				if (fs.lstatSync(curPath).isDirectory()) { // recurse
+					that.deleteFolder(curPath);
+				} else { // delete file
+					fs.unlinkSync(curPath);
+				}
+			});
+			fs.rmdirSync(path);
+		}
+	}
+	, purgeFolder : function( path ) {
+		this.deleteFolder( path );
+		this.createFolder( path );
+	}
 	, write : function( path, sFileName, sContent ) {
 		fs.writeFileSync( path + sFileName , sContent );
 	}
@@ -77,14 +94,29 @@ Compile = {
 	, jsdoc : function( pathSource, pathDocs, sConfig ) {
 		var sCommand = "";
 		sCommand += "jsdoc " + pathSource;
+		sCommand += " -r ";
 		sCommand += " -c " + sConfig;
 		sCommand += " -d " + pathDocs;
 		console.log( sCommand );
+		exec( sCommand, ( error, stdout, stderr ) => {
+			if( stdout ) {
+				console.log( "OK", stdout );
+			}
+			if( stderr ) {
+				console.log( "SYSERR", stderr );
+			}
+			if( error !== null ) {
+				console.log( "ERR", error );
+			}
+		} );
 	//	cmd.run( sCommand );
 	}
 	, __ : function() {
-		this.jsdoc( this.pathSource, this.pathDocs, "config.json" );
+		//this.purgeFolder( pathSource );
+		this.jsdoc( pathSource + "/core", pathDocs + "/core", "config.json" );
+		this.jsdoc( pathSource + "/SP", pathDocs + "/SP", "config.json" );
 	}
 };
 
 Compile.__();
+
