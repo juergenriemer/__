@@ -99,7 +99,9 @@ __.SP.webservice = {
 		oAjax.onreadystatechange = function() {
 			var fnerr = function( oAjax, sError ) {
 				var sInfo = escape( oAjax.response );
-				var sError = "Error reported: " + ( oAjax.statusText );
+				var sError = ( oAjax.statusText )
+					? "Error reported: " + ( oAjax.statusText )
+					: "Network error happend";
 				var oResponse = oAjax.response.__toJson();
 				if( oResponse && oResponse.Message ) {
 					sError = oResponse.Message;

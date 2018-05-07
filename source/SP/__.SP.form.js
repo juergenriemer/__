@@ -30,12 +30,12 @@ __.SP.form = {};
  */
 
 __.SP.form.getField = function( s_or_dn ) {
-	var dnForm = document.body.__find( "#WebPartWPQ2" );
+	var dnForm = __find( "#WebPartWPQ2" );
 	var url = self.location.href;
 	if( /DispForm\.aspx/.test( url ) ) {
 		if( typeof s_or_dn == "string" ) {
 			var dnTitle = dnForm.__find( 'a[name="SPBookmark_' + s_or_dn + '"]' );
-			var dnRow = dnTitle.__find( "tr", dnTitle );
+			var dnRow = dnTitle.__closest( "tr" );
 			var dnValue = dnRow.__find( "td.ms-formbody" );
 			var v = ( dnValue.textContent )
 				? dnValue.textContent.__tokenize()
@@ -49,17 +49,20 @@ __.SP.form.getField = function( s_or_dn ) {
 		}
 	}
 	else if( /NewForm\.aspx|EditForm\.aspx/.test( url ) ) {
-		if( s_or_dn instanceof Element ) {
-			var dnRow = s_or_dn.__closest( "tr" );
-			var sField = dnRow.__find( "h3" ).id;
-			var dnValue = ( s_or_dn.value ) ? s_or_dn : dnRow.__find( "input,textarea" );
-			var v = dnValue.value;
-			return {
-				  sField : sField
-				, dnRow : dnRow
-				, dnValue : dnValue
-				, v : v
-			}
+		var dnItem = ( s_or_dn instanceof Element )
+			? s_or_dn
+			: __find( "#" + s_or_dn );
+		var dnRow = dnItem.__closest( "tr" );
+		var sField = dnRow.__find( "h3" ).id;
+		var dnValue = ( dnItem.value ) ? dnItem : dnRow.__find( "input,textarea,select" );
+		var v = dnValue.value;
+		return {
+			  sField : sField
+			, dnRow : dnRow
+			, dnValue : dnValue
+			, v : v
 		}
 	}
 };
+
+

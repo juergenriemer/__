@@ -1,4 +1,4 @@
-SET nVersion=1.0.1
+SET nVersion=0.9.66
 SET pathBuild=C:\Users\admin_jriemer\Projects\Osce.Lib.JS\builds\
 echo "compress core"
 SET pathCore=C:\\Users\\admin_jriemer\\Projects\\Osce.Lib.JS\\source\\core\\
@@ -54,6 +54,7 @@ echo "copy to hive"
 
 SET pathHive=C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\15\TEMPLATE\LAYOUTS\osce\
 copy "%pathBuild%__.%nVersion%.min.js" "%pathHive%__.%nVersion%.min.js"
+
 
 
 
