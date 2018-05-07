@@ -1,6 +1,7 @@
 {
     "source": {
        "includePattern": ".+\\.js(doc|x)?$"
+       , "excludePattern": ".+\\.min\\.js"
     },
     "opts": {
         "sort": false

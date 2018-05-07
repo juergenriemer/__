@@ -112,8 +112,12 @@ Compile = {
 	//	cmd.run( sCommand );
 	}
 	, __ : function() {
-		//this.purgeFolder( pathSource );
-		this.jsdoc( pathSource + "/core", pathDocs + "/core", "config.json" );
+		this.purgeFolder( pathDocs );
+		this.jsdoc( pathSource + "/core/dom", pathDocs + "/dom", "config.json" );
+		this.jsdoc( pathSource + "/core/utils", pathDocs + "/utils", "config.json" );
+		this.jsdoc( pathSource + "/core/async", pathDocs + "/async", "config.json" );
+		this.jsdoc( pathSource + "/core/class", pathDocs + "/class", "config.json" );
+		this.jsdoc( pathSource + "/core/event", pathDocs + "/event", "config.json" );
 		this.jsdoc( pathSource + "/SP", pathDocs + "/SP", "config.json" );
 	}
 };

@@ -3,13 +3,19 @@
 // @output_file_name __.event.min.js
 // @js_externs var __; __.Event; __.Event.listen; __.Event.trigger;
 // ==/ClosureCompiler==
-/**
- * @namespace __.Event
- */
 
+
+/**
+ * @namespace __
+ */
 if( typeof __ == "undefined" ) {
 	__ = {};
 }
+
+/**
+ * @namespace __.Event
+ * @memberof __
+ */
 
 __.Event = {
 	  oListeners : {}

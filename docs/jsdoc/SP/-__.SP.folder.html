@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Namespace: folder</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<style>
+.prettyprint {
+	width : 100%;
+}
+h1 {
+	font-size : 2em;
+}
+h4.name {
+	margin-top : 2em;
+	font-size : 1.7em;
+	border-bottom : 1px dashed #c0c0c0;
+}
+h4.name span.signature {
+	font-size : 70%;
+	padding : 5px;
+}
+h4.name span {
+	font-size : 50%;
+}
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
+</style>
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Namespace: folder</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="-__.html">__</a><a href="-__.SP.html">.SP</a>.</span>folder</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line93">line 93</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(args)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a folder in a document library
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a parameter object holding the following values
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sList</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">name of the list</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sFolder</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">name of the folder</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line98">line 98</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Resolved promise holding the following values 
+<pre>
+oFolder  | (Object) | context of the newly created folder
+idFolder | (Number) | item ID of the newly created folder
+</pre>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>__.SP.folder.create( {
+	  sList : "Shared Documents"
+	, sFolder "test folder"
+} );</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".read"><span class="type-signature">(static) </span>read<span class="signature">(args, path, lsFields)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Reads information of a folder
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a parameter object holding the following values</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">path of the folder</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lsFields</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">array of internal field names to return</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.SP.js.html">__.SP.js</a>, <a href="-__.SP.js.html#line146">line 146</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Resolved promise holding the following values 
+<pre class='return-object'>
+oFolder | (Object) | context of the newly created folder
+aResult  | (Object) | associate array holding properties of the folder
+</pre>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>// stand alone
+__.SP.folder.read( {
+	  path : "/Lists/Shared Documents/test folder"
+} );</code></pre>
+
+    <pre class="prettyprint"><code>// as promise
+.then( __.SP.folder, "read", {
+	  path : "/Lists/Shared Documents/test folder"
+} );</code></pre>
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+	<h3><a href="../../index.html">Home</a></h3>
+	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
+	<ul id="methods"></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-__.SP.Filter.html">Filter</a></li></ul><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.form.html">form</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+<script>
+/*
+var dnNav = document.querySelector( "nav" );
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	dn.textContent = lsParts[ 1 ];
+}
+
+var dnMethods = document.getElementById( "methods" );
+var dnMethodCount = document.getElementById( "method-count" );
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+*/
+// get DOM nodes
+// right navigation panel
+var dnNav = document.querySelector( "nav" );
+// custom methods menu
+var dnMethods = document.getElementById( "methods" );
+// custom methods count
+var dnMethodCount = document.getElementById( "method-count" );
+
+// show structure in namespace links
+var ldnNamespaces = dnNav.querySelectorAll( "li a" );
+var c = ldnNamespaces.length;
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldnNamespaces[ ix ];
+	var sHref = dn.href;
+	var lsParts = sHref.match( /^.*\/-(.*)\.html/ );
+	if( lsParts && lsParts[ 1 ] ) {
+		dn.textContent = lsParts[ 1 ];
+	}
+}
+
+// show/hide custom methods menu if we have methods
+// and render number of methods
+var ldn = document.querySelectorAll( "h4.name" );
+var c = ldn.length;
+if( c ) {
+	dnMethodCount.textContent = c;
+}
+else {
+	document.getElementById( "method-header" ).style.display = "none";
+}
+
+// populate methods menu with links to methods found in 
+// the current page
+for( var ix=0; ix<c; ix++ ) {
+	var dn = ldn[ ix ];
+	var sMethod = "";
+	for( var ixx=0; ixx<dn.childNodes.length; ixx++) {
+		var dncur = dn.childNodes[ ixx ];
+		if( dncur.nodeName === "#text") {
+			sMethod = dncur.nodeValue;
+			break;
+		}
+	}
+	var dnLink = document.createElement( "a" );
+	dnLink.name = sMethod;
+	dn.parentNode.insertBefore( dnLink, dn );
+	var dnLI = document.createElement( "li" );
+	var dnA = document.createElement( "a" );
+	dnA.href = "#" + sMethod;
+	dnA.textContent = sMethod;
+	dnLI.appendChild( dnA );
+	dnMethods.appendChild( dnLI );
+}
+
+
+</script>
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 07:09:40 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+<script src="custom.js"> </script>
+</body>
+</html>
