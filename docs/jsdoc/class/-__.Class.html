@@ -141,11 +141,7 @@ h4.name span {
 
 
 <div class="description">
-    Creates a new class by extending from the base class (__.Class) or
-inheriting from an existing class.<br>
-If the class has a method called "init" it will invoke it on creation of an instace.<br>
-In case of inheritance you can call a parent's method by using the "_super" method.<br>
-Static attributes and methods are created by appending to the class constructor function.
+    Creates a new class by extending from the base class (__.Class) orinheriting from an existing class.<br>If the class has a method called "init" it will invoke it on creation of an instace.<br>In case of inheritance you can call a parent's method by using the "_super" method.<br>Static attributes and methods are created by appending to the class constructor function.
 </div>
 
 
@@ -240,36 +236,9 @@ Static attributes and methods are created by appending to the class constructor 
 
     <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>// a base class
-var Person = __.Class.extend( {
-     sName : null
-   , init : function( args ) {
-        this.sName = args.sName;
-        Person.cPerson++;
-   }
-   , say : function() {
-      return "My name is " + this.sName;
-   }
-} );
-// static attribute
-Person.cPerson = 0
-// static function
-Person.report = function() {
-    return Person.cPerson + " person(s) created";
-}
-var tom = __.Class.instantiate( Person, { sName : "Tom" } );
-tom.say(); // "My name is Tom"
-Person.report(); // "1 person(s) created"</code></pre>
+    <pre class="prettyprint"><code>// a base classvar Person = __.Class.extend( {     sName : null   , init : function( args ) {        this.sName = args.sName;        Person.cPerson++;   }   , say : function() {      return "My name is " + this.sName;   }} );// static attributePerson.cPerson = 0// static functionPerson.report = function() {    return Person.cPerson + " person(s) created";}var tom = __.Class.instantiate( Person, { sName : "Tom" } );tom.say(); // "My name is Tom"Person.report(); // "1 person(s) created"</code></pre>
 
-    <pre class="prettyprint"><code>// an extended class
-var Soldier = Person.extend( {
-   salute : function() {
-      return this.say() + ", Sir";
-   }
-} );
-var tom = __.Class.instantiate( Soldier, { sName : "Major Tom" } );
-tom.salute(); // "My name is Major Tom, Sir"
-Person.report(); // "2 person(s) created"</code></pre>
+    <pre class="prettyprint"><code>// an extended classvar Soldier = Person.extend( {   salute : function() {      return this.say() + ", Sir";   }} );var tom = __.Class.instantiate( Soldier, { sName : "Major Tom" } );tom.salute(); // "My name is Major Tom, Sir"Person.report(); // "2 person(s) created"</code></pre>
 
 
 
@@ -382,17 +351,7 @@ Person.report(); // "2 person(s) created"</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>Person = __.Class.extend( {
-     sName : null
-   , init : function( args ) {
-      this.sName = args.sName;
-}
-   , say : function() {
-      return "Hi, I am " + this.sName;
-   }
-} );
-tim = __.Class.instantiate( Person, { sName : "Tim" } );
-tim.say(); // Hi, I am Tim</code></pre>
+    <pre class="prettyprint"><code>Person = __.Class.extend( {     sName : null   , init : function( args ) {      this.sName = args.sName;}   , say : function() {      return "Hi, I am " + this.sName;   }} );tim = __.Class.instantiate( Person, { sName : "Tim" } );tim.say(); // Hi, I am Tim</code></pre>
 
 
 
@@ -410,10 +369,7 @@ tim.say(); // Hi, I am Tim</code></pre>
 
 
 <div class="description">
-    Mixes in additional behaviour to the class. It expects plain objects in the
-arguments (Other class objects cannot be mixed in).
-Mixin object members will not overwrite class members in case of same
-method or attribute names.
+    Mixes in additional behaviour to the class. It expects plain objects in thearguments (Other class objects cannot be mixed in).Mixin object members will not overwrite class members in case of samemethod or attribute names.
 </div>
 
 
@@ -535,31 +491,7 @@ method or attribute names.
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var Minecraft = {
-      say : function() {
-        return "Mojang";
-    }
-    , craft : function() {
-        return "wooden sword";
-    }
-};
-var Ingress = {
-      say : function() {
-        return "Ingress";
-    }
-    , capture : function() {
-        return "portal green";
-    }
-};
-var Player = __.Class.extend( {
-    say : function() {
-       return "Hi";
-    }
-}).mixin( Minecraft, Ingress );
-var player = __.Class.instantiate( Player );
-player.say(); // Hi
-player.craft(); // wooden sword
-player.capture(); // portal green</code></pre>
+    <pre class="prettyprint"><code>var Minecraft = {      say : function() {        return "Mojang";    }    , craft : function() {        return "wooden sword";    }};var Ingress = {      say : function() {        return "Ingress";    }    , capture : function() {        return "portal green";    }};var Player = __.Class.extend( {    say : function() {       return "Hi";    }}).mixin( Minecraft, Ingress );var player = __.Class.instantiate( Player );player.say(); // Hiplayer.craft(); // wooden swordplayer.capture(); // portal green</code></pre>
 
 
 
@@ -577,8 +509,7 @@ player.capture(); // portal green</code></pre>
 
 
 <div class="description">
-    Provides a hook into the parent's object to call the overridden (super) method.<br />
-NB: Since we use callee/caller this will not work in xtrict mode.
+    Provides a hook into the parent's object to call the overridden (super) method.<br />NB: Since we use callee/caller this will not work in xtrict mode.
 </div>
 
 
@@ -712,18 +643,7 @@ NB: Since we use callee/caller this will not work in xtrict mode.
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var Person = __.Class.extend( {
-   say : function() {
-      return "Hi";
-   }
-} );
-var Player = Person.extend( {
-   say : function() {
-      return this._super( "say" ) + ", Teammate";
-   }
-} );
-var player = __.Class.instantiate( Player );
-player.say(); // "Hi, Teammate"</code></pre>
+    <pre class="prettyprint"><code>var Person = __.Class.extend( {   say : function() {      return "Hi";   }} );var Player = Person.extend( {   say : function() {      return this._super( "say" ) + ", Teammate";   }} );var player = __.Class.instantiate( Player );player.say(); // "Hi, Teammate"</code></pre>
 
 
 
@@ -850,7 +770,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 07:09:38 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 08:39:32 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

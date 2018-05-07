@@ -142,13 +142,7 @@ h4.name span {
 
 
 <div class="description">
-    Takes either an HTML string and converts it into DOM node(s) or (an) 
-existing existing DOM node(s) and creates or moves them right after the
-DOM node.
-It returns the created or moved DOM node(s).
-An optional callback function to be applied on created or moved DOM
-node(s) can be passed on which will be
-invoked with two parameters: the single node and its index of the array.
+    Takes either an HTML string and converts it into DOM node(s) or (an) existing existing DOM node(s) and creates or moves them right after theDOM node.It returns the created or moved DOM node(s).An optional callback function to be applied on created or moved DOMnode(s) can be passed on which will beinvoked with two parameters: the single node and its index of the array.
 </div>
 
 
@@ -351,13 +345,7 @@ invoked with two parameters: the single node and its index of the array.
 
 
 <div class="description">
-    Takes either an HTML string and converts it into DOM node(s) or (an) 
-existing exsting DOM node(s) and creates or moves them inside the
-DOM node at the top. 
-It returns the created or moved DOM node(s).
-An optional callback function to be applied on created or moved DOM
-node(s) can be passed on which will be
-invoked with two parameters: the single node and its index of the array.
+    Takes either an HTML string and converts it into DOM node(s) or (an) existing exsting DOM node(s) and creates or moves them inside theDOM node at the top. It returns the created or moved DOM node(s).An optional callback function to be applied on created or moved DOMnode(s) can be passed on which will beinvoked with two parameters: the single node and its index of the array.
 </div>
 
 
@@ -565,13 +553,7 @@ invoked with two parameters: the single node and its index of the array.
 
 
 <div class="description">
-    Takes either an HTML string and converts it into DOM node(s) or (an) 
-existing existing DOM node(s) and creates or moves them right before the
-DOM node.
-It returns the created or moved DOM node(s).
-An optional callback function to be applied on created or moved DOM
-node(s) can be passed on which will be
-invoked with two parameters: the single node and its index of the array.
+    Takes either an HTML string and converts it into DOM node(s) or (an) existing existing DOM node(s) and creates or moves them right before theDOM node.It returns the created or moved DOM node(s).An optional callback function to be applied on created or moved DOMnode(s) can be passed on which will beinvoked with two parameters: the single node and its index of the array.
 </div>
 
 
@@ -1749,9 +1731,7 @@ invoked with two parameters: the single node and its index of the array.
     
     <pre class="prettyprint"><code>dn.__fadeOut();</code></pre>
 
-    <pre class="prettyprint"><code>dn.__fadeOut( 25, function() {
-    dn.__remove();
-} );</code></pre>
+    <pre class="prettyprint"><code>dn.__fadeOut( 25, function() {    dn.__remove();} );</code></pre>
 
 
 
@@ -1769,18 +1749,7 @@ invoked with two parameters: the single node and its index of the array.
 
 
 <div class="description">
-    Takes a CSS selector string and queries the DOM for matching nodes. If not used as node method it will assume document.body.
-<br>
-It returns a single DOM node if just one node was found.
-<br>
-It returns a list of DOM nodes if multiple were found.
-<br>
-It will return [null] in case nothing was found.
-<br>
-An optional DOM node as starting point can be passed on otherwise [document] is used.
-<br>
-An optional callback function to be applied on returned nodes can be passed on which
-will be invoked with two parameters: the single node and its index of the array.
+    Takes a CSS selector string and queries the DOM for matching nodes. If not used as node method it will assume document.body.<br>It returns a single DOM node if just one node was found.<br>It returns a list of DOM nodes if multiple were found.<br>It will return [null] in case nothing was found.<br>An optional DOM node as starting point can be passed on otherwise [document] is used.<br>An optional callback function to be applied on returned nodes can be passed on whichwill be invoked with two parameters: the single node and its index of the array.
 </div>
 
 
@@ -1974,14 +1943,9 @@ will be invoked with two parameters: the single node and its index of the array.
 
     <pre class="prettyprint"><code>var ldnLinks = dnMenu.__find( "a.footer" );</code></pre>
 
-    <pre class="prettyprint"><code>dnMenu.__find( "a.footer", function( dn, ix ) {
-      dn.style.color = "red";
-      dn.style.border = ix + "px solid green";
- } );</code></pre>
+    <pre class="prettyprint"><code>dnMenu.__find( "a.footer", function( dn, ix ) {      dn.style.color = "red";      dn.style.border = ix + "px solid green"; } );</code></pre>
 
-    <pre class="prettyprint"><code>__find( "[href]", function( dn ) {
-      dn.setAttribute( "href", "#" );
- } );</code></pre>
+    <pre class="prettyprint"><code>__find( "[href]", function( dn ) {      dn.setAttribute( "href", "#" ); } );</code></pre>
 
 
 
@@ -1999,8 +1963,7 @@ will be invoked with two parameters: the single node and its index of the array.
 
 
 <div class="description">
-    Hides a DOM node.
-It sets the display attribute of a DOM node to "none" preserving the previous value.
+    Hides a DOM node.It sets the display attribute of a DOM node to "none" preserving the previous value.
 </div>
 
 
@@ -2204,11 +2167,7 @@ It sets the display attribute of a DOM node to "none" preserving the previous va
 
 
 <div class="description">
-    Registers to the scroll event of either a DOM node or the entire page.
-<br>
-A callback function is invoked with a data object providing information
-about the current position which is, if not manually set, called every
-300 milliseconds.
+    Registers to the scroll event of either a DOM node or the entire page.<br>A callback function is invoked with a data object providing informationabout the current position which is, if not manually set, called every300 milliseconds.
 </div>
 
 
@@ -2371,17 +2330,7 @@ about the current position which is, if not manually set, called every
 
         
 <div class="param-desc">
-    Information about the current position
-<pre class='return-object'>
-x | (Number) | current x position
-y | (Number) | current y position
-dx | (Number) | current width
-dy | (Number) | current height
-bTop | (Boolean) | flag to indicate whether scrolled to top
-bBottom | (Boolean) | flag to indicate whether scrolled to bottom
-bLeft | (Boolean) | flag to indicate whether scrolled to left 
-bRigth | (Boolean) | flag to indicate whether scrolled to right
-</pre>
+    Information about the current position<pre class='return-object'>x | (Number) | current x positiony | (Number) | current y positiondx | (Number) | current widthdy | (Number) | current heightbTop | (Boolean) | flag to indicate whether scrolled to topbBottom | (Boolean) | flag to indicate whether scrolled to bottombLeft | (Boolean) | flag to indicate whether scrolled to left bRigth | (Boolean) | flag to indicate whether scrolled to right</pre>
 </div>
 
 
@@ -2405,15 +2354,9 @@ bRigth | (Boolean) | flag to indicate whether scrolled to right
 
     <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>dn.__onScroll( function( aInfo ) {
-    if( aInfo.bBottom ) {
-        alert( "scrolled to bottom" );
-    }
-} );</code></pre>
+    <pre class="prettyprint"><code>dn.__onScroll( function( aInfo ) {    if( aInfo.bBottom ) {        alert( "scrolled to bottom" );    }} );</code></pre>
 
-    <pre class="prettyprint"><code>dn.__onScroll( function() {
-    positionMenu();
-}, 1000 );</code></pre>
+    <pre class="prettyprint"><code>dn.__onScroll( function() {    positionMenu();}, 1000 );</code></pre>
 
 
 
@@ -2431,13 +2374,7 @@ bRigth | (Boolean) | flag to indicate whether scrolled to right
 
 
 <div class="description">
-    Takes either an HTML string and converts it into DOM node(s) or (an) 
-existing exsting DOM node(s) and creates or moves them inside the
-DOM node at bottom.
-It returns the created or moved DOM node(s).
-An optional callback function to be applied on created or moved DOM
-node(s) can be passed on which will be
-invoked with two parameters: the single node and its index of the array.
+    Takes either an HTML string and converts it into DOM node(s) or (an) existing exsting DOM node(s) and creates or moves them inside theDOM node at bottom.It returns the created or moved DOM node(s).An optional callback function to be applied on created or moved DOMnode(s) can be passed on which will beinvoked with two parameters: the single node and its index of the array.
 </div>
 
 
@@ -2629,14 +2566,9 @@ invoked with two parameters: the single node and its index of the array.
     
     <pre class="prettyprint"><code>var dnUL = document.body.__prepend( "&lt;ul class='colors'>&lt;/ul>" );</code></pre>
 
-    <pre class="prettyprint"><code>var h = "&lt;li>red&lt;/li>";
-var lnLI = __.dn.__prepend( h, dnUL );</code></pre>
+    <pre class="prettyprint"><code>var h = "&lt;li>red&lt;/li>";var lnLI = __.dn.__prepend( h, dnUL );</code></pre>
 
-    <pre class="prettyprint"><code>var h = "&lt;li>red&lt;/li>";
-var lnLI = __.dn.append( h, dnUL, function( dn, ix ) {
-    dn.style.color = dn.textContent;
-    dn.textContent = ix + ". " + dn.textContent;
-} );</code></pre>
+    <pre class="prettyprint"><code>var h = "&lt;li>red&lt;/li>";var lnLI = __.dn.append( h, dnUL, function( dn, ix ) {    dn.style.color = dn.textContent;    dn.textContent = ix + ". " + dn.textContent;} );</code></pre>
 
 
 
@@ -2727,8 +2659,7 @@ var lnLI = __.dn.append( h, dnUL, function( dn, ix ) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var dnForm = document.body.__find( "form" );
-dnForm.__remove();</code></pre>
+    <pre class="prettyprint"><code>var dnForm = document.body.__find( "form" );dnForm.__remove();</code></pre>
 
 
 
@@ -2746,9 +2677,7 @@ dnForm.__remove();</code></pre>
 
 
 <div class="description">
-    Scrolls the page or a DOM node to a specific x or y position or 
-directly to the top, left, bottom or right.
-<br>Expected positions: x, y, top, left, bottom, right
+    Scrolls the page or a DOM node to a specific x or y position or directly to the top, left, bottom or right.<br>Expected positions: x, y, top, left, bottom, right
 </div>
 
 
@@ -2933,8 +2862,7 @@ directly to the top, left, bottom or right.
 
 
 <div class="description">
-    Shows a DOM node.
-It sets the display attribute of a DOM node to "block" or "inline" depending on its original state.
+    Shows a DOM node.It sets the display attribute of a DOM node to "block" or "inline" depending on its original state.
 </div>
 
 
@@ -3548,7 +3476,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 07:09:38 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 08:39:32 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

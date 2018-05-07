@@ -148,17 +148,7 @@ h4.name span {
 
 
 <div class="description">
-    <pre>
-Creates a list of a give type
-Available types:
-- genericList
-- discussionBoard
-- documentLibrary
-- announcements
-- contacts
-- events
-- REF: more?
-</pre>
+    <pre>Creates a list of a give typeAvailable types:- genericList- discussionBoard- documentLibrary- announcements- contacts- events- REF: more?</pre>
 </div>
 
 
@@ -401,10 +391,7 @@ Available types:
 
         
 <div class="param-desc">
-    Resolved promise holding the following values 
-<pre class='return-object'>
-oList | (Object) | context of the list
-</pre>
+    Resolved promise holding the following values <pre class='return-object'>oList | (Object) | context of the list</pre>
 </div>
 
 
@@ -428,11 +415,7 @@ oList | (Object) | context of the list
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.create( {
-	  sList : "simple list"
-	, sType : "genericList"
-	, sDescription : "This is a simple list"
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.create( {	  sList : "simple list"	, sType : "genericList"	, sDescription : "This is a simple list"} );</code></pre>
 
 
 
@@ -450,9 +433,7 @@ oList | (Object) | context of the list
 
 
 <div class="description">
-    <pre>
-Deletes a list
-</pre>
+    <pre>Deletes a list</pre>
 </div>
 
 
@@ -623,9 +604,7 @@ Deletes a list
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.del( {
-	  sList : "simple list"
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.del( {	  sList : "simple list"} );</code></pre>
 
 
 
@@ -643,9 +622,7 @@ Deletes a list
 
 
 <div class="description">
-    <pre>
-Check if a list exists
-</pre>
+    <pre>Check if a list exists</pre>
 </div>
 
 
@@ -814,10 +791,7 @@ Check if a list exists
 
         
 <div class="param-desc">
-    Resolved promise holding the following values 
-<pre class='return-object'>
-bExists | (Boolean) | true if list exists otherwise false
-</pre>
+    Resolved promise holding the following values <pre class='return-object'>bExists | (Boolean) | true if list exists otherwise false</pre>
 </div>
 
 
@@ -841,9 +815,7 @@ bExists | (Boolean) | true if list exists otherwise false
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.exists( {
-	  sList : "Shared Documents"
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.exists( {	  sList : "Shared Documents"} );</code></pre>
 
 
 
@@ -861,9 +833,7 @@ bExists | (Boolean) | true if list exists otherwise false
 
 
 <div class="description">
-    <pre>
-Returns two objects mapping a lists internal field names against their display names and vice versa.
-</pre>
+    <pre>Returns two objects mapping a lists internal field names against their display names and vice versa.</pre>
 </div>
 
 
@@ -1032,11 +1002,7 @@ Returns two objects mapping a lists internal field names against their display n
 
         
 <div class="param-desc">
-    Resolved promise holding the following values 
-<pre class='return-object'>
-mpIntNames | (Object) | maps internal names against display names
-mpDispNames | (Object) | maps display names against internal names
-</pre>
+    Resolved promise holding the following values <pre class='return-object'>mpIntNames | (Object) | maps internal names against display namesmpDispNames | (Object) | maps display names against internal names</pre>
 </div>
 
 
@@ -1272,9 +1238,7 @@ mpDispNames | (Object) | maps display names against internal names
 
 
 <div class="description">
-    <pre>
-Get guid of a list for a given name
-</pre>
+    <pre>Get guid of a list for a given name</pre>
 </div>
 
 
@@ -1443,10 +1407,7 @@ Get guid of a list for a given name
 
         
 <div class="param-desc">
-    Resolved promise holding the following values 
-<pre class='return-object'>
-idList | (String) | guid of a list
-</pre>
+    Resolved promise holding the following values <pre class='return-object'>idList | (String) | guid of a list</pre>
 </div>
 
 
@@ -1470,9 +1431,7 @@ idList | (String) | guid of a list
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.id( {
-	  sList : "Shared Documents"
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.id( {	  sList : "Shared Documents"} );</code></pre>
 
 
 
@@ -1490,9 +1449,7 @@ idList | (String) | guid of a list
 
 
 <div class="description">
-    <pre>
-Returns the name of a list for a given guid
-</pre>
+    <pre>Returns the name of a list for a given guid</pre>
 </div>
 
 
@@ -1661,10 +1618,7 @@ Returns the name of a list for a given guid
 
         
 <div class="param-desc">
-    Resolved promise holding the following values 
-<pre class='return-object'>
-sName | (String) | name of the list
-</pre>
+    Resolved promise holding the following values <pre class='return-object'>sName | (String) | name of the list</pre>
 </div>
 
 
@@ -1688,9 +1642,7 @@ sName | (String) | name of the list
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.nameByGuid( {
-    guid : "b5ffd424-8b37-4bb8-b070-d32e4d638740"
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.nameByGuid( {    guid : "b5ffd424-8b37-4bb8-b070-d32e4d638740"} );</code></pre>
 
 
 
@@ -2017,10 +1969,7 @@ sName | (String) | name of the list
 
         
 <div class="param-desc">
-    Resolved promise holding the following values 
-<pre class='return-object'>
-lkv | (Object) | array of key value pairs
-</pre>
+    Resolved promise holding the following values <pre class='return-object'>lkv | (Object) | array of key value pairs</pre>
 </div>
 
 
@@ -2044,11 +1993,7 @@ lkv | (Object) | array of key value pairs
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.read( {
-	  sList : "Shared Documents"
-	, lsFields : [ "Title", "ID" ]
-	, xmlQuery : "&lt;Query>&lt;Where>&lt;FieldRef Name='ID' />&lt;Lt>&lt;Value Type='Number'>5&lt;/Value>&lt;/Lt>&lt;/Where>&lt;/Query>"
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.read( {	  sList : "Shared Documents"	, lsFields : [ "Title", "ID" ]	, xmlQuery : "&lt;Query>&lt;Where>&lt;FieldRef Name='ID' />&lt;Lt>&lt;Value Type='Number'>5&lt;/Value>&lt;/Lt>&lt;/Where>&lt;/Query>"} );</code></pre>
 
 
 
@@ -2152,8 +2097,7 @@ lkv | (Object) | array of key value pairs
 
 
 <div class="description">
-    <pre>
-Adds a site column to a list
+    <pre>Adds a site column to a list
 </div>
 
 
@@ -2332,8 +2276,7 @@ Adds a site column to a list
         <ul>
             <li>move to field namespace or merge with field.update</li>
         
-            <li>check if we can merge with setColumns
-</pre></li>
+            <li>check if we can merge with setColumns</pre></li>
         </ul>
     </dd>
     
@@ -2357,10 +2300,7 @@ Adds a site column to a list
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.setColumn( {
-	  sList : "test list"
-	, sColumn : "Email"
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.setColumn( {	  sList : "test list"	, sColumn : "Email"} );</code></pre>
 
 
 
@@ -2378,8 +2318,7 @@ Adds a site column to a list
 
 
 <div class="description">
-    <pre>
-Sets up a field as lookup
+    <pre>Sets up a field as lookup
 </div>
 
 
@@ -2581,8 +2520,7 @@ Sets up a field as lookup
         <ul>
             <li>move to field namespace or merge with field.update</li>
         
-            <li>automatically get guid of list by name
-</pre></li>
+            <li>automatically get guid of list by name</pre></li>
         </ul>
     </dd>
     
@@ -2606,11 +2544,7 @@ Sets up a field as lookup
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.setLookup( {
-	  oField : oField
-	, idList : "12345678-asdf-zxcv-qwwe-1234567890ab"
-	, sField : "Title"
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.setLookup( {	  oField : oField	, idList : "12345678-asdf-zxcv-qwwe-1234567890ab"	, sField : "Title"} );</code></pre>
 
 
 
@@ -2628,8 +2562,7 @@ Sets up a field as lookup
 
 
 <div class="description">
-    <pre>
-Sets up fields as lookup using a an array of {oFields}
+    <pre>Sets up fields as lookup using a an array of {oFields}
 </div>
 
 
@@ -2791,8 +2724,7 @@ Sets up fields as lookup using a an array of {oFields}
         <ul>
             <li>move to field namespace or merge with field.update</li>
         
-            <li>check possibility to merge with {__.SP.field.setLookup}
-</pre></li>
+            <li>check possibility to merge with {__.SP.field.setLookup}</pre></li>
         </ul>
     </dd>
     
@@ -2834,16 +2766,7 @@ Sets up fields as lookup using a an array of {oFields}
 
 
 <div class="description">
-    <pre>
-Updates the settings of a list. Available properties are:
-- documentTemplateUrl
-- contentTypesEnabled
-- enableMinorVersions
-- enableVersioning
-- onQuickLaunch
-- majorVersionLimit
-- majorWithMinorVersionsLimit
-</pre>
+    <pre>Updates the settings of a list. Available properties are:- documentTemplateUrl- contentTypesEnabled- enableMinorVersions- enableVersioning- onQuickLaunch- majorVersionLimit- majorWithMinorVersionsLimit</pre>
 </div>
 
 
@@ -3046,13 +2969,7 @@ Updates the settings of a list. Available properties are:
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.settings( {
-	  sList : "Shared Documents"
-	, kvFeatures : {
-		  set_enableVersioning : true
-		, set_onQuickLaunch : false
-	}
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.settings( {	  sList : "Shared Documents"	, kvFeatures : {		  set_enableVersioning : true		, set_onQuickLaunch : false	}} );</code></pre>
 
 
 
@@ -3070,9 +2987,7 @@ Updates the settings of a list. Available properties are:
 
 
 <div class="description">
-    <pre>
-Adds fields to a list
-</pre>
+    <pre>Adds fields to a list</pre>
 </div>
 
 
@@ -3277,10 +3192,7 @@ Adds fields to a list
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>__.SP.list.addFields( {
-	  sList : "simple list"
-	, loFields : loFields
-} );</code></pre>
+    <pre class="prettyprint"><code>__.SP.list.addFields( {	  sList : "simple list"	, loFields : loFields} );</code></pre>
 
 
 
@@ -3407,7 +3319,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 07:09:40 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 08:39:33 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

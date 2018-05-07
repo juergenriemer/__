@@ -96,7 +96,7 @@ Object.defineProperty( String.prototype, "__unCamelCase", {
 
 /**
  * Tokenize a string to certain levels:
- * simple: remove spaces, quotes, newlines an lowercase
+ * simple: remove spaces, quotes, newlines an puts to lowercase
  * @memberof String
  * @method __tokenize
  * @example var s = "Hi 'Mom'".__tokenize(); // himom
@@ -544,7 +544,6 @@ Object.defineProperty( String.prototype, "__sanitize", {
  * @example var l = [ 1, 3, 7 ];
  * var l = l.__remove( 7 );
  * @param {String|Number} x Element we want to remove
- * @returns {Booelan} Result of the check whether list holds the element
  */
 Object.defineProperty( Array.prototype, "__remove", {
 	value : function( el ) {
@@ -626,32 +625,7 @@ Object.defineProperty( Array.prototype, "__kSort", {
 
 
 /**
- * Provides methods that operate on events
- * @memberof __
- * @type {object}
- * @namespace __.e
- */
-__.e = {
-	/**
-	 * <pre>
-	 * Simply stops event propagation and prevents default
-	 * behaviour for an event object
-	 * </pre>
-	 * @memberof __.e
-	 * @method stop
-	 * @example __.stop( e );
-	 * @param {Object} e event object
-	 */
-	  stop : function( e ) {
-		e.stopPropagation();
-		e.preventDefault();
-	}
-};
-
-/**
- * <pre>
  * Add a stylesheet rule to the page.
- * </pre>
  * @memberof __
  * @method css
  * @example __.css( "a.footer { color: red; padding : 0 }" );
@@ -672,9 +646,7 @@ __.css = function( sStyle ) {
  */
 __.cookie = {
 	/**
-	 * <pre>
 	 * Gets a cookie by name
-	 * </pre>
 	 * @memberof __.cookie
 	 * @method get
 	 * @example var sCookie = __.cookie.get( "pref" );
@@ -686,9 +658,7 @@ __.cookie = {
 		return v ? v[ 2 ] : null;
 	}
 	/**
-	 * <pre>
 	 * Sets a cookie by name
-	 * </pre>
 	 * @memberof __.cookie
 	 * @method set
 	 * @example var sCookie = __.cookie.get( "pref", "red", 365 );
@@ -702,9 +672,7 @@ __.cookie = {
 		document.cookie = k + "=" + v + ";path=/;expires=" + d.toGMTString();
 	}
 	/**
-	 * <pre>
 	 * Removes a cookie by name
-	 * </pre>
 	 * @memberof __.cookie
 	 * @method remove
 	 * @example __.cookie.remove( "pref" );
@@ -725,9 +693,7 @@ __.cookie = {
 
 __.url = {
 	/**
-	 * <pre>
 	 * Reads parameters store from the URL or a string if passed on as argument
-	 * </pre>
 	 * @memberof __.url
 	 * @method oParams
 	 * @param {String} [url] URL string

@@ -73,9 +73,7 @@ h4.name span {
 
 
 <div class="description">
-    <pre>
-__.Async handles asynchronous calls in JavaScript.
-</pre>
+    <pre>__.Async handles asynchronous calls in JavaScript.</pre>
 </div>
 
 
@@ -299,25 +297,9 @@ __.Async handles asynchronous calls in JavaScript.
 
     <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>( new __.Async() )
-.then( __.SP.list, "create", { sList : "Dossier" } )
-.start();</code></pre>
+    <pre class="prettyprint"><code>( new __.Async() ).then( __.SP.list, "create", { sList : "Dossier" } ).start();</code></pre>
 
-    <pre class="prettyprint"><code>( new __.Async( {
-	  sLabel : "creating secure dossier"
-	, sFile : "dossier.list.js"
-	, ctx : __.SP.list
-	, fnerr : function( sError ) {
-		alert( sError );
-	}
-	, fnstat : function( aInfo ) {
-		var sOutput = aInfo.sMsg;
-		sOutput += " (" + aInfo.ix + "/" + aInfo.c + ")";
-		alert( sOutput );
-	}
-} ) )
-.then( "create", { sList : "Dossier" } )
-.start();</code></pre>
+    <pre class="prettyprint"><code>( new __.Async( {	  sLabel : "creating secure dossier"	, sFile : "dossier.list.js"	, ctx : __.SP.list	, fnerr : function( sError ) {		alert( sError );	}	, fnstat : function( aInfo ) {		var sOutput = aInfo.sMsg;		sOutput += " (" + aInfo.ix + "/" + aInfo.c + ")";		alert( sOutput );	}} ) ).then( "create", { sList : "Dossier" } ).start();</code></pre>
 
 
 
@@ -355,8 +337,7 @@ __.Async handles asynchronous calls in JavaScript.
 
 
 <div class="description">
-    Returns a promise object by its guid passed on as arguments object
-If no guid is passed on it will create a new instance of Promise
+    Returns a promise object by its guid passed on as arguments objectIf no guid is passed on it will create a new instance of Promise
 </div>
 
 
@@ -512,9 +493,7 @@ If no guid is passed on it will create a new instance of Promise
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>function( args ) {
-    var async = __.Async.promise( args );
-}</code></pre>
+    <pre class="prettyprint"><code>function( args ) {    var async = __.Async.promise( args );}</code></pre>
 
 
 
@@ -828,12 +807,7 @@ If no guid is passed on it will create a new instance of Promise
 
 
 <div class="description">
-    <pre>
-Rejects a task that errored out in execution. An error message can
-be passed on which adds to the error object that is 
-created compiling all relevant error information. The error object
-is passed on to the default or custom error function.
-</pre>
+    <pre>Rejects a task that errored out in execution. An error message canbe passed on which adds to the error object that is created compiling all relevant error information. The error objectis passed on to the default or custom error function.</pre>
 </div>
 
 
@@ -900,8 +874,7 @@ is passed on to the default or custom error function.
 
             
 
-            <td class="description last">String or object describing the 
-error condition</td>
+            <td class="description last">String or object describing the error condition</td>
         </tr>
 
     
@@ -989,11 +962,7 @@ error condition</td>
 
 
 <div class="description">
-    <pre>
-Resolves a task that has been successfully execucted. Results can
-be passed on as object which adds them to the arguments object for
-the current task chain.
-</pre>
+    <pre>Resolves a task that has been successfully execucted. Results canbe passed on as object which adds them to the arguments object forthe current task chain.</pre>
 </div>
 
 
@@ -1135,9 +1104,7 @@ the current task chain.
 
 
 <div class="description">
-    <pre>
-Starts an asynchronous task chain
-</pre>
+    <pre>Starts an asynchronous task chain</pre>
 </div>
 
 
@@ -1250,9 +1217,7 @@ Starts an asynchronous task chain
 
 
 <div class="description">
-    <pre>
-Stops the execution of the current task chain.
-</pre>
+    <pre>Stops the execution of the current task chain.</pre>
 </div>
 
 
@@ -1343,19 +1308,7 @@ Stops the execution of the current task chain.
 
 
 <div class="description">
-    Registers a method to the task chain.
-<br />
-We can either register an existing method by indicating
-its parent object and method name or we register an anonymous function.
-In the first case the method needs to be "promisable" and invoke eitherresolve or reject.  
-The latter
-we usually choose to operate on results of previous task and/or we want
-fork the task chain base on conditions.
-<br />
-For debugging or showing progress we can add an additional message.
-<br />
-In order to use arguments from previous tasks use "args"
-</pre>
+    Registers a method to the task chain.<br />We can either register an existing method by indicatingits parent object and method name or we register an anonymous function.In the first case the method needs to be "promisable" and invoke eitherresolve or reject.  The latterwe usually choose to operate on results of previous task and/or we wantfork the task chain base on conditions.<br />For debugging or showing progress we can add an additional message.<br />In order to use arguments from previous tasks use "args"</pre>
 </div>
 
 
@@ -1617,20 +1570,7 @@ In order to use arguments from previous tasks use "args"
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// oUser = class intance of User
-( new __.Async() )
-.then( oUser, "getRecords", { idUser : 123 }, "Getting records" )
-.then( function( args ) {
-    var async = __.Async.promise( args );
-    if( args.hResults ) {
-        __.dn_( "#output" ).innerHTML = args.hResult;
-    }
-    else {
-        async.then( oUser, "delete", { idUser : 123 } );
-    }
-    async.resolve();
-}, "Printing records or deleting user" )
-.start();</code></pre>
+    <pre class="prettyprint"><code>// oUser = class intance of User( new __.Async() ).then( oUser, "getRecords", { idUser : 123 }, "Getting records" ).then( function( args ) {    var async = __.Async.promise( args );    if( args.hResults ) {        __.dn_( "#output" ).innerHTML = args.hResult;    }    else {        async.then( oUser, "delete", { idUser : 123 } );    }    async.resolve();}, "Printing records or deleting user" ).start();</code></pre>
 
 
 
@@ -1648,9 +1588,7 @@ In order to use arguments from previous tasks use "args"
 
 
 <div class="description">
-    Pauses the execution of a task chain until a certain condition
-occurs. This condition is indicated as function that is polled
-every 25 milliseconds if not indicated otherwise.
+    Pauses the execution of a task chain until a certain conditionoccurs. This condition is indicated as function that is polledevery 25 milliseconds if not indicated otherwise.
 </div>
 
 
@@ -1712,8 +1650,7 @@ every 25 milliseconds if not indicated otherwise.
 
             
 
-            <td class="description last">function to indicate the state of
-continuation by return true or false</td>
+            <td class="description last">function to indicate the state ofcontinuation by return true or false</td>
         </tr>
 
     
@@ -1749,8 +1686,7 @@ continuation by return true or false</td>
 
             
 
-            <td class="description last">Either interval in milliseconds to check the 
-condition or log message</td>
+            <td class="description last">Either interval in milliseconds to check the condition or log message</td>
         </tr>
 
     
@@ -1875,13 +1811,9 @@ condition or log message</td>
 
     <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>async.wait( function() {
-      return self.location.hash == "continue";
-}, 250, "wait for hash to signal go" )</code></pre>
+    <pre class="prettyprint"><code>async.wait( function() {      return self.location.hash == "continue";}, 250, "wait for hash to signal go" )</code></pre>
 
-    <pre class="prettyprint"><code>async.wait( function() {
-      return self.location.hash == "stop";
-} )</code></pre>
+    <pre class="prettyprint"><code>async.wait( function() {      return self.location.hash == "stop";} )</code></pre>
 
 
 
@@ -2008,7 +1940,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 07:09:38 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 08:39:32 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
