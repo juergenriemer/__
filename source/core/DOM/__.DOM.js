@@ -271,6 +271,7 @@ Object.defineProperty( Node.prototype, "__hide", {
 	}
 } );
 
+
 Object.defineProperty( Node.prototype, "__h", {
 	value : function( us_h ) {
 		// REF: document and sanitzie!!!
