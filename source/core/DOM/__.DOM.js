@@ -271,6 +271,13 @@ Object.defineProperty( Node.prototype, "__hide", {
 	}
 } );
 
+Object.defineProperty( Node.prototype, "__h", {
+	value : function() {
+		// REF: document and sanitzie!!!
+		this.innerHTML = us_h;
+	}
+} );
+
 /**
 * Returns the index of a DOM node in its parent's children list.
 * @memberof Node
