@@ -454,14 +454,14 @@ Object.defineProperty( Node.prototype, "__fadeIn", {
 /**
 * Gets or sets a css attribute
 * @memberof Node
-* @method __css
-* @example dn.__css( "color", "red" );
-* @example var sColor = dn.__css( "color" );
+* @method __style
+* @example dn.__style( "color", "red" );
+* @example var sColor = dn.__style( "color" );
 * @param {String} k name of attribute
 * @param {String} [v] optional value of attribute
 * @returns {Element} value of attribute
 */
-Object.defineProperty( Node.prototype, "__css", {
+Object.defineProperty( Node.prototype, "__style", {
 	value : function( k, v ) {
 		if( ! v ) {
 			return self.getComputedStyle( this )[ k ];
@@ -733,8 +733,8 @@ window[ "__prepend" ] = function( h_or_dn, cb ) {
 	return document.body[ "__prepend" ]( h_or_dn, cb );
 }
 
-window[ "__css" ] = function( k, v ) {
-	return document.body[ "__css" ]( k, v );
+window[ "__style" ] = function( k, v ) {
+	return document.body[ "__style" ]( k, v );
 }
 
 window[ "__scrollTo" ] = function( sPos, nPos ) {
@@ -748,3 +748,10 @@ window[ "__onScroll" ] = function( cb, msInterval ) {
 window[ "__offScroll" ] = function() {
 	document.body[ "__offScroll" ]();
 }
+
+window[ "__css" ] = function( sCSS ) {
+	var dnHead = document.getElementsByTagName( 'head' )[ 0 ];
+	var dn = document.createElement( 'style' );
+	dnHead.appendChild( dn );
+	dn.innerHTML = sCSS;
+};

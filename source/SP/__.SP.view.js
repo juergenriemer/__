@@ -113,7 +113,6 @@ __.SP.view.read = function( args ) {
 				, sTotal : sTotal
 				, xmlQuery : oView.get_viewQuery()
 			};
-			console.log( kv );
 			async.resolve( { kv : kv } );
 		}
 	} );
@@ -214,7 +213,6 @@ __.SP.view.add = function( args ) {
 			var oQuery = new SP.CamlQuery();
 			oQuery.set_viewXml( args.xmlQuery );
 			oView.set_query( oQuery );
-			console.log( oView );
 			if( args.bDefaultView ) {
 				oView.set_setAsDefaultView( true );
 			}

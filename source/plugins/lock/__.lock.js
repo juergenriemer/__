@@ -5,21 +5,32 @@ if( typeof( __ ) == "undefined" ) {
 }
 
 __.lock = {
-	  up : function( dn, kv ) {
+	  bInit : false
+	, init : function() {
+		if( ! this.bInit ) {
+			__css( ".-lck-bag{position:relative;display:none;} .-lck-bag-back, .-lck-bag-front{position:absolute;width:100%;height:100%;left:0;top:0;z-index:66666666666;} .-lck-bag-back{z-index:55555555555;opacity:0.6;background:#fff;} .-lck-bag-front{display:table;width:100%;}.-lck-bag-frontdiv.-lck-loading{font-size:1.4em;font-weight:bold;text-align:center;display:table-cell;vertical-align:middle;}" );
+		}
+		this.bInit = true;
+	  }
+	, up : function( dn, kv ) {
+		this.init();
 		// set timeout for we want to ensure this is run
 		// after any other rendering is done and we get
 		// proper CSS values
 		setTimeout( function() {
 			var dnBag = dn.lastElementChild;
+			console.log( "dn",dn );
 			// DOM node is empty. In case of a model get call,
 			// this means its the first call to the server
 			if( ! dnBag ) {
+				console.log( 'no bag create' );
 				dnBag = document.createElement( "div" );
-				dnBag.__css( "height", dn.__css( "minHeight" ) );
+				dnBag.__style( "height", dn.__style( "minHeight" ) );
 				dn.appendChild( dnBag );
 			}
 			// locking blend (bag) does not exist...
 			if( ! dnBag.classList.contains( "-lck-bag" ) ) {
+				console.log( 'create bag' );
 				var hBag = " \
 				<div class='-lck-bag'> \
 					<div class='-lck-bag-front'></div> \
@@ -49,6 +60,7 @@ __.lock = {
 			dnBack.__dy( dy );
 			dnFront.__dy( dy );
 			dnBack.__show();
+			dnBag.__show();
 		}, 0 );
 	}
 	, un : function( dn ) {

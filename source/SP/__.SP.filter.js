@@ -11,6 +11,7 @@
  * @property {Function}  [args.cbCreate] callback to be invoked when the filter gets created
  * @property {Function}  [args.cbClear] callback to be invoked when the user clears the filter
  * @property {String}  [args.defaultView] name of the default view
+ * @property {Object}  [args.oTax] object holding term store and sets (default is O$C3.Tax)
  * @todo rename defaultView to sdftView;
  * @example n/a
  */
@@ -27,12 +28,20 @@ __.SP.Filter = __.Class.extend( {
 	, sFilterFieldStore : ""
 	, sFilter : null
 	, sFilterName : "Current Filter"
+	, sList : null
+	, oTax : null
+	, dnSideNav : null
+	, mpLang : {
+		  saved_filter_name_exists_overwrite : "The selected filter name exists already.<br>Do you want to overwrite the existing filter with the current one?"
+		, filter_field_selection_title : "Below you can select the fields to be displayed in your filter."
+	}
 	, init : function( aConf ) {
 		var that = this;
 		this.sList = aConf.sList;
 		this.loFields = this.extractFilterFields( aConf.loFields );
 		this.cbCreate = aConf.cbCreate || null;
 		this.cbClear = aConf.cbClear || null;
+		this.oTax = aConf.oTax || O$C3.Tax;
 		this.defaultView = aConf.defaultView || "All Items";
 		// SP's OOTB default views differ in internal and display name
 		this.sdftView = aConf.defaultView || "AllItems";
@@ -50,8 +59,8 @@ __.SP.Filter = __.Class.extend( {
 		*/
 		.then( function( args ) {
 			var h = "<div id='"+ that.sFilter +"' style='display:none' class='osce-filter'></div>";
-			var dnSideNav = document.body.__find( "#sideNavBox" );
-			that.dnRoot = dnSideNav.__append( h );
+			that.dnSideNav = __find( "#sideNavBox" );
+			that.dnRoot = that.dnSideNav.__append( h );
 			that.createButtons();
 			that.dnForm = __.SP.filter.form.create( {
 				  dnRoot : that.dnRoot
@@ -127,11 +136,11 @@ __.SP.Filter = __.Class.extend( {
 	}
 	, unlock : function() {
 		__.SP.grid.unlock();
-		this.dnRoot.style.background = "#fff";
+		__.lock.un( this.dnRoot );
 	}
 	, lock : function() {
 		__.SP.grid.lock();
-		this.dnRoot.style.background = "#efefef";
+		__.lock.up( this.dnRoot );
 	}
 	, hide : function() {
 		this.dnRoot.style.display = "none";
@@ -173,13 +182,15 @@ __.SP.Filter = __.Class.extend( {
 	, loadDefaultView : function() {
 		var url = _spPageContextInfo.webServerRelativeUrl;
 		url += "/_layouts/15/start.aspx#/Lists/" + ctx.ListTitle +"/";
-		url += O$C3.User.sUnit + " Contacts.aspx?r=" + Math.random();
-//		url += this.sdftView +".aspx?r=" + Math.random();
+		url += this.defaultView + ".aspx?r=" + Math.random();
 		self.location.href = url;
 	}
 	, loadPersonalView : function( guid ) {
+		var bReload = new RegExp( guid, "i" ).test( self.location.href );
 		self.location.href = this.createPersonalViewUrl( guid );
-		__.SP.grid.reload( 500 );
+		if( bReload ) {
+			__.SP.grid.reload( 1000 );
+		}
 	}
 	, form2hash : function() {
 		var kv = this.read();
@@ -238,7 +249,7 @@ __.SP.Filter = __.Class.extend( {
 					var sFormType = dnField.getAttribute( "sFormType" );
 					if( sFormType == "taxonomy" ) {
 						async.then( __.SP.taxonomy, "load", {
-							  sTermSet : O$C3.Tax.guidTermSet[ sName ]
+							  sTermSet : that.oTax.guidTermSet[ sName ]
 						}, "load " + sName )
 					}
 				} );
@@ -286,7 +297,7 @@ __.SP.Filter = __.Class.extend( {
 							// this happens if we ddidn't had the term id when querying
 							if( sTermNotAssignedYet ) {
 								sTermNotAssignedYet = unescape( sTermNotAssignedYet );
-								var oTax = __.SP.taxonomy.aTerms[ O$C3.Tax.guidTermSet[ sName ] ];
+								var oTax = __.SP.taxonomy.aTerms[ that.oTax.guidTermSet[ sName ] ];
 								var aTermsLookup = oTax.aTerms;
 								var guidTerm = aTermsLookup[ sTermNotAssignedYet ].guid;
 								v = {
@@ -320,6 +331,7 @@ __.SP.Filter = __.Class.extend( {
 		.start();
 	}
 	, form2caml : function() {
+		var that = this;
 		var oFields = this.read();
 		var lvCAML = [];
 		if( oFields ) {
@@ -351,7 +363,7 @@ __.SP.Filter = __.Class.extend( {
 						break;
 						case "taxonomy" :
 							laTaxFields = [];
-							var idTermSet = O$C3.Tax.guidTermSet[ oField.sName ];
+							var idTermSet = that.oTax.guidTermSet[ oField.sName ];
 							for( var sName in v ) {
 								// first get guids of children terms
 								var guid = v[ sName ];
@@ -432,7 +444,7 @@ __.SP.Filter = __.Class.extend( {
 				var oField = oFields[ sField ];
 				if( oField.v && oField.sCAMLType == "taxonomy" ) {
 					async.then( __.SP.taxonomy, "load", {
-						  sTermSet : O$C3.Tax.guidTermSet[ oField.sName ]
+						  sTermSet : that.oTax.guidTermSet[ oField.sName ]
 					}, "load " + oField.sName )
 				}
 			}
@@ -533,7 +545,7 @@ __.SP.Filter = __.Class.extend( {
 				var oField = oFields[ sField ];
 				if( oField.v && oField.sCAMLType == "taxonomy" ) {
 					async.then( __.SP.taxonomy, "load", {
-						  sTermSet : O$C3.Tax.guidTermSet[ oField.sName ]
+						  sTermSet : that.oTax.guidTermSet[ oField.sName ]
 					}, "load " + oField.sName )
 				}
 			}
@@ -749,14 +761,14 @@ __.SP.Filter = __.Class.extend( {
 				if( sName  ) {
 					( new __.Async( { sLabel : "check duplicate filter" } ) )
 					.then( __.SP.view, "list", {
-						  sList : O$C3.OSCEContacts.sList
+						  sList : that.sList
 					}, "get list of views" )
 					.then( function( args ) {
 						var async = __.Async.promise( args );
 						if( args.lsViews.__contains( sName ) ) {
 							var d = __.SP.modal.confirm( {
 								  sTitle : "Confirm this action"
-								, sQuestion : O$C3.Lang.saved_filter_name_exists_overwrite
+								, sQuestion : that.mpLang.saved_filter_name_exists_overwrite
 								, fnAnswer : function( b ) {
 									that.oModal.close();
 									if( b ) {
@@ -785,7 +797,7 @@ __.SP.Filter = __.Class.extend( {
 		// first get all filter fields
 		var sChecked = " checked ";
 		var h = "<p>";
-		h += O$C3.Lang.filter_field_selection_title;
+		h += that.mpLang.filter_field_selection_title;
 		h += "</p>";
 		h += "<table>";
 		this.loFields.forEach( function( aField ) {
@@ -854,6 +866,7 @@ __.SP.Filter = __.Class.extend( {
 		localStorage.setItem( this.sFilterFieldStore, this.lsFilterFields.__toString() );
 	}
 } );
+
 
 
 

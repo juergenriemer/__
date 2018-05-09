@@ -30,9 +30,9 @@ __.SP.filter.form.create = function( args ) {
 		}
 		// prevent manual manipulation of the taxonomy picker DIV
 		if( e.target.classList.contains( "ms-inputBox" ) ) {
-			var dnRoot = e.target.__find( ".osce-form-field" );
-			var dnImg = dnRoot.__find( "img.ms-taxonomy-browser-button" );
-			dnImg.click();
+			//var dnRoot = e.target.__closest( ".osce-form-field" );
+			//var dnImg = dnRoot.__find( "img.ms-taxonomy-browser-button" );
+			//dnImg.click();
 		}
 	} );
 	return dn;
