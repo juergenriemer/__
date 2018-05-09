@@ -35,33 +35,39 @@ __.SP.form.getField = function( s_or_dn ) {
 	if( /DispForm\.aspx/.test( url ) ) {
 		if( typeof s_or_dn == "string" ) {
 			var dnTitle = dnForm.__find( 'a[name="SPBookmark_' + s_or_dn + '"]' );
-			var dnRow = dnTitle.__closest( "tr" );
-			var dnValue = dnRow.__find( "td.ms-formbody" );
-			var v = ( dnValue.textContent )
-				? dnValue.textContent.__tokenize()
-				: null;
-			return {
-				  dnTitle : dnTitle
-				, dnRow : dnRow
-				, dnValue : dnValue
-				, v : v
+			if( dnTitle ) {
+				var dnRow = dnTitle.__closest( "tr" );
+				var dnValue = dnRow.__find( "td.ms-formbody" );
+				var v = ( dnValue.textContent )
+					? dnValue.textContent.__tokenize()
+					: null;
+				return {
+					  dnTitle : dnTitle
+					, dnRow : dnRow
+					, dnValue : dnValue
+					, v : v
+				}
 			}
+			return null;
 		}
 	}
 	else if( /NewForm\.aspx|EditForm\.aspx/.test( url ) ) {
 		var dnItem = ( s_or_dn instanceof Element )
 			? s_or_dn
 			: __find( "#" + s_or_dn );
-		var dnRow = dnItem.__closest( "tr" );
-		var sField = dnRow.__find( "h3" ).id;
-		var dnValue = ( dnItem.value ) ? dnItem : dnRow.__find( "input,textarea,select" );
-		var v = dnValue.value;
-		return {
-			  sField : sField
-			, dnRow : dnRow
-			, dnValue : dnValue
-			, v : v
+		if( dnItem ) {
+			var dnRow = dnItem.__closest( "tr" );
+			var sField = dnRow.__find( "h3" ).id;
+			var dnValue = ( dnItem.value ) ? dnItem : dnRow.__find( "input,textarea,select" );
+			var v = dnValue.value;
+			return {
+				  sField : sField
+				, dnRow : dnRow
+				, dnValue : dnValue
+				, v : v
+			}
 		}
+		return null;
 	}
 };
 

@@ -156,9 +156,6 @@ __.SP.item = {
 					kv[ "guid" + sField ] = oField.get_termGuid();
 				}
 				else if( oField && oField.get_lookupId ) {
-					console.log( sField );
-					console.log( oField.get_lookupValue() );
-					console.log( oField.get_lookupId() );
 					kv[ sField ] = oField.get_lookupValue();
 					kv[ "id" + sField ] = oField.get_lookupId();
 				}
@@ -175,8 +172,11 @@ __.SP.item = {
 				lsFields.forEach( function( sField ) {
 					var oField = oItem.get_item( sField );
 					var _kv = {};
-					if( typeof oField != "undefined" && oField ) {
-						if ( oField instanceof Array ) {
+					if( typeof oField != "undefined" ) {
+						if( ! oField ) {
+							_kv[ sField ] = ""; // null values
+						}
+						else if( oField instanceof Array ) {
 							_kv[ sField ] = [];
 							oField.forEach( function( o ) {
 								_kv[ sField ].push( convert( sField, o ) );
@@ -256,7 +256,6 @@ __.SP.item = {
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
-		console.log( oItem );
 		ctx.load( oItem );
 		var oGroups = ctx.get_web().get_siteGroups();
 		var oGroup = oGroups.getByName( args.sGroup );
@@ -266,7 +265,6 @@ __.SP.item = {
 		oItem.breakRoleInheritance( false );
 		oItem.get_roleAssignments().add( oGroup, oBinding );
 		__.SP.exec( ctx, oItem, function( oItem ) {
-			console.log( oItem );
 			if( oItem.sError ) {
 				async.reject( oItem.sError );
 			}

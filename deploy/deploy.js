@@ -2,7 +2,8 @@ pathVS = "C:\\Users\\admin_jriemer\\Projects\\";
 pathBuilds = "../builds/";
 pathDocs = "../docs/jsdoc/";
 pathSource = "../source/";
-
+nVersion = "0.9.66";
+pathHive = "C:\\Program Files\\Common Files\\Microsoft Shared\\Web Server Extensions\\15\\TEMPLATE\\LAYOUTS\\osce\\";
 // -------------------------
 path = require('path');
 fs = require( "fs" );
@@ -111,7 +112,22 @@ Compile = {
 		} );
 	//	cmd.run( sCommand );
 	}
+	, lflsort : function( lfl ) {
+		console.log( 'sort now' );
+		lfl = lfl.sort( function( a, b ) {
+			//a = a.replace( /[\W_]+/g, "" );
+			a = a.replace( /js$/g,"" );
+			//b = b.replace( /[\W_]+/g, "" );
+			b = b.replace( /js$/g, "" );
+			console.log( a + " > " + b + " = " + (a>b));
+			return (a < b);
+		} );
+		lfl.reverse();
+		return lfl;
+	}
 	, __ : function() {
+		// create documentation
+		/*
 		this.purgeFolder( pathDocs );
 		this.jsdoc( pathSource + "/core/dom", pathDocs + "/dom", "config.json" );
 		this.jsdoc( pathSource + "/core/utils", pathDocs + "/utils", "config.json" );
@@ -119,8 +135,25 @@ Compile = {
 		this.jsdoc( pathSource + "/core/class", pathDocs + "/class", "config.json" );
 		this.jsdoc( pathSource + "/core/event", pathDocs + "/event", "config.json" );
 		this.jsdoc( pathSource + "/SP", pathDocs + "/SP", "config.json" );
+		*/
+
+		var lfljsCore = this.walk( pathSource + "/core", "\.min\.js$", "\/jsLink\/" );
+		var lfljsPlugins = this.walk( pathSource + "/plugins", "\.min\.js$", "\/jsLink\/" );
+		//var lfljsSP = this.walk( pathSource + "/SP", "\.min\.js$", "\/jsLink\/" );
+		var lfljsSP = this.walk( pathSource + "/SP", "\.js$", "\/jsLink\/" );
+		var sjsCore = this.flConcat( lfljsCore );
+		var sjsPlugins = this.flConcat( lfljsPlugins );
+		var sjsSP = this.flConcat( this.lflsort( lfljsSP ) );
+		var sjsAll = sjsCore + sjsPlugins + sjsSP;
+
+		this.write( pathBuilds, "__.core." + nVersion + ".min.js", sjsCore );
+		this.write( pathBuilds, "__.plugins." + nVersion + ".min.js", sjsPlugins );
+		this.write( pathBuilds, "__.sp." + nVersion + ".min.js", sjsSP );
+		this.write( pathBuilds, "__." + nVersion + ".min.js", sjsAll );
+		this.write( pathHive, "__." + nVersion + ".min.js", sjsAll );
 	}
 };
 
 Compile.__();
+
 

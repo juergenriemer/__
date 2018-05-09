@@ -93,7 +93,9 @@ __.SP.list = {
 						if( args.lsFields.length > 0 ) {
 							args.lsFields.forEach( function( sField ) {
 								var oField = kvItem[ sField ];
-								if( oField ) {
+								// we also want to show empty fields that are sent back
+								// with null, hence check of type
+								if( typeof oField !== "undefined" ) {
 									if( oField.get_termGuid ) {
 										kv[ sField ] = oField.get_label();
 										kv[ "guid" + sField ] = oField.get_termGuid();
