@@ -31,14 +31,18 @@ else {
 <h2>inner</h2>
 <h2>inner</h2>
 <h2 class='bottom'>LEFTbottombottombottombottombottombottombottombottombottombottombottomRIGHT</h2>
-
+<hr>olla</hr>
+<em class="a">1</em>
+<em id="u" class="a">2</em>
 </div>
 <div id="output"><h1>Unit test __.DOM.js</h1></div>
 
 <script>
+
 var dnResult = __find( "#result" );
 cAsserts = 0;
 bErrors = false;
+ecAsserts = 100;
 assert = function( h, eh, s ) {
 	cAsserts++;
 	if( h === eh ) {
@@ -53,6 +57,26 @@ assert = function( h, eh, s ) {
 	}
 	dnResult.innerHTML = sResult + dnResult.innerHTML; 
 }
+setTimeout( function() {
+	if( cAsserts == ecAsserts && ! bErrors ) {
+		document.body.style.background = "green";
+	}		
+	else {
+		document.body.style.background = "red";
+	}
+}, 3000 );
+
+
+var u = __find( "#output" );
+assert( typeof u.__each, "undefined", "nodelist conversion 1" );
+var em = __find( "em" );
+assert( typeof em.__each, "function", "nodelist conversion 2" );
+var a = __find( "[class]" );
+assert( typeof a.__each, "function", "nodelist conversion 3" );
+var cap = __find( "hr" );
+assert( typeof cap.__each, "undefined", "nodelist conversion 4" );
+var x = __find( "[id='u']" );
+assert( typeof x.__each, "undefined", "nodelist conversion 5" );
 
 dnOutput = __find( "#output" );
 h = dnOutput.innerHTML;
@@ -168,9 +192,10 @@ var en = 2;
 var n = dnMenu.__find( "ul" ).length;
 assert( n, en, "__find (tagname)" );
 
-__.dn.each( dnNavi, function( dn ) {
+dnNavi.__each( function( dn ) {
 	dn.__remove();
 } )
+
 assert( __find( "#menu" ), null, "__.dn.each/del (menu)" );
 assert( __find( "#footer" ), null, "__.dn.each/del (footer)" );
 
@@ -464,15 +489,6 @@ __find( "div" ).__each( function( dn ) {
 } )
 assert( sTags, "DIVDIVDIVDIVDIVDIV", "dn.__each" );
 
-ecAsserts = 95
-setTimeout( function() {
-	if( cAsserts == ecAsserts && ! bErrors ) {
-		document.body.style.background = "green";
-	}		
-	else {
-		document.body.style.background = "red";
-	}
-}, 3000 );
 </script>
 </body>
 </html>

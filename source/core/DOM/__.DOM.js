@@ -73,9 +73,10 @@ Object.defineProperty( Node.prototype, "__find", {
 			}
 		}
 		var xdn = dn[ sfn ]( css );
-		xdn = HTMLCollection.prototype.isPrototypeOf( xdn )
-			? [].slice.call( xdn ) : xdn;
 		if( xdn ) {
+			// convert nodelists to arrays
+			xdn = Element.prototype.isPrototypeOf( xdn )
+				? xdn : [].slice.call( xdn );
 			if( cb ) {
 				__.dn.each( xdn, cb );
 			}
