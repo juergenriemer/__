@@ -83,7 +83,7 @@ Error = new __.Async({
 	  id : "test error"
 	, sFile : "test.async.html:290"
 	, fnerr : function( oError ) {
-		assert( "error message 2", 'id:(test error) task:(error2) args:({"__guid_async__":"Async2","x":"error","aResult":["w1"]}) sdftError:(An error happened) sError:("an error happend") ', oError.sStack );
+		assert( "error message 2", 'id:(test error) task:(error2) args:({"__guid_async__":"Async2","x":"error","aResult":["w1"]}) sdftError:() sError:("an error happend") ', oError.sStack );
 	}
 })
 .then( this, "waiter", { x : 1 }, "error1" )

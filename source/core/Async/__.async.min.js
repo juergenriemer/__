@@ -111,7 +111,7 @@ __.Async.Promise = function( args ) {
 	this._bDebug = false;
 	this.ctx = ( args && args.ctx ) ? args.ctx : window;
 	this.id = ( args && args.id ) ? args.id : this.__guid_async__;
-	this.sdftError = ( args && args.sdftError ) ? args.sdftError : "An error happened";
+	this.sdftError = ( args && args.sdftError ) ? args.sdftError : "";
 	this.fnerr = ( args && args.fnerr ) ? args.fnerr : __.Async.fnerr;
 	this.fnstat = ( args && args.fnstat ) ? args.fnstat : __.Async.fnstat;
 	return this;

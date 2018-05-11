@@ -24,14 +24,13 @@ top.__.SP.Error = __.Class.extend( {
 		}
 		// generate error code
 		var sApplication = "SP";
-		console.log( args.id );
 		if( args.id ) {
 			var lscurApplication = args.id.match( /^O\$C3\.(.*?)\./ );
 			if( lscurApplication && lscurApplication[ 1 ] ) {
 				sApplication = lscurApplication[ 1 ].toUpperCase();
 			}
 		}
-		var idError = sApplication + "_" + Math.floor( (1 + Math.random() ) * 0x10000 ).toString( 16 );
+		var idError = sApplication.toLowerCase() + "_" + Math.floor( (1 + Math.random() ) * 0x10000 ).toString( 16 );
 		// check if we got an external error code passed
 		// in wich case we take that one and remove it from error message
 		var rxidError = new RegExp( /\[CODE\|(.*?)\]/ );
@@ -72,9 +71,6 @@ top.__.SP.Error = __.Class.extend( {
 			, message : "[" + this.oError.idError + "][" + O$C3.sApp + "] " + this.oError.sError
 			, exception : sException
 		}
-		//console.warn( ">>>>>>ACTIVATE LOG>>>>>>>" );
-		//console.warn( oPayload );
-		//console.warn( "<<<<<<ACTIVATE LOG<<<<<<<" );
 		top.__.SP.webservice.call( {
 			  sService : "midtier"
 			, sEndpoint : "Log4NetExternal"

@@ -80,5 +80,6 @@ __.SP.user.current = function( args ) {
 	} )
 };
 
-__.SP.user.current();
+// execute it right away for will need it in any case
+_spBodyOnLoadFunctionNames.push( "__.SP.user.current" );
 
