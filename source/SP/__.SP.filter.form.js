@@ -245,7 +245,7 @@ __.SP.filter.form.field.choice = {
 };
 
 // need to load the following in masterpage: sp.Taxonomy.js, scriptforwebtaggingui.js
-// __.SP.filter.form.field.taxonomy.create( { dnRoot : __.dn_( "#sideNavBox" ), sid : "MainCat", sDisplayName : "Main Contact Type", idTermSet : O$C3.Tax.guidTermSet.MainContactType} );
+// __.SP.filter.form.field.taxonomy.create( { dnRoot : __.dn_( "#sideNavBox" ), sid : "MainCat", sDisplayName : "Main Contact Type", idTermSet : __.SP.taxonomy.oStore.guidTermSet.MainContactType} );
 // __.SP.filter.form.field.taxonomy.value( "MainCat" );
 __.SP.filter.form.field.taxonomy = {
 	  create : function( args ) { // dnRoot, sid, sDisplayName, idTermSet ) {
@@ -259,14 +259,14 @@ __.SP.filter.form.field.taxonomy = {
 		h += '</div>';
 		h += "</div>";
 		var dn = args.dnRoot.__append( h );
-		var sspId = O$C3.Tax.guidTermStore;
+		var sspId = __.SP.taxonomy.oStore.guidTermStore;
 		var url = _spPageContextInfo.webServerRelativeUrl;
 		url += '\u002f_vti_bin\u002fTaxonomyInternalService.json';
 		var dnPicker = document.body.__find( "#" + sidPicker );
 		dnPicker.InputFieldId = sidInput;
 		dnPicker.SspId = sspId;
 		  // REF: put Tax object into __.SP.taxonomy!!!
-		dnPicker.TermSetId = O$C3.Tax.guidTermSet[ args.sName ];
+		dnPicker.TermSetId = __.SP.taxonomy.oStore.guidTermSet[ args.sName ];
 		dnPicker.AnchorId = '00000000-0000-0000-0000-000000000000';
 		dnPicker.IsMulti = true;
 		dnPicker.AllowFillIn = false;

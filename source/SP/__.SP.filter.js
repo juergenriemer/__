@@ -11,7 +11,7 @@
  * @property {Function}  [args.cbCreate] callback to be invoked when the filter gets created
  * @property {Function}  [args.cbClear] callback to be invoked when the user clears the filter
  * @property {String}  [args.defaultView] name of the default view
- * @property {Object}  [args.oTax] object holding term store and sets (default is O$C3.Tax)
+ * @property {Object}  [args.oTax] object holding term store and sets (default is __.SP.taxonomy.oStore)
  * @todo rename defaultView to sdftView;
  * @example n/a
  */
@@ -41,7 +41,7 @@ __.SP.Filter = __.Class.extend( {
 		this.loFields = this.extractFilterFields( aConf.loFields );
 		this.cbCreate = aConf.cbCreate || null;
 		this.cbClear = aConf.cbClear || null;
-		this.oTax = aConf.oTax || O$C3.Tax;
+		this.oTax = aConf.oTax || __.SP.taxonomy.oStore;
 		this.defaultView = aConf.defaultView || "All Items";
 		// SP's OOTB default views differ in internal and display name
 		this.sdftView = aConf.defaultView || "AllItems";
@@ -662,7 +662,7 @@ __.SP.Filter = __.Class.extend( {
 						, sdftError : "Failed to save a filter."
 					} ) )
 					.then( __.SP.view, "list", {
-						  sList : that.sList + "X"
+						  sList : that.sList
 					}, "get list of views" )
 					.then( function( args ) {
 						var async = __.Async.promise( args );

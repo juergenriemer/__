@@ -36,7 +36,7 @@ __.SP.user.aInfo = {
 __.SP.user.current = function( args ) {
 	var that = this;
 	var async = __.Async.promise( args );
-	if( this.aInfo ) {
+	if( this.aInfo.bLoaded ) {
 		async.resolve( { aUserInfo : this.aInfo } );
 		return;
 	}
@@ -82,4 +82,3 @@ __.SP.user.current = function( args ) {
 
 __.SP.user.current();
 
-console.log( __.SP.user )

@@ -22,20 +22,42 @@ top.__.SP.Error = __.Class.extend( {
 			sError = args;
 			sDescription = "";
 		}
+		// generate error code
+		var sApplication = "SP";
+		console.log( args.id );
+		if( args.id ) {
+			var lscurApplication = args.id.match( /^O\$C3\.(.*?)\./ );
+			if( lscurApplication && lscurApplication[ 1 ] ) {
+				sApplication = lscurApplication[ 1 ].toUpperCase();
+			}
+		}
+		var idError = sApplication + "_" + Math.floor( (1 + Math.random() ) * 0x10000 ).toString( 16 );
+		// check if we got an external error code passed
+		// in wich case we take that one and remove it from error message
+		var rxidError = new RegExp( /\[CODE\|(.*?)\]/ );
+		var lsErrorId = sError.match( rxidError );
+		if( lsErrorId && lsErrorId[ 1 ] ) {
+			// get (external) error id
+			idError = lsErrorId[ 1 ];
+			// and remove from error string
+			sError = sError.replace( rxidError, "" ).trim();
+		}
 		var now = new Date();
 		var dt = new Date( now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds() );
 		__.SP.user.current();
-		var sUser = ( top.__.SP.user.aInfo && top.__.SP.user.aInfo.sLogin ) ? top.__.SP.user.aInfo.sLogin : "";
+		var sUser = ( top.__.SP.user.aInfo && top.__.SP.user.aInfo.sLogin )
+			? top.__.SP.user.aInfo.sLogin : "";
 		this.oError = {
 			  sTitle : args.sTitle || "System Message"
 			, sError : sError
 			, sDescription : sDescription
 			, sUser : sUser
 			, dt : dt
+			, idError : idError
+			, sApplication : sApplication
 			, sInfo : args.sInfo || null
 			, sStack : args.sStack || null
 			, sLevel : args.sLevel || "ERROR"
-			, idError : "sp" + Math.floor( (1 + Math.random() ) * 0x10000 ).toString( 16 )
 			, sSite : _spPageContextInfo.siteServerRelativeUrl
 			, url : self.location.href
 		};
@@ -48,12 +70,11 @@ top.__.SP.Error = __.Class.extend( {
 		var oPayload = {
 			  level : this.oError.sLevel
 			, message : "[" + this.oError.idError + "][" + O$C3.sApp + "] " + this.oError.sError
-			, exception : escape( sException )
+			, exception : sException
 		}
-		console.warn( ">>>>>>ACTIVATE LOG>>>>>>>" );
-		console.warn( oPayload );
-		console.warn( "<<<<<<ACTIVATE LOG<<<<<<<" );
-		return;
+		//console.warn( ">>>>>>ACTIVATE LOG>>>>>>>" );
+		//console.warn( oPayload );
+		//console.warn( "<<<<<<ACTIVATE LOG<<<<<<<" );
 		top.__.SP.webservice.call( {
 			  sService : "midtier"
 			, sEndpoint : "Log4NetExternal"
@@ -90,7 +111,6 @@ top.__.SP.Error = __.Class.extend( {
 						<td class='title'>Error message(s):</td> \
 						<td class='message'> \
 						<textarea disabled>{{sError}}{{sDescription}}</textarea> \
-						<span class='osce-erno hide'><br>[multiple errors occurred: <span>1</span>]</span> \
 						</td> \
 					</tr> \
 				</table> \
@@ -112,28 +132,48 @@ top.__.SP.Error = __.Class.extend( {
 		this.createErrorData( args );
 		var hMessage = this.hMessage( this.oError );
 		if( hMessage ) {
-			this.dnWindow = top.__.SP.modal.open( {
+			var oApp = null;
+			var bShowReportErrorButton = false;
+			var sApp = "";
+			if( O$C3 && O$C3[ this.oError.sApplication ] ) {
+				bShowReportErrorButton = O$C3[ this.oError.sApplication ].bShowReportErrorButton;
+				sApp = "[" + O$C3[ this.oError.sApplication ].sApp + "] ";
+			}
+			var oModalConfig = {
 				  sTitle : that.oError.sTitle
 				, hContent : hMessage
-				, sOk : "Report"
+				, sOk : null
 				, fnClose : function() {
 					that.dnWindow.close();
 					//that.closeAll();
 				}
 				, fnact : function() {
 					var sBody = "Dear Service Desk,\r\n\r\n";
-					sBody += "The application \"" + O$C3.sApp + "\" showed ";
-					sBody += "the following error message:\r\n\r\n";
-					sBody += "\t(" + that.oError.idError + ") " + that.oError.sError + "\r\n\r\n";
-					sBody += " Best regards,";
+					if( sApp ) {
+						sBody += "The application " + sApp + "showed ";
+					}
+					else {
+						sBody += "An application showed ";
+					}
+					sBody += "the following error message:\r\n";
+					sBody += "(" + that.oError.idError + ") " + that.oError.sError + "\r\n";
+					sBody += " The error happend at this URL:\r\n";
+					sBody += that.oError.url + "\r\n\r\n\r\n";
+					sBody += "\tBest regards,";
 					var url = "mailto:ICTServicedesk@osce.org";
 					var url = "mailto:jriemer@osce.org";
-					url += "?subject=" + O$C3.sApp + ": " + that.oError.sError;
+					url += "?subject=" + sApp + that.oError.sError;
 					url += "&body=" + encodeURIComponent( sBody );
 					window.location.href = url;
 					that.dnWindow.close();
 				}
-			} );
+			};
+			if( O$C3 && O$C3[ this.oError.sApplication ] ) {
+				if( O$C3[ this.oError.sApplication ].bShowReportErrorButton ) {
+					oModalConfig.sOk = "Report";
+				}
+			}
+			this.dnWindow = top.__.SP.modal.open( oModalConfig );
 		}
 		this.log();
 	}

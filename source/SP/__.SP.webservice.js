@@ -98,23 +98,43 @@ __.SP.webservice = {
 		oAjax.withCredentials = true;
 		oAjax.onreadystatechange = function() {
 			var fnerr = function( oAjax, sError ) {
-				var sInfo = escape( oAjax.response );
-				var sError = ( oAjax.statusText )
-					? "Error reported: " + ( oAjax.statusText )
-					: "Network error happend";
-				var oResponse = oAjax.response.__toJson();
-				if( oResponse && oResponse.Message ) {
-					sError = oResponse.Message;
+				console.log( oAjax );
+				var sError = "";
+				try {
+					var oResponse = oAjax.response.__toJson();
+					if( oResponse && oResponse.Message ) {
+						// check if we get back a JSON with "Message" (EDRMS case)
+						sError = oResponse.Message;
+						if( oResponse.ID ) {
+							sError = "[CODE|" + oResponse.ID + "] " + sError;
+						}
+					}
+					else {
+						// then check if we get back any sort of XML/HTML response
+						// in which case we try to parse the content
+						sError = oAjax.response.replace( /^.*<body+?>/g, "" );
+						sError = sError.replace( /<(.|\n)*?>/g, "" );
+						sError = sError.trim().substring( 0, 300 );
+					}
+				} catch( e ) {}
+				// if we did not come up with a suitable error message...
+				if( ! sError ) {
+					// .. we check if the statusText holds any information
+					sError = ( oAjax.statusText )
+						? "Error reported: " + ( oAjax.statusText )
+						// .. as last resort we conclude the connection was aborted
+						: "Network connection aborted.";
 				}
 				if( args.bIgnoreFailure ) {
 					async.stop();
 				}
 				else {
-					async.reject( sError, sInfo );
+					async.reject( sError );
 				}
 			};
 			if( oAjax.readyState === 4 ) {
-				// the error below is triggered by SharePoint in 				// case an internal Ajax request is cancelled,
+				// the error below is triggered by SharePoint in 
+				// case an internal Ajax request is cancelled,
 				// e.g. by navigating away from a page before
 				// a result was delivered. We can savely ignore.
 				if( /Unexpected response from server. The status code of response is '0'/.test( oAjax.responseText ) ) {

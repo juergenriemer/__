@@ -96,11 +96,11 @@ __.SP.list = {
 								// we also want to show empty fields that are sent back
 								// with null, hence check of type
 								if( typeof oField !== "undefined" ) {
-									if( oField.get_termGuid ) {
+									if( oField && oField.get_termGuid ) {
 										kv[ sField ] = oField.get_label();
 										kv[ "guid" + sField ] = oField.get_termGuid();
 									}
-									else if( oField.get_lookupValue ) {
+									else if( oField && oField.get_lookupValue ) {
 										kv[ sField ] = oField.get_lookupValue();
 										kv[ "id" + sField ] = oField.get_lookupId();
 									}
@@ -382,8 +382,8 @@ __.SP.list.xmlFields = function( args ) {
 	}
 	if( sType == "TaxonomyFieldType" ) {
 		// REF: move this to __.SP.taxonomy
-		var guidTermStore = O$C3.Tax.guidTermStore;
-		var guidTermSet = O$C3.Tax.guidTermSet[ args.sTaxonomy ];
+		var guidTermStore = __.SP.taxonomy.oStore.guidTermStore;
+		var guidTermSet = __.SP.taxonomy.oStore.guidTermSet[ args.sTaxonomy ];
 		xml += '<Customization>';
 		xml += '<ArrayOfProperty>';
 		xml += '<Property><Name>SspId</Name><Value xmlns:q1="http://www.w3.org/2001/XMLSchema" p4:type="q1:string" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">' + guidTermStore + '</Value></Property>';

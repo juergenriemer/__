@@ -192,6 +192,43 @@ __.SP.item = {
 			}
 		} );
 	}
+	/**
+	 * Checks if the current user has edit rights on an item.
+	 * @memberof __.SP.item
+	 * @method isEditable
+	 * @example
+	 * __.SP.item.create( {
+	 *      sList : "Shared Documents"
+	 *    , id : 5
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of item
+	 * @returns {Object} Resolved promise holding the following values 
+	 * <pre class='return-object'>
+	 * bEditable | (Boolean) | true if item is editable by the current user
+	 * </pre>
+	 */
+	, isEditable : function( args ) {
+		var async = __.Async.promise( args );
+		var ctx = __.SP.ctx();
+		var oList = __.SP.list.get( ctx, args.sList );
+		var oItem = oList.getItemById( args.id );
+		ctx.load( oItem, "EffectiveBasePermissions" );
+		__.SP.exec( ctx, oItem, function( oItem ) {
+			if( oItem.sError ) {
+				async.reject( oItem.sError );
+			}
+			else {
+				var oPermission = oItem.get_effectiveBasePermissions();
+				var bEditable = false;
+				if( oPermission.has( SP.PermissionKind.editListItems ) ) {
+					bEditable = true;
+				}
+				async.resolve( { bEditable : bEditable } );
+			}
+		} );
+	}
 //	__.SP.item.breakInheritance( { sList : "DossierInfos", id: 6 } ) 
 	, breakInheritance : function( args ) { // sList, id
 		var async = __.Async.promise( args );
@@ -308,24 +345,3 @@ __.SP.item = {
 		} );
 	}
 };
-
-/*
- *
- var ctx = new SP.ClientContext.get_current();
-var oBooksList = ctx.get_web().get_lists().getByTitle('Actions');
-var oItem = oBooksList.getItemById(1);
-ctx.load(oItem, 'EffectiveBasePermissions' )
-
-    ctx.load(oItem);
-
- ctx.executeQueryAsync(function(){
-        if (oItem.get_effectiveBasePermissions().has(SP.PermissionKind.editListItems)){
-            console.log("user has edit permission");
-        }else{
-             console.log("user doesn't have edit permission");
-        }   
-    }, function(sender, args){
-        console.log('request failed ' + args.get_message() + '\n'+ args.get_stackTrace());
-})
-
-*/
