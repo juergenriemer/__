@@ -44,7 +44,10 @@ __.SP.modal = {
 			}
 		};
 		var dnModal = SP.UI.ModalDialog.showModalDialog( kv );
-		( new __.Async() )
+		( new __.Async( {
+			  id : "__.SP.modal.load"
+			, sdftError : "Failed to load window page."
+		} ) )
 		.wait( function() {
 			if( dnModal && dnModal.$e_0 ) {
 				if( args.fnLoad ) {

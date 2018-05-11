@@ -49,14 +49,9 @@ __.SP.Filter = __.Class.extend( {
 		this.sFilterFieldStore = this.sFilter + "_fields_";
 		// check if filter has already been created
 		( new __.Async( {
-			  sLabel : "Create a filter for search or saving"
-			, sFile : "__.SP.filter.js"
+			  id : "__.SP.Filter.init"
+			, sdftError : "Failed to initialize a list filter."
 		} ) )
-		/*
-		.wait( function() {
-			return __.dn_( "#sideNavBox" );
-		}, 25, "wait for side nav box" )
-		*/
 		.then( function( args ) {
 			var h = "<div id='"+ that.sFilter +"' style='display:none' class='osce-filter'></div>";
 			that.dnSideNav = __find( "#sideNavBox" );
@@ -219,8 +214,8 @@ __.SP.Filter = __.Class.extend( {
 		var sView = ctx.viewTitle;
 		var sList = ctx.ListTitle;
 		( new __.Async( {
-			  sLabel : "Update form with query"
-			, sFile : "__.SP.filter.js"
+			  id : "__.SP.Filter.caml2form"
+			, sdftError : "Failed to convert search to filter."
 		} ) )
 		.then( __.SP.view, "read", {
 			  sList : ctx.ListTitle
@@ -428,8 +423,8 @@ __.SP.Filter = __.Class.extend( {
 			return;
 		}
 		( new __.Async( {
-			  sLabel : "compare loaded queries"
-			, sFile : "__.SP.filter.js"
+			  id : "__.SP.Filter.compareQueries"
+			, sdftError : "Failed to check if search result has been updated."
 		} ) )
 		.then( __.SP.taxonomy, "getTermIds", "get taxonomy term ids" )
 		.clear()
@@ -534,8 +529,8 @@ __.SP.Filter = __.Class.extend( {
 		var that = this;
 		var xmlQuery = '<OrderBy><FieldRef Name="Title" /></OrderBy>';
 		( new __.Async( {
-			  sLabel : "create a view"
-			, sFile : "__.SP.filter.js"
+			  id : "__.SP.Filter.createView"
+			, sdftError : "Failed to create a new filter view."
 		} ) )
 		.then( __.SP.taxonomy, "getTermIds", "get taxonomy term ids" )
 		.then( function( args ) {
@@ -636,103 +631,6 @@ __.SP.Filter = __.Class.extend( {
 		this.createView( sView, function( guid ) {
 			var url = that.createPersonalViewUrl( guid );
 			self.location.href = url;
-			/*
-			( new __.Async( {
-				  sLabel : "Save a filter search"
-				, sFile : "__.SP.filter.js"
-				, fnstat: function( a ){
-					if( a.sMsg && that.oModal ) {
-						that.oModal.progress( a.sMsg );
-					}
-				}
-			} ) )
-			.then( function( args ) {
-				that.oModal.close();
-				__.SP.grid.reload();
-				__.Async.promise( args ).resolve();
-			}, "Filter successfully saved" )
-			.start();
-			*/
-			/*
-			.then( __.SP.list, "read", {
-				  sList : "SideBar"
-				, lsFields : [ "ID", "Title" ]
-				, xmlQuery : "<Query><Where><Eq><FieldRef Name='sAction' /><Value Type='Text'>#saved_filters</Value></Eq></Where></Query>"
-			}, "read filter box id from sidebar" )
-			.then( function( args ) {
-				if( args.lkv && args.lkv[ 0 ] ) {
-					var idParent = args.lkv[ 0 ].ID;
-					var sParent = args.lkv[ 0 ].Title;
-					delete args.lkv;
-					var xmlcur = "<Query><Where><And>";
-					xmlcur += "<Eq><FieldRef Name='Title' /><Value Type='Text'>" + sView + "</Value></Eq>";
-					xmlcur += "<Eq><FieldRef Name='sParent' /><Value Type='Text'>" + sParent + "</Value></Eq>";
-					xmlcur += "</And></Where></Query>"
-					__.Async.promise( args ).resolve( {
-						  idParent : idParent
-						, sParent : sParent
-						, xmlQuery : xmlcur
-					} );
-				}
-				else {
-					__.Async.promise( args ).reject( { sError: "no box for links" } );
-				}
-			}, "construct query to search for duplicate"  )
-			.then( __.SP.list, "read", {
-				  sList : "SideBar"
-				, lsFields : [ "ID" ]
-			}, "query sidebar for duplicates" )
-			.then( function( args ) {
-				var async = __.Async.promise( args );
-				if( __.l.empty( args.lkv ) ) {
-					async.then( __.SP.item, "create", {
-						  sList : "SideBar"
-						, kv : {
-							  Title : sView
-							, sParent : args.idParent
-							, sAction : url
-							, bShown : 1
-							, nOrder : 1
-						}
-					}, "create new entry" )
-					.then( function( args ) {
-						var async = __.Async.promise( args );
-						async.then( __.SP.item, "restrictToUser", {
-							  sList : "SideBar"
-							, id : args.idItem
-							, xUser: _spPageContextInfo.userId
-							, sRole: "Edit"
-						}, "set permissions" ).resolve();
-					} )
-					.then( function() {
-						var h = '';
-						h += '<li>';
-						h += '<a href="' + url + '">' + sView + '</a>';
-						h += '</li>';
-						// get proper box
-						__.dn_( "#osce-sidebar h2", function( dn ) {
-							if( dn.textContent == "Saved Filters" ) {
-								var dnBox = dn.nextElementSibling;
-								__.dn.append( h, dnBox );
-							}
-						} );
-						__.Async.promise( args ).resolve();
-					}, "manually add to sidebar" );
-				}
-				else {
-					var id = args.lkv[ 0 ].ID;
-					async.then( __.SP.item, "update", {
-						  sList : "SideBar"
-						, id : id
-						, kv : {
-							  Title : sView
-							, sAction : url
-						}
-					}, "update existing sidebar entry" )
-				}
-				async.resolve();
-			}, "create or update sidebar" )
-			*/
 		} );
 	}
 	, openSaveWindow : function() {
@@ -759,9 +657,12 @@ __.SP.Filter = __.Class.extend( {
 				var dnValue = that.oModal.dn.__find( "[name='sName']" );
 				var sName = dnValue.value.__sanitize();
 				if( sName  ) {
-					( new __.Async( { sLabel : "check duplicate filter" } ) )
+					( new __.Async( {
+						  id : "__.SP.Filter.openSaveWindow"
+						, sdftError : "Failed to save a filter."
+					} ) )
 					.then( __.SP.view, "list", {
-						  sList : that.sList
+						  sList : that.sList + "X"
 					}, "get list of views" )
 					.then( function( args ) {
 						var async = __.Async.promise( args );

@@ -163,7 +163,10 @@ __.SP.filter.form.field.autocomplete = {
 			xmlQuery += "<Value Type='Text'>" + sTerm +"</Value>";
 			xmlQuery += "</Contains></Where></Query>";
 			xmlQuery += "<RowLimit>" + ( args.nLimit || 10 ) + "</RowLimit>";
-			( new __.Async( { sLabel : "filter_form_lookup" } ) )
+			( new __.Async( {
+				  id : "__.SP.filter.form.field.autocomplete.create"
+				, sdftError : "Failed to create an autocomplete field"
+			} ) )
 			.then( __.SP.list, "read", {
 				  sList : args.sLookupList
 				, lsFields : [ args.sLookupField ]

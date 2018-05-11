@@ -8,8 +8,8 @@ top.__.SP.Error = __.Class.extend( {
 	, createErrorData : function( args ) {
 		var sError = "An incident happened";
 		var sDescription = "";
-		if( args.sLabel ) {
-			sError = "Could not " + args.sLabel + ".\r\n";
+		if( args.sdftError ) {
+			sError = args.sdftError + "\r\n";
 			if( args.sError ) {
 				sDescription = args.sError;
 			}
@@ -111,7 +111,6 @@ top.__.SP.Error = __.Class.extend( {
 		var that = this;
 		this.createErrorData( args );
 		var hMessage = this.hMessage( this.oError );
-		console.log( ">>>", hMessage );
 		if( hMessage ) {
 			this.dnWindow = top.__.SP.modal.open( {
 				  sTitle : that.oError.sTitle

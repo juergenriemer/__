@@ -128,7 +128,10 @@ __.SP.list = {
 	, readView : function( args ) { // sList, sView, lsFields, cb
 		var cb = args.cb;
 		var lsFields = args.lsFields;
-		( new __.Async() )
+		( new __.Async( {
+			  id : "__.SP.list.readView"
+			, sdftError : "Failed to read list view."
+		} ) )
 		.then( __.SP.view, "read", {
 			  sList : args.sList
 			, sView : args.sView
