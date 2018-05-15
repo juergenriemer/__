@@ -738,7 +738,6 @@ __.utils.dt = {
 
 __.utils.misc = {
 	  isIE : function() {
-		// mz change needed!
 		// http://stackoverflow.com/a/36688806/463676 
 		if( navigator.appName == 'Microsoft Internet Explorer' ) {
 			return true; // IE

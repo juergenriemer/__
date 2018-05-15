@@ -1,0 +1,152 @@
+/* hide class, used to toggle in case of admin */
+.hide {
+	display : none;
+}
+
+/* ************** MODAL WINDOW ************ */
+
+#osce-modal .osce-action-panel
+	{
+	position : relative;
+	}
+	
+#osce-modal .osce-buttons
+	{
+	position : absolute;
+	right : 0;
+	}
+#osce-modal .osce-loading img
+	{
+	float : left;
+	padding : 0.2em;
+	}
+  #osce-modal .osce-loading
+, #osce-modal .osce-message
+	{
+	position : absolute;
+	line-height : 2em;
+	font-style : italic;
+	display : none;
+	}
+#osce-modal .osce-message
+	{
+	color : red;
+	}
+#osce-modal p.separator
+	{
+	border-bottom : 1px dashed #c0c0c0;
+	}
+
+/* error panel */
+.osce-error .message {
+	width : 100%
+}
+
+.osce-error textarea {
+	width : 95%;
+	resize: none;
+	height : 55px;
+	border : 0;
+	color : #606060;
+	padding : 0;
+	margin : 0;
+	background : #fff;
+}
+
+
+
+/* key filter panel icons */
+@font-face
+	{
+	font-family: 'icomoon';
+	src: url("fonts/icomoon.eot?nq1es0");
+	src: url("fonts/icomoon.eot?#iefixnq1es0") format("embedded-opentype"), url("fonts/icomoon.woff?nq1es0") format("woff"), url("fonts/icomoon.ttf?nq1es0") format("truetype"), url("fonts/icomoon.svg?nq1es0#icomoon") format("svg");
+	font-weight: normal;
+	font-style: normal;
+	}
+
+#osce-filter-buttons {
+    padding-left : 8px;
+    padding-bottom : 0.5em;
+    border-bottom: 1px solid #c0c0c0;
+    margin-bottom : 5px;
+}
+
+#osce-filter-buttons .menu {
+	font-size: 1.3em;
+	padding-right:0.5em;
+	color : #606060;
+	cursor:pointer;
+	font-family : 'icomoon';
+}
+
+.icon-gear:before {
+	content : "\e994";
+}
+
+.icon-search:before {
+	content : "\f002";
+}
+
+.icon-clear:before {
+	content : "\e900";
+}
+
+.icon-save:before {
+	content : "\e902";
+}
+
+/* key filter */
+
+.osce-form-field {
+	float : left;
+	padding:3px;
+	width : 100%;
+}
+
+div.half-size {
+	width : 44%;
+	margin : 0;
+	padding:0;
+	padding-left : 3px;
+}
+
+input.date {
+    width: 121px;
+}
+.osce-form input,
+.osce-form div {
+}
+select.osce-v {
+	width : 82% !important;
+	height : 1.8em;
+}
+
+[sformtype="taxonomy"] img {
+	float : right;
+	margin-top:3px;
+	margin-right : 2px;
+
+}
+
+img.osce-sp-calendar {
+	float : right;
+	margin-top:-1px;
+	margin-right : -1px;
+}
+
+.osce-form [role="textbox"] {
+	width : 92%;
+}
+
+.osce-form input {
+	width : 80%;
+
+}
+.osce-v.date {
+	width : 80%;
+}
+
+
+
+
