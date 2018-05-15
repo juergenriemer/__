@@ -19,18 +19,15 @@ __.lock = {
 		// proper CSS values
 		setTimeout( function() {
 			var dnBag = dn.lastElementChild;
-			console.log( "dn",dn );
 			// DOM node is empty. In case of a model get call,
 			// this means its the first call to the server
 			if( ! dnBag ) {
-				console.log( 'no bag create' );
 				dnBag = document.createElement( "div" );
 				dnBag.__style( "height", dn.__style( "minHeight" ) );
 				dn.appendChild( dnBag );
 			}
 			// locking blend (bag) does not exist...
 			if( ! dnBag.classList.contains( "-lck-bag" ) ) {
-				console.log( 'create bag' );
 				var hBag = " \
 				<div class='-lck-bag'> \
 					<div class='-lck-bag-front'></div> \

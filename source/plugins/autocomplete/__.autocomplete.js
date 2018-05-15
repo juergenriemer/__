@@ -71,7 +71,7 @@ __.autocomplete = {
 		var that = this;
 		a.dn.ix = 0;
 		a.dnList.addEventListener( "click", function( e ) {
-			__.e.stop( e );
+			e.preventDefault();
 			var dn = e.target;
 			if( ! dn.classList.contains( "-ac-row" ) ) {
 				//dn = __.dn.up( dn, "className", "-ac-row" );
@@ -83,7 +83,7 @@ __.autocomplete = {
 		} );
 		a.dn.addEventListener( "keydown", function( e ) {
 			if( e.keyCode == "13" ) {
-				__.e.stop( e );
+				e.preventDefault();
 				that.select( a );
 			}
 		} );
@@ -105,7 +105,7 @@ __.autocomplete = {
 			}
 		} );
 		a.dn.addEventListener( "blur", function( e ) {
-			__.e.stop( e );
+			e.preventDefault();
 			// close if input field loses focus
 			// we need to delay this action after a possible
 			// click event had been processed
