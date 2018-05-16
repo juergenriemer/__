@@ -26,6 +26,7 @@ __.SP.Filter = __.Class.extend( {
 	, cbClear : null
 	, lsFilterFields : null
 	, sFilterFieldStore : ""
+	, sExpoertFieldStore : ""
 	, sFilter : null
 	, sFilterName : "Current Filter"
 	, sList : null
@@ -38,6 +39,7 @@ __.SP.Filter = __.Class.extend( {
 	, init : function( aConf ) {
 		var that = this;
 		this.sList = aConf.sList;
+		this.loAllFields = aConf.loFields;
 		this.loFields = this.extractFilterFields( aConf.loFields );
 		this.cbCreate = aConf.cbCreate || null;
 		this.cbClear = aConf.cbClear || null;
@@ -46,7 +48,8 @@ __.SP.Filter = __.Class.extend( {
 		// SP's OOTB default views differ in internal and display name
 		this.sdftView = aConf.defaultView || "AllItems";
 		this.sFilter = "_filter_" + this.sList.__tokenize() + "_";
-		this.sFilterFieldStore = this.sFilter + "_fields_";
+		this.sFilterFieldStore = this.sFilter + "_filter_";
+		this.sExportFieldStore = this.sFilter + "_export_";
 		// check if filter has already been created
 		( new __.Async( {
 			  id : "__.SP.Filter.init"
@@ -90,7 +93,7 @@ __.SP.Filter = __.Class.extend( {
 		var that = this;
 		if( ! this.lsFormFields ) {
 			this.lsFormFields = [];
-			this.loFields.forEach( function( aField ) {
+			this.loAllFields.forEach( function( aField ) {
 				if( ! aField.bHiddenInForm ) {
 					that.lsFormFields.push( aField.sName );
 				}
@@ -103,7 +106,7 @@ __.SP.Filter = __.Class.extend( {
 		var that = this;
 		if( ! this.lsListFields ) {
 			this.lsListFields = [];
-			this.loFields.forEach( function( aField ) {
+			this.loAllFields.forEach( function( aField ) {
 				if( ! aField.bHiddenInList ) {
 					that.lsListFields.push( aField.sName );
 				}
@@ -114,15 +117,64 @@ __.SP.Filter = __.Class.extend( {
 	, lsExportFields : null
 	, getExportFields : function() {
 		var that = this;
+		var slsExportFields = localStorage.getItem( this.sExportFieldStore );
+		if( slsExportFields ) {
+			this.lsExportFields = slsExportFields.__toJson();
+		}
 		if( ! this.lsExportFields ) {
 			this.lsExportFields = [];
-			this.loFields.forEach( function( aField ) {
+			this.loAllFields.forEach( function( aField ) {
 				if( aField.bExport ) {
 					that.lsExportFields.push( aField.sName );
 				}
 			} );
+			localStorage.setItem( this.sExportFieldStore, this.lsExportFields.__toString() );
 		}
 		return this.lsExportFields;
+	}
+	, updateExportFields : function( lsFields ) {
+		var that = this;
+		this.lsExportFields = lsFields;
+		localStorage.setItem( this.sExportFieldStore, this.lsExportFields.__toString() );
+	}
+	, exportView : function( lsFields, dnModal ) {
+		( new __.Async( {
+			  id : "__.SP.Filter.exportView"
+			, sdftError : "Failed to export a view."
+		} ) )
+		.then( __.SP.view, "copy", {
+			  sList:"OSCE Contacts"
+			, sOldView: ctx.viewTitle
+			, sNewView : "Export"
+		}, "copy current view" )
+		.clear()
+		.then( function( args ) {
+			var async = __.Async.promise( args );
+			async.then( __.SP.view, "update", {
+				  sList:"OSCE Contacts"
+				, sView : "Export"
+				, lsFields : lsFields
+			}, "added all fields to view" ).resolve();
+		}, "update export view" )
+		.then( __.SP.view, "deleteFields", {
+			lsFields : [ "js", "DossierFile" ]
+		}, "Remove system fields" )
+		.then( __.SP.view, "read", "Read guid of export view" )
+		.then( function( args ) {
+			var url = ctx.HttpRoot + "/_vti_bin/owssvr.dll?CS=109&Using=_layouts/query.iqy";
+			url += "&List=" + ctx.listName;
+			url += "&View={" + args.kv.guid + "}";
+			url += "&CacheControl=1";
+			dnModal.close();
+			window.open( url );
+			__.Async.promise( args ).resolve();
+		} )
+		.pause( 15000 )
+		.then( __.SP.view, "del" )
+		.then( function( args ) {
+			__.Async.promise( args ).resolve();
+		} )
+		.start();
 	}
 	, onHashchange : function( oMessage ) {
 		if( oMessage.sList !== this.sList ) {
@@ -490,6 +542,7 @@ __.SP.Filter = __.Class.extend( {
 		h += '<span class="menu icon-gear" action="gear" title="Manage filter fields"></span>';
 		h += '<span class="menu icon-search" action="search" title="Search with this filter"></span>';
 		h += '<span class="menu icon-save" action="save" title="Save this search"></span>';
+		h += '<span class="menu icon-excel" action="export" title="Export this search"></span>';
 		h += '<b><span class="menu icon-clear" action="clear" title="Clear the filter"></span></b>';
 		h += "</div>";
 		this.dnRoot.__append( h )
@@ -499,6 +552,9 @@ __.SP.Filter = __.Class.extend( {
 				switch( e.target.getAttribute( "action" ) ) {
 					case "gear" :
 						that.openFilterFieldWindow();
+					break;
+					case "export" :
+						that.openExportFieldWindow();
 					break;
 					case "search" :
 						that.filter();
@@ -728,6 +784,56 @@ __.SP.Filter = __.Class.extend( {
 			}
 		} );
 	}
+	, openExportFieldWindow : function() {
+		var that = this;
+		// first get all filter fields
+		var sChecked = " checked ";
+		var h = "<p>";
+		h += that.mpLang.filter_field_selection_title;
+		h += "</p>";
+		h += "<table>";
+		this.getExportFields();
+		var ix = 0;
+		this.loAllFields.forEach( function( aField ) {
+			if( aField.bExport ) {
+				ix++;
+				var sChecked = ( that.lsExportFields.__contains( aField.sName ) )
+					? " checked "
+					: "";
+				if( ix % 2 ) {
+					h += "<tr>";
+				}
+				h += "<td><input name='" + aField.sName + "'type='checkbox' ";
+				h += sChecked + "'></input></td>";
+				h += "<td title='" + aField.sDescription + "'>";
+				h += aField.sDisplayName + "</td>";
+				if( !( ix % 2 ) ) {
+					h += "</tr>";
+				}
+			}
+			console.log( h );
+		} );
+		h += "</table>";
+		var dnModal = __.SP.modal.open( {
+			  sTitle : "Export to Excel"
+			, hContent : h
+			, fnact : function( oModal ) {
+				dnModal.message( "" );
+				var ldnFields = oModal.dn.__find( "[name]:checked" );
+				if( ldnFields ) {
+					var lsFields = [];
+					ldnFields.__each( function( dn ) {
+						lsFields.push( dn.getAttribute( "name" ) );
+					} );
+					that.updateExportFields( lsFields );
+					that.exportView( lsFields, dnModal );
+				}
+				else {
+					dnModal.message( "Please select at least one field." );
+				}
+			}
+		} );
+	}
 	, toggleFilterFields : function() {
 		var that = this;
 		this.dnRoot.__find( ".osce-form-field", function( dn ) {
@@ -767,6 +873,334 @@ __.SP.Filter = __.Class.extend( {
 		localStorage.setItem( this.sFilterFieldStore, this.lsFilterFields.__toString() );
 	}
 } );
+
+
+
+
+__.SP.filter.form = {};
+__.SP.filter.form.create = function( args ) {
+	var h = "<form class='osce-form'></form>";
+	var dn = args.dnRoot.__append( h );
+	args.loFields.forEach( function( oField ) {
+		oField.dnRoot = dn;
+		oField.idFilter = args.idFilter;
+		__.SP.filter.form.field[ oField.sFormType ].create( oField );
+	} );
+	dn.addEventListener( "change", function() {
+		if( args.cbChange ) {
+			args.cbChange();
+		}
+	} );
+	var fnModal = function() {
+		var dn = document.body.__find( ".ms-dlgContent" );
+		if( ! dn ) {
+			if( args.cbChange ) {
+				args.cbChange();
+			}
+		}
+		else {
+			setTimeout( fnModal, 500 );
+		}
+	}
+	dn.addEventListener( "click", function( e ) {
+		// monitor closing of taxonomy modal
+		if( e.target.classList.contains( "ms-taxonomy-browser-button" ) ) {
+			setTimeout( fnModal, 500 );
+		}
+		// prevent manual manipulation of the taxonomy picker DIV
+		if( e.target.classList.contains( "ms-inputBox" ) ) {
+			//var dnRoot = e.target.__closest( ".osce-form-field" );
+			//var dnImg = dnRoot.__find( "img.ms-taxonomy-browser-button" );
+			//dnImg.click();
+		}
+	} );
+	return dn;
+};
+
+__.SP.filter.form.reset = function( dn ) {
+	// clear all taxonomy fields
+	dn.__find( '[role="textbox"]', function( dn ) {
+		dn.innerHTML = "";
+	} );
+	dn.__find( '.osce-v', function( dn ) {
+		dn.value = "";
+	} );
+	// and reset the form
+	dn.reset();
+};
+
+__.SP.filter.form.read = function( dn ) {
+	var kv = {};
+	dn.__find( ".osce-form-field", function( dn ) {
+		var sid = dn.getAttribute( "sid" );
+		var sFormType = dn.getAttribute( "sFormType" );
+		kv[ sid ] = {
+			  v : __.SP.filter.form.field[ sFormType ].get( dn )
+			, sName : dn.getAttribute( "sName" )
+			, sCAMLType : dn.getAttribute( "sCAMLType" )
+			, sOperator : dn.getAttribute( "sOperator" ) || null
+		}
+	} )
+	return kv;
+};
+
+__.SP.filter.form.field = {};
+
+
+__.SP.filter.form.field.sid = function( x ) {
+	// we need unique ids, sName might be used mulitple times,
+	// e.g. from/to date fields
+	var sid = "";
+	if( x instanceof Element ) {
+		sid += x.__find( ".osce-filter" ).id;
+		sid += ( x.getAttribute( "sOperator" ) + x.getAttribute( "sName" ) ).__tokenize();
+	}
+	else if( x.idFilter && x.sDisplayName ) {
+		sid += x.idFilter;
+		sid += ( x.sOperator + x.sName ).__tokenize();
+	}
+	else {
+		console.warn( "parameter is no filter form argument", x );
+		return null;
+	}
+	return sid;
+};
+
+__.SP.filter.form.field.hHeader = function( args ) {
+	var cssHalfSize = ( args.bHalfSize ) ? " half-size" : "";
+	var h = "<div class='osce-form-field" + cssHalfSize + "' ";
+	h += ( args.sOperator ) ? " sOperator='" + args.sOperator + "' " : "";
+	h += " sFormType='" + args.sFormType + "'";
+	h += " sCAMLType='" + args.sCAMLType + "'";
+	h += " sName='" + args.sName + "'";
+	h += " sid='" + __.SP.filter.form.field.sid( args ) + "'>";
+	h += "<label>" + args.sDisplayName + "</label><br />";
+	return h;
+};
+
+__.SP.filter.form.field.text = {
+	  create : function( args ) { //  dnRoot, sid, sDisplayName ) {
+		var h = __.SP.filter.form.field.hHeader( args );
+		h += "<input class='osce-v'></input>";
+		h += "</div>";
+		args.dnRoot.__append( h );
+	}
+	, get : function( dn ) {
+		var v = dn.__find( ".osce-v" ).value;
+		return ( v ) ? v : null;
+	}
+	, set : function( dn, v ) {
+		var v = dn.__find( ".osce-v" ).value = v;
+	}
+};
+
+__.SP.filter.form.field.lookupdate = {
+	  create : function( args ) { //  dnRoot, sid, sDisplayName ) {
+		var sid = __.SP.filter.form.field.sid( args );
+		var h = __.SP.filter.form.field.hHeader( args );
+		h += "<input id='" + sid + "' class='osce-v date' maxlength='45'></input>";
+		h += '<a href="#" role="button" onclick="clickDatePicker( ';
+		h += "'" + sid + "'";
+		h += ", '" + _spPageContextInfo.siteServerRelativeUrl;
+		h += "/_layouts/15/iframe.aspx?cal=1&amp;lcid=2057&amp;langid=1033&amp;tz=00:59:59.9990041&amp;ww=0111110&amp;fdow=1&amp;fwoy=0&amp;hj=0&amp;swn=false&amp;minjday=109207&amp;maxjday=2666269&amp;date='";
+		h += ', \'\', event); return false;">';
+		h += '<img id="' + sid + 'DatePickerImage" src="/_layouts/15/images/calendar_25.gif?rev=23"';
+		h += ' border="0" class="osce-sp-calendar" alt="Select a date from the calendar.">';
+		h += '</a>';
+		h += '<iframe id="' + sid + 'DatePickerFrame" src="/_layouts/15/images/blank.gif?rev=23" ';
+		h += ' frameborder="0" scrolling="no" style="display:none; position:absolute; width:200px; z-index:101;" ';
+		h += ' title="Select a date from the calendar."></iframe>';
+		h += "</div>";
+		args.dnRoot.__append( h );
+	}
+	, get : function( dn ) {
+		var v = dn.__find( ".osce-v" ).value;
+		if( v ) {
+			var nDate = v.split( "/" ).reverse().join( "" );;
+			return nDate;
+		}
+		return null;
+	}
+	, set : function( dn, v ) {
+		if( v ) {
+			var lsMatch = v.match( /(....)(..)(..)/ );
+			var sDate = lsMatch[ 3 ] + "/" + lsMatch[ 2 ] + "/" + lsMatch[ 1 ];
+			dn.__find( ".osce-v" ).value = sDate;
+		}
+	}
+};
+
+
+__.SP.filter.form.field.autocomplete = {
+	  create : function( args ) { //  dnRoot, sid, sDisplayName ) {
+		var h = __.SP.filter.form.field.hHeader( args );
+		h += "<input class='osce-v'></input>";
+		h += "</div>";
+		var fnFetch = function( sTerm, cbfn ) {
+			var xmlQuery = "<Query><Where><Contains>"
+			xmlQuery += "<FieldRef Name='" + args.sLookupField + "' />";
+			xmlQuery += "<Value Type='Text'>" + sTerm +"</Value>";
+			xmlQuery += "</Contains></Where></Query>";
+			xmlQuery += "<RowLimit>" + ( args.nLimit || 10 ) + "</RowLimit>";
+			( new __.Async( {
+				  id : "__.SP.filter.form.field.autocomplete.create"
+				, sdftError : "Failed to create an autocomplete field"
+			} ) )
+			.then( __.SP.list, "read", {
+				  sList : args.sLookupList
+				, lsFields : [ args.sLookupField ]
+				, xmlQuery : xmlQuery
+			}, "read lookup list for form filter" )
+			.then( function( args ) {
+				if( cbfn ) {
+					cbfn( args.lkv );
+				}
+				__.Async.promise( args ).resolve();
+			} )
+			.start();
+		};
+		var dnLookup = args.dnRoot.__append( h );
+		__.autocomplete.init( {
+			  dn : dnLookup.__find( "input" )
+			, sField : args.sLookupField
+			, fnFetch : fnFetch
+			, cb : function( rec ) {
+				//
+			}
+		} );
+	}
+	, get : function( dn ) {
+		var v = dn.__find( ".osce-v" ).value;
+		return ( v ) ? v : null;
+	}
+	, set : function( dn, v ) {
+		var v = dn.__find( ".osce-v" ).value = v;
+	}
+};
+
+// __.SP.filter.form.field.checkbox.create( { dnRoot : __.dn_( "#sideNavBox" ), sid: "qwer", sDisplayName : "a checkbox field" } )
+// __.SP.filter.form.field.checkbox.value( "qwer" );
+__.SP.filter.form.field.checkbox = {
+	  create : function( args ) { // dnRoot, sid, sDisplayName ) {
+		var h = __.SP.filter.form.field.hHeader( args );
+		h += "<select class='osce-v'>";
+			h += "<option value=''></option>";
+			h += "<option value='Yes'>Yes</option>";
+			h += "<option value='No'>No</option>";
+		h += "</select>";
+		h += "</div>";
+		args.dnRoot.__append( h );
+	}
+	, get : function( dn ) {
+		var v = dn.__find( ".osce-v" ).value;
+		return ( v ) ? v : null;
+	}
+	, set : function( dn, v ) {
+		var v = dn.__find( ".osce-v" ).value = v;
+	}
+};
+
+// __.SP.filter.form.field.choice.create( { dnRoot : __.dn_( "#sideNavBox" ), sid: "test", sDisplayName : "a choice field", lsChoices : [ "asdf", "qwer" ] } )
+// __.SP.filter.form.field.taxonomy.value( "test" );
+__.SP.filter.form.field.choice = {
+	  create : function( args ) { //  dnRoot, sid, sDisplayName, lsChoices ) {
+		var h = __.SP.filter.form.field.hHeader( args );
+		h += "<select class='osce-v'>";
+		h += "<option value=''></option>";
+		args.lsChoices.forEach( function( s ) {
+			h += "<option value='" + s + "'>" + s + "</option>";
+		} );
+		h += "</select>";
+		h += "</div>";
+		args.dnRoot.__append( h );
+	}
+	, get : function( dn ) {
+		var v = dn.__find( ".osce-v" ).value;
+		return ( v ) ? v : null;
+	}
+	, set : function( dn, v ) {
+		var v = dn.__find( ".osce-v" ).value = v;
+	}
+};
+
+// need to load the following in masterpage: sp.Taxonomy.js, scriptforwebtaggingui.js
+// __.SP.filter.form.field.taxonomy.create( { dnRoot : __.dn_( "#sideNavBox" ), sid : "MainCat", sDisplayName : "Main Contact Type", idTermSet : __.SP.taxonomy.oStore.guidTermSet.MainContactType} );
+// __.SP.filter.form.field.taxonomy.value( "MainCat" );
+__.SP.filter.form.field.taxonomy = {
+	  create : function( args ) { // dnRoot, sid, sDisplayName, idTermSet ) {
+		var sid = __.SP.filter.form.field.sid( args );
+		var sidPicker = sid + "_picker";
+		var sidInput = sid + "_input";
+		var h = __.SP.filter.form.field.hHeader( args );
+		h += '<input class="osce-v" name="' + sidInput + '" type="hidden" ';
+		h += ' id="' + sidInput + '"></input>';
+		h += '<div id="' + sidPicker + '" class="ms-taxonomy">';
+		h += '</div>';
+		h += "</div>";
+		var dn = args.dnRoot.__append( h );
+		var sspId = __.SP.taxonomy.oStore.guidTermStore;
+		var url = _spPageContextInfo.webServerRelativeUrl;
+		url += '\u002f_vti_bin\u002fTaxonomyInternalService.json';
+		var dnPicker = document.body.__find( "#" + sidPicker );
+		dnPicker.InputFieldId = sidInput;
+		dnPicker.SspId = sspId;
+		  // REF: put Tax object into __.SP.taxonomy!!!
+		dnPicker.TermSetId = __.SP.taxonomy.oStore.guidTermSet[ args.sName ];
+		dnPicker.AnchorId = '00000000-0000-0000-0000-000000000000';
+		dnPicker.IsMulti = true;
+		dnPicker.AllowFillIn = false;
+		dnPicker.IsSpanTermSets = false;
+		dnPicker.IsSpanTermStores = false;
+		dnPicker.IsIgnoreFormatting = false;
+		dnPicker.IsIncludeDeprecated = false;
+		dnPicker.IsIncludeUnavailable = false;
+		dnPicker.IsIncludeTermSetName = false;
+		dnPicker.IsAddTerms = false;
+		dnPicker.IsIncludePathData = false;
+		dnPicker.IsUseCommaAsDelimiter = false;
+		dnPicker.Disable = false;
+		dnPicker.ExcludeKeyword = false;
+		dnPicker.JavascriptOnValidation = "";
+		dnPicker.DisplayPickerButton = true;
+		dnPicker.Lcid = 1033;
+		dnPicker.FieldName = '';
+		dnPicker.FieldId = '00000000-0000-0000-0000-000000000000';
+		dnPicker.WebServiceUrl = url;
+		Microsoft.SharePoint.Taxonomy.ScriptForWebTaggingUI.resetEventsRegistered();
+		Microsoft.SharePoint.Taxonomy.ScriptForWebTaggingUI.onLoad( sidPicker );
+	}
+	, get : function( dn ) {
+		var lv = dn.__find( '.osce-v' ).value.trim().split( ";" );
+		var kv = {};
+		lv.forEach( function( s ) {
+			if( s ) {
+				var ls = s.split( "|" );
+				kv[ ls[ 0 ] ] = ls[ 1 ];
+			}
+		} );
+		return ( kv.__isEmpty() ) ? null : kv;
+	}
+	, set : function( dn, aTermInfos ) {
+		var sName = aTermInfos.sName
+		var guid = aTermInfos.guid;
+		if( sName && guid ) {
+			var dnDisplay = dn.__find( "[role='textbox']" );
+			dnDisplay.innerHTML += "<span class='valid-text' title='" + sName + "'>" + sName + "</span>;&nbsp;";
+			var dnHidden = dn.__find( "input" );
+			var vnew = sName + "|" + guid;
+			var lsvHidden = [];
+			if( dnHidden.value ) {
+				lsvHidden = dnHidden.value.split( ";" );
+			}
+			lsvHidden.push( vnew );
+			dnHidden.value = lsvHidden.join( ";" );
+		}
+		else {
+			console.warn( "warn: invalid term info", sTerm );
+		}
+	}
+}; 
+
 
 
 

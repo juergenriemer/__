@@ -141,6 +141,10 @@ __.SP.webservice = {
 					console.warn( "INFO: AJAX ABORTED" );
 					async.stop();
 				}
+				else if( /Unexpected response from server. The status code of response is '0'/.test( oAjax.response ) ) {
+					console.warn( "INFO: AJAX ABORTED" );
+					async.stop();
+				}
 				else if( oAjax.status == 0 ) {
 					fnerr( oAjax, "Could not connect to: " + ( args.sService.toUpperCase() ) );
 				}

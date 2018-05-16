@@ -96,6 +96,14 @@
 	content : "\e902";
 }
 
+.icon-save:before {
+	content : "\e902";
+}
+
+.icon-excel:before {
+	content: "\eae2";
+}
+
 /* key filter */
 
 .osce-form-field {

@@ -19,7 +19,6 @@ Compile = {
 		var lfl = fs.readdirSync( dir );
 		lfl.forEach( function( fl, path ) {
 			fl = dir + '/' + fl;
-			console.log( fl );
 			var stat = fs.statSync(fl)
 			if (stat && stat.isDirectory()) {
 				lflResult = lflResult.concat( Compile.walk( fl, rxInclude, rxExclude ) )
@@ -30,7 +29,6 @@ Compile = {
 					( ! rxexc.test( fl ) )
 			       
 				) {
-					console.log( fl );
 					lflResult.push( fl );
 				}
 			}
@@ -41,7 +39,7 @@ Compile = {
 		var sAll = "";
 		lfl.forEach( function( fl ) {
 			var s = fl.split( "/" );
-			console.log( s[ s.length - 1] );
+			//console.log( s[ s.length - 1] );
 			sAll += fs.readFileSync( fl, 'utf-8' );
 		} );
 		return sAll;
@@ -49,7 +47,6 @@ Compile = {
 	, getAppInfo : function() {
 		self = { O$C3 : {} };
 		O$C3 = {};
-		console.log( srcpathJS + "app.js" );
 		require( srcpathJS + "app.js" );
 		var aAppInfo = {
 			  sShort : O$C3.sAppShort
@@ -113,13 +110,12 @@ Compile = {
 	//	cmd.run( sCommand );
 	}
 	, lflsort : function( lfl ) {
-		console.log( 'sort now' );
 		lfl = lfl.sort( function( a, b ) {
 			//a = a.replace( /[\W_]+/g, "" );
-			a = a.replace( /js$/g,"" );
+			a = a.replace( /\.js$/,"" );
 			//b = b.replace( /[\W_]+/g, "" );
-			b = b.replace( /js$/g, "" );
-			console.log( a + " > " + b + " = " + (a>b));
+			b = b.replace( /\.js$/, "" );
+			console.log( a, b );
 			return (a < b);
 		} );
 		lfl.reverse();
@@ -140,10 +136,12 @@ Compile = {
 		var lfljsCore = this.walk( pathSource + "/core", "\.min\.js$", "\/jsLink\/" );
 		var lfljsPlugins = this.walk( pathSource + "/plugins", "\.min\.js$", "\/jsLink\/" );
 		//var lfljsSP = this.walk( pathSource + "/SP", "\.min\.js$", "\/jsLink\/" );
-		var lfljsSP = this.walk( pathSource + "/SP", "\.js$", "\/jsLink\/" );
+		var lfljsSP = this.walk( pathSource + "/SP", "\.js$" );
+		this.lflsort( lfljsSP );
+		console.log( lfljsSP );
 		var sjsCore = this.flConcat( lfljsCore );
 		var sjsPlugins = this.flConcat( lfljsPlugins );
-		var sjsSP = this.flConcat( this.lflsort( lfljsSP ) );
+		var sjsSP = this.flConcat( lfljsSP );
 		var sjsAll = sjsCore + sjsPlugins + sjsSP;
 
 		this.write( pathBuilds, "__.core." + nVersion + ".min.js", sjsCore );
