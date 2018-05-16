@@ -35,6 +35,7 @@ __.SP.Filter = __.Class.extend( {
 	, mpLang : {
 		  saved_filter_name_exists_overwrite : "The selected filter name exists already.<br>Do you want to overwrite the existing filter with the current one?"
 		, filter_field_selection_title : "Below you can select the fields to be displayed in your filter."
+		, export_field_selection_title : "Below you can select the fields to be exported to Excel."
 	}
 	, init : function( aConf ) {
 		var that = this;
@@ -789,7 +790,7 @@ __.SP.Filter = __.Class.extend( {
 		// first get all filter fields
 		var sChecked = " checked ";
 		var h = "<p>";
-		h += that.mpLang.filter_field_selection_title;
+		h += that.mpLang.export_field_selection_title;
 		h += "</p>";
 		h += "<table>";
 		this.getExportFields();

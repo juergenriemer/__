@@ -3,6 +3,9 @@
  * @memberof __.SP
  */
 
+
+// NOTE: in order to test on-the-fly-loading of taxonomy.js use this direct call: __.SP.taxonomy.load( { sTermSet : __.SP.taxonomy.oStore.guidTermSet.Country, cb : function( a ) { console.log( a ) } } )
+//
 __.SP.taxonomy = {};
 // holds loaded taxonomies
 __.SP.taxonomy.aTerms = {};
