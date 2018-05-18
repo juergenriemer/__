@@ -133,19 +133,7 @@ __.SP.webservice = {
 				}
 			};
 			if( oAjax.readyState === 4 ) {
-				// the error below is triggered by SharePoint in 
-				// case an internal Ajax request is cancelled,
-				// e.g. by navigating away from a page before
-				// a result was delivered. We can savely ignore.
-				if( /Unexpected response from server. The status code of response is '0'/.test( oAjax.responseText ) ) {
-					console.warn( "INFO: AJAX ABORTED" );
-					async.stop();
-				}
-				else if( /Unexpected response from server. The status code of response is '0'/.test( oAjax.response ) ) {
-					console.warn( "INFO: AJAX ABORTED" );
-					async.stop();
-				}
-				else if( oAjax.status == 0 ) {
+				if( oAjax.status == 0 ) {
 					fnerr( oAjax, "Could not connect to: " + ( args.sService.toUpperCase() ) );
 				}
 				else if( oAjax.status < 400  ) {

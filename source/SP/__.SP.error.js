@@ -121,6 +121,12 @@ top.__.SP.Error = __.Class.extend( {
 		}
 	}
 	, init : function( args ) { 
+		// the error below is triggered by SharePoint in case an internal Ajax request is cancelled,
+		// e.g. by navigating away from a page before a result was delivered. We can savely ignore.
+		if( args && args.sError && /The status code of response is '0'./.test( args.sError ) ) {
+			console.warn( "ajax navigation abort hickup" );
+			return;
+		}
 		console.warn( "-------------ERROR-------------" );
 		console.warn( args );
 		console.warn( "-------------ERROR-------------" );
