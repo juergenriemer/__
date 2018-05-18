@@ -74,8 +74,27 @@ __.SP.item = {
 			}
 		} );
 	}
-	/** 
-	 * Update fields of an item.
+	/**
+	 * Updates an item passing on values as a set of key/value pairs.
+	 * @memberof __.SP.item
+	 * @method update
+	 * @example
+	 * __.SP.item.update( {
+	 * 	  sList : "Shared Documents"
+	 * 	  id : 17
+	 *	, kv : {
+	 *             Title : "new item"
+	 *           , Description : "a new item"
+	 *      } 
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {Array} args.kv a key/value pair data object holding values for indicated fields.
+	 * @returns {Object} Resolved promise holding the following values 
+	 * <pre class='return-object'>
+	 * oItem | (Object) | handle of the updated SP item object
+	 * </pre>
 	 */
 	, update : function( args ) { // sList, id, kv
 		var async = __.Async.promise( args );
@@ -121,10 +140,25 @@ __.SP.item = {
 			}
 		} );
 	}
-	/** 
-	 * Read fields from an item.
+	/**
+	 * Reads fields from an item
+	 * @memberof __.SP.item
+	 * @method read
+	 * @example
+	 * __.SP.item.read( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 * 	  , lsFields : [ "Title", "CustomField" ]
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {Array} args.lsFields array for internal field names
+	 * <pre class='return-object'>
+	 * kv | (Object) | data object of key/value pairs
+	 * </pre>
 	 */
-	, read : function( args ) { // sList, id, lsFields
+	, read : function( args ) {
 		var async = __.Async.promise( args );
 		// get context
 		var ctx = __.SP.ctx();
@@ -229,7 +263,19 @@ __.SP.item = {
 			}
 		} );
 	}
-//	__.SP.item.breakInheritance( { sList : "DossierInfos", id: 6 } ) 
+	/**
+	 * Breaks the permission inheritance of an item
+	 * @memberof __.SP.item
+	 * @method breakInheritance
+	 * @example
+	 * __.SP.item.breakInheritance( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 */
 	, breakInheritance : function( args ) { // sList, id
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
@@ -246,8 +292,20 @@ __.SP.item = {
 			}
 		} );
 	}
-//	__.SP.item.resetInheritance( { sList : "DossierInfos", id: 12 } ) 
-	, resetInheritance : function( args ) { // sList, id
+	/**
+	 * Resets the original permission inheritance of an item
+	 * @memberof __.SP.item
+	 * @method resetInheritance
+	 * @example
+	 * __.SP.item.resetInheritance( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 */
+	, resetInheritance : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
@@ -263,9 +321,25 @@ __.SP.item = {
 			}
 		} );
 	}
-//	__.SP.item.addGroup( { sList : "DossierInfos", id: 7, sGroup: O$C3.FOUser.oSettings.sFrontOffice, sRole: "Read"  } ) 
-	, addGroup : function( args ) { // sList, id, sGroup, sPermission
-		/* sRole: Contribute,Custom Levelname,Read,Edit */
+	/**
+	 * Adds a group with a permission role to an item
+	 * @memberof __.SP.item
+	 * @method addGroup
+	 * @example
+	 * __.SP.item.addGroup( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 *	  , sGroup : "Reader Group 42"
+	 *	  , sRole : "Read"
+	 * } );
+	 * @todo provide a full list of roles in documenation
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {String} args.sGroup name of the group
+	 * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+	 */
+	, addGroup : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
@@ -286,9 +360,25 @@ __.SP.item = {
 			}
 		} );
 	}
-	// __.SP.item.restrictToGroup( { sList : "DossierInfos", id: 7, sGroup: O$C3.FOUser.oSettings.sFrontOffice, sRole: "Read"  } ) 
-	, restrictToGroup : function( args ) { // sList, id, sGroup, sRole
-		/* sRole: Contribute,Custom Levelname,Read,Edit */
+	/**
+	 * Wipes all exising permissions on an item and adds a group with a permission role to it.
+	 * @memberof __.SP.item
+	 * @method restrictToGroup
+	 * @example
+	 * __.SP.item.restrictToGroup( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 *	  , sGroup : "Reader Group 42"
+	 *	  , sRole : "Read"
+	 * } );
+	 * @todo provide a full list of roles in documenation
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {String} args.sGroup name of the group
+	 * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+	 */
+	, restrictToGroup : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
@@ -311,9 +401,25 @@ __.SP.item = {
 		} );
 	}
 	// __.SP.item.restrictToUser( { sList : "SideBar", id: 22, xUser: _spPageContextInfo.userId, sRole: "Edit"  } ) 
-	, restrictToUser : function( args ) { // sList, id, xUser, sRole
-		/* sRole: Contribute,Custom Levelname,Read,Edit */
-		/* xUser: either id or email or login name osce\\jriemer */
+	/**
+	 * Wipes all exising permissions on an item and adds a user with a permission role to it.
+	 * @memberof __.SP.item
+	 * @method restrictToUser
+	 * @example
+	 * __.SP.item.restrictToUser( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 *	  , xUser : _spPageContextInfo.userId
+	 *	  , sRole : "Edit"
+	 * } );
+	 * @todo provide a full list of roles in documenation
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {String} args.xUser either id or email or login name (osce\\jriemer) of a user
+	 * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+	 */
+	, restrictToUser : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
