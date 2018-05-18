@@ -125,8 +125,27 @@ __.SP.item = {
 			}
 		} );
 	}
-	/** 
-	 * Update fields of an item.
+	/**
+	 * Updates an item passing on values as a set of key/value pairs.
+	 * @memberof __.SP.item
+	 * @method update
+	 * @example
+	 * __.SP.item.update( {
+	 * 	  sList : "Shared Documents"
+	 * 	  id : 17
+	 *	, kv : {
+	 *             Title : "new item"
+	 *           , Description : "a new item"
+	 *      } 
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {Array} args.kv a key/value pair data object holding values for indicated fields.
+	 * @returns {Object} Resolved promise holding the following values 
+	 * &lt;pre class='return-object'>
+	 * oItem | (Object) | handle of the updated SP item object
+	 * &lt;/pre>
 	 */
 	, update : function( args ) { // sList, id, kv
 		var async = __.Async.promise( args );
@@ -172,10 +191,25 @@ __.SP.item = {
 			}
 		} );
 	}
-	/** 
-	 * Read fields from an item.
+	/**
+	 * Reads fields from an item
+	 * @memberof __.SP.item
+	 * @method read
+	 * @example
+	 * __.SP.item.read( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 * 	  , lsFields : [ "Title", "CustomField" ]
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {Array} args.lsFields array for internal field names
+	 * &lt;pre class='return-object'>
+	 * kv | (Object) | data object of key/value pairs
+	 * &lt;/pre>
 	 */
-	, read : function( args ) { // sList, id, lsFields
+	, read : function( args ) {
 		var async = __.Async.promise( args );
 		// get context
 		var ctx = __.SP.ctx();
@@ -207,9 +241,6 @@ __.SP.item = {
 					kv[ "guid" + sField ] = oField.get_termGuid();
 				}
 				else if( oField &amp;&amp; oField.get_lookupId ) {
-					console.log( sField );
-					console.log( oField.get_lookupValue() );
-					console.log( oField.get_lookupId() );
 					kv[ sField ] = oField.get_lookupValue();
 					kv[ "id" + sField ] = oField.get_lookupId();
 				}
@@ -226,8 +257,11 @@ __.SP.item = {
 				lsFields.forEach( function( sField ) {
 					var oField = oItem.get_item( sField );
 					var _kv = {};
-					if( typeof oField != "undefined" &amp;&amp; oField ) {
-						if ( oField instanceof Array ) {
+					if( typeof oField != "undefined" ) {
+						if( ! oField ) {
+							_kv[ sField ] = ""; // null values
+						}
+						else if( oField instanceof Array ) {
 							_kv[ sField ] = [];
 							oField.forEach( function( o ) {
 								_kv[ sField ].push( convert( sField, o ) );
@@ -243,7 +277,56 @@ __.SP.item = {
 			}
 		} );
 	}
-//	__.SP.item.breakInheritance( { sList : "DossierInfos", id: 6 } ) 
+	/**
+	 * Checks if the current user has edit rights on an item.
+	 * @memberof __.SP.item
+	 * @method isEditable
+	 * @example
+	 * __.SP.item.create( {
+	 *      sList : "Shared Documents"
+	 *    , id : 5
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of item
+	 * @returns {Object} Resolved promise holding the following values 
+	 * &lt;pre class='return-object'>
+	 * bEditable | (Boolean) | true if item is editable by the current user
+	 * &lt;/pre>
+	 */
+	, isEditable : function( args ) {
+		var async = __.Async.promise( args );
+		var ctx = __.SP.ctx();
+		var oList = __.SP.list.get( ctx, args.sList );
+		var oItem = oList.getItemById( args.id );
+		ctx.load( oItem, "EffectiveBasePermissions" );
+		__.SP.exec( ctx, oItem, function( oItem ) {
+			if( oItem.sError ) {
+				async.reject( oItem.sError );
+			}
+			else {
+				var oPermission = oItem.get_effectiveBasePermissions();
+				var bEditable = false;
+				if( oPermission.has( SP.PermissionKind.editListItems ) ) {
+					bEditable = true;
+				}
+				async.resolve( { bEditable : bEditable } );
+			}
+		} );
+	}
+	/**
+	 * Breaks the permission inheritance of an item
+	 * @memberof __.SP.item
+	 * @method breakInheritance
+	 * @example
+	 * __.SP.item.breakInheritance( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 */
 	, breakInheritance : function( args ) { // sList, id
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
@@ -260,8 +343,20 @@ __.SP.item = {
 			}
 		} );
 	}
-//	__.SP.item.resetInheritance( { sList : "DossierInfos", id: 12 } ) 
-	, resetInheritance : function( args ) { // sList, id
+	/**
+	 * Resets the original permission inheritance of an item
+	 * @memberof __.SP.item
+	 * @method resetInheritance
+	 * @example
+	 * __.SP.item.resetInheritance( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 */
+	, resetInheritance : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
@@ -277,9 +372,25 @@ __.SP.item = {
 			}
 		} );
 	}
-//	__.SP.item.addGroup( { sList : "DossierInfos", id: 7, sGroup: O$C3.FOUser.oSettings.sFrontOffice, sRole: "Read"  } ) 
-	, addGroup : function( args ) { // sList, id, sGroup, sPermission
-		/* sRole: Contribute,Custom Levelname,Read,Edit */
+	/**
+	 * Adds a group with a permission role to an item
+	 * @memberof __.SP.item
+	 * @method addGroup
+	 * @example
+	 * __.SP.item.addGroup( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 *	  , sGroup : "Reader Group 42"
+	 *	  , sRole : "Read"
+	 * } );
+	 * @todo provide a full list of roles in documenation
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {String} args.sGroup name of the group
+	 * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+	 */
+	, addGroup : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
@@ -300,14 +411,29 @@ __.SP.item = {
 			}
 		} );
 	}
-	// __.SP.item.restrictToGroup( { sList : "DossierInfos", id: 7, sGroup: O$C3.FOUser.oSettings.sFrontOffice, sRole: "Read"  } ) 
-	, restrictToGroup : function( args ) { // sList, id, sGroup, sRole
-		/* sRole: Contribute,Custom Levelname,Read,Edit */
+	/**
+	 * Wipes all exising permissions on an item and adds a group with a permission role to it.
+	 * @memberof __.SP.item
+	 * @method restrictToGroup
+	 * @example
+	 * __.SP.item.restrictToGroup( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 *	  , sGroup : "Reader Group 42"
+	 *	  , sRole : "Read"
+	 * } );
+	 * @todo provide a full list of roles in documenation
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {String} args.sGroup name of the group
+	 * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+	 */
+	, restrictToGroup : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
-		console.log( oItem );
 		ctx.load( oItem );
 		var oGroups = ctx.get_web().get_siteGroups();
 		var oGroup = oGroups.getByName( args.sGroup );
@@ -317,7 +443,6 @@ __.SP.item = {
 		oItem.breakRoleInheritance( false );
 		oItem.get_roleAssignments().add( oGroup, oBinding );
 		__.SP.exec( ctx, oItem, function( oItem ) {
-			console.log( oItem );
 			if( oItem.sError ) {
 				async.reject( oItem.sError );
 			}
@@ -327,9 +452,25 @@ __.SP.item = {
 		} );
 	}
 	// __.SP.item.restrictToUser( { sList : "SideBar", id: 22, xUser: _spPageContextInfo.userId, sRole: "Edit"  } ) 
-	, restrictToUser : function( args ) { // sList, id, xUser, sRole
-		/* sRole: Contribute,Custom Levelname,Read,Edit */
-		/* xUser: either id or email or login name osce\\jriemer */
+	/**
+	 * Wipes all exising permissions on an item and adds a user with a permission role to it.
+	 * @memberof __.SP.item
+	 * @method restrictToUser
+	 * @example
+	 * __.SP.item.restrictToUser( {
+	 * 	    sList : "Shared Documents"
+	 * 	  , id : 17
+	 *	  , xUser : _spPageContextInfo.userId
+	 *	  , sRole : "Edit"
+	 * } );
+	 * @todo provide a full list of roles in documenation
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} args.sList name or guid of a list
+	 * @param {Number} args.id id of the list item
+	 * @param {String} args.xUser either id or email or login name (osce\\jriemer) of a user
+	 * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+	 */
+	, restrictToUser : function( args ) {
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
 		var oList = __.SP.list.get( ctx, args.sList );
@@ -361,27 +502,6 @@ __.SP.item = {
 		} );
 	}
 };
-
-/*
- *
- var ctx = new SP.ClientContext.get_current();
-var oBooksList = ctx.get_web().get_lists().getByTitle('Actions');
-var oItem = oBooksList.getItemById(1);
-ctx.load(oItem, 'EffectiveBasePermissions' )
-
-    ctx.load(oItem);
-
- ctx.executeQueryAsync(function(){
-        if (oItem.get_effectiveBasePermissions().has(SP.PermissionKind.editListItems)){
-            console.log("user has edit permission");
-        }else{
-             console.log("user doesn't have edit permission");
-        }   
-    }, function(sender, args){
-        console.log('request failed ' + args.get_message() + '\n'+ args.get_stackTrace());
-})
-
-*/
 </code></pre>
         </article>
     </section>
@@ -499,7 +619,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 07 2018 08:39:33 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 15:50:00 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

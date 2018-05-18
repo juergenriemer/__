@@ -138,22 +138,22 @@ __.SP.Filter = __.Class.extend( {
 		this.lsExportFields = lsFields;
 		localStorage.setItem( this.sExportFieldStore, this.lsExportFields.__toString() );
 	}
-	, exportView : function( lsFields, dnModal ) {
+	, exportView : function( lsFields, dnModal, sView ) {
 		( new __.Async( {
 			  id : "__.SP.Filter.exportView"
 			, sdftError : "Failed to export a view."
 		} ) )
 		.then( __.SP.view, "copy", {
 			  sList:"OSCE Contacts"
-			, sOldView: ctx.viewTitle
-			, sNewView : "Export"
+			, sOldView: sView || ctx.viewTitle
+			, sNewView : "_export_"
 		}, "copy current view" )
 		.clear()
 		.then( function( args ) {
 			var async = __.Async.promise( args );
 			async.then( __.SP.view, "update", {
 				  sList:"OSCE Contacts"
-				, sView : "Export"
+				, sView : "_export_"
 				, lsFields : lsFields
 			}, "added all fields to view" ).resolve();
 		}, "update export view" )
@@ -168,11 +168,6 @@ __.SP.Filter = __.Class.extend( {
 			url += "&CacheControl=1";
 			dnModal.close();
 			window.open( url );
-			__.Async.promise( args ).resolve();
-		} )
-		.pause( 15000 )
-		.then( __.SP.view, "del" )
-		.then( function( args ) {
 			__.Async.promise( args ).resolve();
 		} )
 		.start();
@@ -229,7 +224,7 @@ __.SP.Filter = __.Class.extend( {
 	}
 	, loadDefaultView : function() {
 		var url = _spPageContextInfo.webServerRelativeUrl;
-		url += "/_layouts/15/start.aspx#/Lists/" + ctx.ListTitle +"/";
+		url += "/_layouts/15/start.aspx#/Lists/" + this.sList + "/";
 		url += this.defaultView + ".aspx?r=" + Math.random();
 		self.location.href = url;
 	}
@@ -677,7 +672,6 @@ __.SP.Filter = __.Class.extend( {
 		var sView = that.sFilterName;
 		this.lock();
 		this.createView( sView, function( guid ) {
-			console.log( guid );
 			that.guidFilter = guid;
 			that.loadPersonalView( guid );
 		} );
@@ -785,7 +779,9 @@ __.SP.Filter = __.Class.extend( {
 			}
 		} );
 	}
-	, openExportFieldWindow : function() {
+	// sView is optional, default is the current list view
+	// we use it for e.g. cherry picks in ConMan
+	, openExportFieldWindow : function( sView ) {
 		var that = this;
 		// first get all filter fields
 		var sChecked = " checked ";
@@ -812,7 +808,6 @@ __.SP.Filter = __.Class.extend( {
 					h += "</tr>";
 				}
 			}
-			console.log( h );
 		} );
 		h += "</table>";
 		var dnModal = __.SP.modal.open( {
@@ -827,7 +822,7 @@ __.SP.Filter = __.Class.extend( {
 						lsFields.push( dn.getAttribute( "name" ) );
 					} );
 					that.updateExportFields( lsFields );
-					that.exportView( lsFields, dnModal );
+					that.exportView( lsFields, dnModal, sView );
 				}
 				else {
 					dnModal.message( "Please select at least one field." );

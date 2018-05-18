@@ -123,7 +123,6 @@ Compile = {
 	}
 	, __ : function() {
 		// create documentation
-		/*
 		this.purgeFolder( pathDocs );
 		this.jsdoc( pathSource + "/core/dom", pathDocs + "/dom", "config.json" );
 		this.jsdoc( pathSource + "/core/utils", pathDocs + "/utils", "config.json" );
@@ -131,7 +130,6 @@ Compile = {
 		this.jsdoc( pathSource + "/core/class", pathDocs + "/class", "config.json" );
 		this.jsdoc( pathSource + "/core/event", pathDocs + "/event", "config.json" );
 		this.jsdoc( pathSource + "/SP", pathDocs + "/SP", "config.json" );
-		*/
 
 		var lfljsCore = this.walk( pathSource + "/core", "\.min\.js$", "\/jsLink\/" );
 		var lfljsPlugins = this.walk( pathSource + "/plugins", "\.min\.js$", "\/jsLink\/" );
