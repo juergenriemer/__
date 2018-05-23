@@ -16,6 +16,8 @@
  * @example n/a
  */
 __.SP.filter = {};
+
+
 __.SP.Filter = __.Class.extend( {
 	  dnRoot : null
 	, dnForm : null
@@ -52,10 +54,12 @@ __.SP.Filter = __.Class.extend( {
 		this.sFilterFieldStore = this.sFilter + "_filter_";
 		this.sExportFieldStore = this.sFilter + "_export_";
 		// check if filter has already been created
+		console.log( '>>>' );
 		( new __.Async( {
 			  id : "__.SP.Filter.init"
 			, sdftError : "Failed to initialize a list filter."
 		} ) )
+		.then( __.SP.filter.form, "loadSPScripts" )
 		.then( function( args ) {
 			var h = "<div id='"+ that.sFilter +"' style='display:none' class='osce-filter'></div>";
 			that.dnSideNav = __find( "#sideNavBox" );
@@ -224,7 +228,7 @@ __.SP.Filter = __.Class.extend( {
 	}
 	, loadDefaultView : function() {
 		var url = _spPageContextInfo.webServerRelativeUrl;
-		url += "/_layouts/15/start.aspx#/Lists/" + this.sList + "/";
+		url += "/_layouts/15/start.aspx#/Lists/" + ctx.ListTitle +"/";
 		url += this.defaultView + ".aspx?r=" + Math.random();
 		self.location.href = url;
 	}
@@ -874,6 +878,21 @@ __.SP.Filter = __.Class.extend( {
 
 
 __.SP.filter.form = {};
+
+__.SP.filter.form.loadSPScripts = function( args ) {
+	var async = __.Async.promise( args );
+	var hdTimeout = setTimeout( function() {
+		async.reject( "Could not load date library from SharePoint" );
+	}, 10000 );
+	SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
+		SP.SOD.executeFunc( 'datepicker.js', 'clickDatePicker ', function() {
+			clearTimeout( hdTimeout );
+			async.resolve();
+		} )
+	} )
+};
+
+
 __.SP.filter.form.create = function( args ) {
 	var h = "<form class='osce-form'></form>";
 	var dn = args.dnRoot.__append( h );

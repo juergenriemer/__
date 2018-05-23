@@ -71,8 +71,9 @@ __.SP.webservice = {
 	 * 	}
 	 * } );
 	 * @param {Object} args a parameter object holding the following values
-	 * @param {String} args.sService name of the webservice which is looked up in the O$C3.Url mapping object.
-	 * @param {String} args.sEndpoint name of the endpoint
+	 * @param {String} [args.sService] name of the webservice which is looked up in the O$C3.Url mapping object.
+	 * @param {String} [args.sEndpoint] name of the endpoint
+	 * @param {String} [args.url] a URl of a web service replacing args.sService/args.sEndpoint combination.
 	 * @param {String} [args.sMethod] HTTP method (default is "POST")
 	 * @param {Object} [args.oPayload] Object holding parameters as key value pairs 
 	 * @param {Object} [args.aHeaders] Object holding custom HTTP headers as key value pairs 
@@ -93,12 +94,11 @@ __.SP.webservice = {
 		var oAjax = window.XMLHttpRequest ?
 			new XMLHttpRequest() :
 			new ActiveXObject( 'Microsoft.XMLHTTP' );
-		var url = __.Common.Urls.get( args.sService ) + args.sEndpoint + "?";
+		var url = args.url || __.Common.Urls.get( args.sService ) + args.sEndpoint + "?";
 		oAjax.open( sMethod, url, true );
 		oAjax.withCredentials = true;
 		oAjax.onreadystatechange = function() {
 			var fnerr = function( oAjax, sError ) {
-				console.log( oAjax );
 				var sError = "";
 				try {
 					var oResponse = oAjax.response.__toJson();
