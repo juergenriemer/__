@@ -28,7 +28,14 @@ __.SP.ribbon.reload = function() {
  * @async 
  * @instance
  * @example
- * n/a atm
+ * // not working!
+ * __.SP.ribbon.addIcon( {
+ * 	  sList : "OSCE Contacts"
+ * 	, sRibbon : "CommandUI.Ribbon.ListForm.Edit"//.Edit-title"
+ * 	, sSegment : "Ribbon.ListForm.Edit.Commit"
+ * 	, sLabel : "hi mom"
+ * 	, sAction : "javascript:alert(1)"
+ * } )
  * @param {Object} args a parameter object holding the following values
  * @param {String} args.sList name of the list 
  * @param {String} args.sRibbon name of the list's ribbon 
@@ -106,6 +113,7 @@ __.SP.ribbon.addIcon = function( args ) {
  *        async.resolve( { bEnabled : false } );
  *    )
  * return __.SP.ribbon.syncEnabledScript( dnIcon, oAsync );
+ * @param {Object} args a parameter object holding the following values
  * @param {String} args.dnIcon DOM node of the ribbon icon (expected to use the A-tag holding the icon ID).
  * @param {String} args.oAsync An Async task stack (must not be started).
  * @param {String} args.sSegment name of the ribbon's segement 
@@ -130,7 +138,7 @@ __.SP.ribbon.syncEnabledScript = function( dnIcon, oAsync ) {
 				? 'position:absolute;top:13px;margin-left:12px'
 				: 'position:absolute;top:13px;margin-left:-7px' ;
 			var hLoading = "<img class='osce-loader' style='" + sStyle + "' ";
-			hLoading += " src='" + __.SP.icon.mp.loading + "'/>";
+			hLoading += " src='" + __.SP.icon.mp.16.loading + "'/>";
 			dnIcon.__append( hLoading );
 		}, 501 );
 		// reload ribbon with new state
@@ -156,3 +164,122 @@ __.SP.ribbon.syncEnabledScript = function( dnIcon, oAsync ) {
 	return bEnabled;
 };
 
+
+/**
+ * Temporarily adds a ribbon icon into an existing ribbon group on-the-fly.
+ * <br>It will try to find an icon image path by looking upt the image map (__.SP.icon.mp) using the lowercase label name (replacing spaces with underscores) and defaults to the placeholder icon (orange dot)
+ * @memberof __.SP.ribbon
+ * @method addTempIcon
+ * @instance
+ * @example
+ * // add itom to clipboard group in edit ribbon in items edit form
+ * dnAction = __.SP.ribbon.addTempIcon( {
+ * 	  sLabel : "Approve Now" // image map key: "approve_now"
+ * 	, dnGroup : __find( "#Ribbon\\.ListForm\\.Edit\\.Clipboard" )
+ * 	, nPosition : 1
+ * 	, fnAction : function() {
+ * 		alert( 'approved' );
+ * 	}
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sLabel Name of the icon
+ * @param {Node} args.dnGroup DOM node of the group the icon should get appended. (Note: you get the node by ID of the LI element)
+ * @param {function} args.fnAction Function to be executed on click
+ * @param {Number} [args.nPosition] Position of the icon (0 is first position) by default icon is appended
+ * @returns {Node} DOM node of the newly added icon
+ */
+__.SP.ribbon.addTempIcon = function( args ) {
+	var hButton, sLabel;
+	var kmpIcons = args.sLabel.toLowerCase().replace( /\s/g, "_" );
+	var pathIconImg = __.SP.icon.mp.32[ kmpIcons ];
+	if( ! pathIconImg ) {
+		pathIconImg = __.SP.icon.mp.32.placeholder;
+	}
+	var hIcon = ' \
+		<span class="ms-cui-section" id="" unselectable="on"> \
+		<span class="ms-cui-row-onerow" id="" unselectable="on"> \
+		<a class="ms-cui-ctl-large" mscui:controltype="Button" role="button" unselectable="on"> \
+			<span class="ms-cui-ctl-largeIconContainer" unselectable="on"> \
+			<span class="ms-cui-img-32by32 ms-cui-img-cont-float ms-cui-imageDisabled" unselectable="on"> \
+			<img src="' + pathIconImg + '" unselectable="on" \> \
+			</span> \
+			</span> \
+			<span class="ms-cui-ctl-largelabel" unselectable="on">' + args.sLabel + '</span> \
+		</a> \
+		</span> \
+		</span> \
+	';
+	var dnIcons = args.dnGroup.__find( ".ms-cui-layout" );
+	var dnIcon;
+	if( args.nPosition && typeof args.nPosition == "number" ) {
+		var dnInsertBefore = dnIcons.__find( "span.ms-cui-section:nth-child(" + ( args.nPosition + 1 ) + ")" );
+		console.log( dnInsertBefore );
+		if( dnInsertBefore ) {
+			dnIcon = dnInsertBefore.__before( hIcon );
+		}
+		else {
+			console.warn( "desired icon position not available, will append" );
+			dnIcon = dnIcons.__append( hIcon );
+		}
+	}
+	else {
+		dnIcon = dnIcons.__append( hIcon );
+	}
+	if( typeof args.fnAction == "function" ) {
+		dnIcon.__find( "a" ).addEventListener( "click", function( e ) {
+			e.stopPropagation();
+			args.fnAction();
+		} );
+	}
+	else {
+		console.warn( "temp ribbon icon has no action function" );
+	}
+};
+
+/**
+ * Temporarily adds ribbon group to an existing ribbon on-the-fly.
+ * <br>It adds an ID to the LI element starting with "Temp" plus the groups label joined by dots (e.g. Temp.Task.Actions)
+ * @memberof __.SP.ribbon
+ * @method addTempGroup
+ * @instance
+ * @example
+ * // add group to edit ribbon in items edit form
+ * dnGroup = __.SP.ribbon.addTempGroup( {
+ * 	  dnRibbon : __find( "#Ribbon\\.ListForm\\.Edit" )
+ * 	, nPosition : 0
+ * 	, sLabel : "Task Actions"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sLabel Name of the group
+ * @param {Node} args.dnRibbon DOM node of the ribbon the group should get appended. (Note: you get the node by ID of the UL element)
+ * @param {Number} [args.nPosition] Position of the group (0 is first position) by default group is appended
+ * @returns {Node} DOM node of the newly added group
+ */
+__.SP.ribbon.addTempGroup = function( args ) {
+	var sid = "Temp." + args.sLabel.replace( " ", "." );
+	var hGroup = ' \
+		<li class="ms-cui-group" id="' + sid + '" unselectable="on"> \
+			<span class="ms-cui-groupContainer" unselectable="on"> \
+				<span class="ms-cui-groupBody" unselectable="on"> \
+				<span class="ms-cui-layout" unselectable="on"> \
+				</span> \
+				</span> \
+				<span class="ms-cui-groupTitle" unselectable="on">' + args.sLabel + '</span> \
+			</span> \
+			<span class="ms-cui-groupSeparator" unselectable="on"></span> \
+		</li> \
+	';
+	if( args.nPosition && typeof args.nPosition == "number" ) {
+		var dnInsertBefore = args.dnRibbon.__find( "li:nth-child(" + ( args.nPosition + 1 ) + ")" );
+		if( dnInsertBefore ) {
+			return dnInsertBefore.__before( hGroup );
+		}
+		else {
+			console.warn( "desired group position not available, will append" );
+			return args.dnRibbon.__append( hGroup );
+		}
+	}
+	else {
+		return args.dnRibbon.__append( hGroup );
+	}
+}

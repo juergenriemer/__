@@ -144,15 +144,30 @@ __.SP.grid = {
 
 __.SP.icon = {
 	mp : {
-		  "default" : "/_layouts/15/images/Osce/danger.png"
-		, dirty : "/_layouts/15/images/Osce/danger.png"
-		, closed : "/_layouts/15/images/lockoverlay.png"
-		, record : "/_layouts/15/images/lockoverlay.png"
-		, unmarked : "/_layouts/15/images/Osce/lockoverlay-green.png"
-		, yearlyFolder : "/_layouts/15/images/Osce/YF.png"
-		, obsolete : "/_layouts/15/images/Osce/overlay-SO.png"
-		, smallDanger : "/_layouts/15/images/Osce/danger-small.png"
-		, bigDanger : "/_layouts/15/images/warning70by70.gif"
-		, loading : "/_layouts/15/images/Osce/fancytree-loading.gif"
+		  32 : {
+			, placeholder : "/_layouts/15/images/placeholder32x32.png"
+			, approved : "/_layouts/15/images/osce/checkmark.png"
+			, approve : "/_layouts/15/images/osce/checkmark.png"
+			, publish : "/_layouts/15/images/osce/checkmark.png"
+			, rejected : "/_layouts/15/images/osce/x.png"
+			, reject : "/_layouts/15/images/osce/x.png"
+			, unpublish : "/_layouts/15/images/osce/x.png"
+			, cancel : "/_layouts/15/images/osce/cancel.png"
+			, save : "/_layouts/15/images/osce/save.png"
+		}
+		, 16 : {
+			  folder : "/_layouts/15/images/osce/folder.gif"
+			, contact : "/_layouts/15/images/osce/contact.png"
+			, danger : "/_layouts/15/images/osce/danger.png"
+			, contact : "/_layouts/15/images/osce/contact.png"
+			, loading : "/_layouts/15/images/osce/loading.gif"
+		}
+		, 8 : { // evntually 9
+			  locked : "/_layouts/15/images/lockoverlay.png"
+			, unlocked : "/_layouts/15/images/osce/lockoverlay-green.png"
+			, danger : "/_layouts/15/images/osce/danger-small.png"
+			, reject : "/_layouts/15/images/osce/danger-small.png"
+		
+		}
 	}
 };
