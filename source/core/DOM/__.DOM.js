@@ -513,6 +513,8 @@ Object.defineProperty( Node.prototype, "__scrollTo", {
 * A callback function is invoked with a data object providing information
 * about the current position which is, if not manually set, called every
 * 300 milliseconds.
+* <br>NB: remove <!DOCTYPE html> notation from HTML file for this breaks
+* scrollTop/Left
 * @memberof Node
 * @method __onScroll
 * @example dn.__onScroll( function( aInfo ) {
@@ -540,27 +542,29 @@ Object.defineProperty( Node.prototype, "__scrollTo", {
 Object.defineProperty( Node.prototype, "__onScroll", {
 	value : function( cb, msInterval ) {
 		var msInterval = msInterval || 300;
+		var dn = ( this == document ) ? document.body : this;
 		var cbScroll = function() {
-			var dn = ( this == document ) ? document.body : this;
 			if( dn.__hd ) {
 				clearInterval( dn.__hd );
 			}
 			dn.__hd = setTimeout( function() {
-				var xcur = dn.scrollHeight;
-				var x = dn.scrollTop
-				var dx = dn.clientHeight 
-				var ycur = dn.scrollWidth;
-				var y = dn.scrollLeft
-				var dy = dn.clientWidth
+				var dycur = dn.scrollHeight;
+				var y = dn.scrollTop
+				var dy = dn.clientHeight 
+				var dxcur = dn.scrollWidth;
+				var x = dn.scrollLeft
+				var dx = dn.clientWidth
 				cb( {
-					  "x" : xcur
-					, "y" : ycur
+					  "x" : x
+					, "y" : y
+					, "dxcur" : dxcur
+					, "dycur" : dycur
 					, "dy" : dy
 					, "dx" : dx
-					, "bTop" : ( x == 0 )
-					, "bBottom" : ( xcur == ( x + dx ) )
-					, "bLeft" : ( y == 0 )
-					, "bRight" : ( ycur == ( y + dy ) )
+					, "bTop" : ( y == 0 )
+					, "bBottom" : ( ( y + dy ) >= dycur )
+					, "bLeft" : ( x == 0 )
+					, "bRight" : ( ( x + dx ) >= dxcur )
 				} );
 			}, msInterval );
 		};
@@ -743,11 +747,11 @@ window[ "__scrollTo" ] = function( sPos, nPos ) {
 }
 
 window[ "__onScroll" ] = function( cb, msInterval ) {
-	document.body[ "__onScroll" ]( cb, msInterval );
+	document[ "__onScroll" ]( cb, msInterval );
 }
 
 window[ "__offScroll" ] = function() {
-	document.body[ "__offScroll" ]();
+	document[ "__offScroll" ]();
 }
 
 window[ "__css" ] = function( sCSS ) {
