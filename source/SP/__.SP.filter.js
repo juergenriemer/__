@@ -16,6 +16,8 @@
  * @example n/a
  */
 __.SP.filter = {};
+
+
 __.SP.Filter = __.Class.extend( {
 	  dnRoot : null
 	, dnForm : null
@@ -52,10 +54,12 @@ __.SP.Filter = __.Class.extend( {
 		this.sFilterFieldStore = this.sFilter + "_filter_";
 		this.sExportFieldStore = this.sFilter + "_export_";
 		// check if filter has already been created
+		console.log( '>>>' );
 		( new __.Async( {
 			  id : "__.SP.Filter.init"
 			, sdftError : "Failed to initialize a list filter."
 		} ) )
+		.then( __.SP.filter.form, "loadSPScripts" )
 		.then( function( args ) {
 			var h = "<div id='"+ that.sFilter +"' style='display:none' class='osce-filter'></div>";
 			that.dnSideNav = __find( "#sideNavBox" );
@@ -224,7 +228,7 @@ __.SP.Filter = __.Class.extend( {
 	}
 	, loadDefaultView : function() {
 		var url = _spPageContextInfo.webServerRelativeUrl;
-		url += "/_layouts/15/start.aspx#/Lists/" + this.sList + "/";
+		url += "/_layouts/15/start.aspx#/Lists/" + ctx.ListTitle +"/";
 		url += this.defaultView + ".aspx?r=" + Math.random();
 		self.location.href = url;
 	}
@@ -874,6 +878,21 @@ __.SP.Filter = __.Class.extend( {
 
 
 __.SP.filter.form = {};
+
+__.SP.filter.form.loadSPScripts = function( args ) {
+	var async = __.Async.promise( args );
+	var hdTimeout = setTimeout( function() {
+		async.reject( "Could not load date library from SharePoint" );
+	}, 10000 );
+	SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
+		SP.SOD.executeFunc( 'datepicker.js', 'clickDatePicker ', function() {
+			clearTimeout( hdTimeout );
+			async.resolve();
+		} )
+	} )
+};
+
+
 __.SP.filter.form.create = function( args ) {
 	var h = "<form class='osce-form'></form>";
 	var dn = args.dnRoot.__append( h );
@@ -1000,10 +1019,10 @@ __.SP.filter.form.field.lookupdate = {
 		h += ", '" + _spPageContextInfo.siteServerRelativeUrl;
 		h += "/_layouts/15/iframe.aspx?cal=1&amp;lcid=2057&amp;langid=1033&amp;tz=00:59:59.9990041&amp;ww=0111110&amp;fdow=1&amp;fwoy=0&amp;hj=0&amp;swn=false&amp;minjday=109207&amp;maxjday=2666269&amp;date='";
 		h += ', \'\', event); return false;">';
-		h += '<img id="' + sid + 'DatePickerImage" src="/_layouts/15/images/calendar_25.gif?rev=23"';
+		h += '<img id="' + sid + 'DatePickerImage" src="' + __.SP.icon.mp.x16.calendar + '"';
 		h += ' border="0" class="osce-sp-calendar" alt="Select a date from the calendar.">';
 		h += '</a>';
-		h += '<iframe id="' + sid + 'DatePickerFrame" src="/_layouts/15/images/blank.gif?rev=23" ';
+		h += '<iframe id="' + sid + 'DatePickerFrame" src="' + __.SP.icon.mp.x8.blank + '" ';
 		h += ' frameborder="0" scrolling="no" style="display:none; position:absolute; width:200px; z-index:101;" ';
 		h += ' title="Select a date from the calendar."></iframe>';
 		h += "</div>";

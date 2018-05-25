@@ -438,57 +438,57 @@ __.SP.list.oFieldType = function( args ) {
  */
 __.SP.list.addFields = function( args ) { // sList, loFields
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
-	var oList = __.SP.list.get( ctx, args.sList );
-	if( args.loFields ) {
-		var oFields = oList.get_fields();
-		args.loFields.forEach( function( a ) {
-			console.log( ">>>>>>>" +  a.sName );
-			if( a.sCAMLType !== "column" && a.sName !== "Title" ) {
-				var oField = ctx.castTo(
-					  oFields.addFieldAsXml(
-						  __.SP.list.xmlFields( a )
-						, true
-						, SP.AddFieldOptions.addToDefaultContentType
-					)
-					, __.SP.list.oFieldType( a )
-				);
-				if( a.sTitle ) {
-					oField.set_title( a.sTitle );
+	async.then( __.SP.taxonomy, "loadSPScripts" )
+	async.then( function( args ) {
+		var ctx = __.SP.ctx();
+		var oList = __.SP.list.get( ctx, args.sList );
+		if( args.loFields ) {
+			var oFields = oList.get_fields();
+			args.loFields.forEach( function( a ) {
+				if( a.sCAMLType !== "column" && a.sName !== "Title" ) {
+					var oField = ctx.castTo(
+						  oFields.addFieldAsXml(
+							  __.SP.list.xmlFields( a )
+							, true
+							, SP.AddFieldOptions.addToDefaultContentType
+						)
+						, __.SP.list.oFieldType( a )
+					);
+					if( a.sTitle ) {
+						oField.set_title( a.sTitle );
+					}
+					if( a.sDescription ) {
+						oField.set_description( a.sDescription );
+					}
+					if( a.lsChoices ) {
+						oField.set_choices( a.lsChoices );
+					}
+					if( a.aLookup ) {
+						a.aLookup.oField = oField;
+					}
+					if( a.vDefault ) {
+						oField.set_defaultValue( a.vDefault );
+					}
+					oField.update();
+					ctx.load( oField );
 				}
-				if( a.sDescription ) {
-					oField.set_description( a.sDescription );
-				}
-				if( a.lsChoices ) {
-					oField.set_choices( a.lsChoices );
-				}
-				if( a.aLookup ) {
-					a.aLookup.oField = oField;
-				}
-				if( a.vDefault ) {
-					oField.set_defaultValue( a.vDefault );
-				}
-				oField.update();
-				ctx.load( oField );
-			}
-		} );
-		__.SP.exec( ctx, oFields, function( oFields ) {
-			if( oFields.sError ) {
-				console.log( oFields.sError );
-				if( /Cannot complete this action/.test( oFields.sError ) ) {
-					console.log( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" );
-					async.resolve();
+			} );
+			__.SP.exec( ctx, oFields, function( oFields ) {
+				if( oFields.sError ) {
+					if( /Cannot complete this action/.test( oFields.sError ) ) {
+						async.resolve();
+					}
+					else {
+						async.reject( oFields.sError );
+					}
 				}
 				else {
-					console.log( "<<<<<<<<<<<<<<<<<<<<<" );
-					async.reject( oFields.sError );
+					async.resolve();
 				}
-			}
-			else {
-				async.resolve();
-			}
-		} );
-	}
+			} );
+		}
+	} );
+	async.resolve();
 }
 
 /**

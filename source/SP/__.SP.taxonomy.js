@@ -12,6 +12,25 @@ __.SP.taxonomy.aTerms = {};
 // holds all used taxonomy terms
 __.SP.taxonomy.oTermInfo = null;
 
+
+__.SP.taxonomy.loadSPScripts = function( args ) {
+	var async = __.Async.promise( args );
+	var hdTimeout = setTimeout( function() {
+		async.reject( "Could not load taxonomy session from SharePoint" );
+	}, 10000 );
+	SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
+		SP.SOD.registerSod('sp.taxonomy.js', SP.Utilities.Utility.getLayoutsPageUrl('sp.taxonomy.js'));
+		SP.SOD.executeFunc( 'sp.taxonomy.js', 'SP.Taxonomy.TaxonomySession', function() {
+
+			clearTimeout( hdTimeout );
+			async.resolve();
+		} )
+	} )
+};
+
+
+
+
 /**
  * Sets a taxonomy term in an add or edit form.
  * @memberof __.SP.taxonomy
@@ -153,81 +172,85 @@ __.SP.taxonomy.load = function( args ) {
 		async.resolve( { oTerms : oTerms } );
 		return;
 	}
-	var ctx = __.SP.ctx();
-	var sTermStore = args.sTermStore || "Managed Metadata Service";
-	var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
-	var oStore = oTax.get_termStores().getByName( sTermStore );
-	var oSet = oStore.getTermSet( args.sTermSet );
-	var oTerms = oSet.getAllTerms();
-	ctx.load( oTerms, 'Include(Parent,Id,Name)');
-	__.SP.exec( ctx, oTerms, function( oTerms ) {
-		if( oTerms.sError ) {
-			async.reject( oTerms.sError );
-		}
-		else {
-			var loTerms = oTerms.getEnumerator();
-			var aTerms = {};
-			var aGuids = {};
-			var aLabels = {};
-			var aChildren = {};
-			var sLastTerm = "";
-			while( loTerms.moveNext() ) {
-				var oTerm = loTerms.get_current();
-				var oParent = oTerm.get_parent();
-				var sMain = oTerm.get_name();
-				var sLastTerm = sMain;
-				var guid = oTerm.get_id().toString();
-				if( ! oParent.get_serverObjectIsNull() ) {
-					idParent = oParent.get_id().toString();
-					if( ! aChildren[ idParent ] ) {
-						aChildren[ idParent ] = [];
-					}
-					aChildren[ idParent ].push( guid );
-				}
-				aTerms[ sMain ] = {
-					  guid : guid
-					, lsLabels : []
-				};
-				aGuids[ guid ] = sMain;
-				var oLabels = oTerm.getAllLabels( 1033 );
-				ctx.load( oLabels );
-				__.SP.exec( ctx, oLabels, function( oLabels, sMain ) {
-					var loLabels = oLabels.getEnumerator();
-					var sTerm = "";
-					var vLookup = {};
-					while( loLabels.moveNext() ) {
-						var oLabel = loLabels.get_current();
-						var sLabel = oLabel.get_value();
-						if( aTerms[ sLabel ] ) {
-							sTerm = sLabel;
-							vLookup = {
-								  sTerm : sTerm
-								, guid : aTerms[ sTerm ].guid
-							};
-							aLabels[ sLabel ] = vLookup;
-							aLabels[ sLabel.__tokenize() ] = vLookup;
-						}
-						else {
-							aTerms[ sTerm ].lsLabels.push( sLabel );
-							aLabels[ sLabel ] = vLookup;
-							aLabels[ sLabel.__tokenize() ] = vLookup;
-						}
-					}
-					if( ( sLastTerm == sTerm ) ) {
-						var aResult = {
-							  aTerms : aTerms
-							, aGuids : aGuids
-							, aLabels : aLabels
-							, aChildren : aChildren
-						}
-						__.SP.taxonomy.aTerms[ args.sTermSet ] = aResult;
-						async.resolve( { oTerms : aResult } );
-					}
-				} );
-				// add the otherway around
+	async.then( __.SP.taxonomy, "loadSPScripts" )
+	async.then( function( args ) {
+		var ctx = __.SP.ctx();
+		var sTermStore = args.sTermStore || "Managed Metadata Service";
+		var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
+		var oStore = oTax.get_termStores().getByName( sTermStore );
+		var oSet = oStore.getTermSet( args.sTermSet );
+		var oTerms = oSet.getAllTerms();
+		ctx.load( oTerms, 'Include(Parent,Id,Name)');
+		__.SP.exec( ctx, oTerms, function( oTerms ) {
+			if( oTerms.sError ) {
+				async.reject( oTerms.sError );
 			}
-		}
+			else {
+				var loTerms = oTerms.getEnumerator();
+				var aTerms = {};
+				var aGuids = {};
+				var aLabels = {};
+				var aChildren = {};
+				var sLastTerm = "";
+				while( loTerms.moveNext() ) {
+					var oTerm = loTerms.get_current();
+					var oParent = oTerm.get_parent();
+					var sMain = oTerm.get_name();
+					var sLastTerm = sMain;
+					var guid = oTerm.get_id().toString();
+					if( ! oParent.get_serverObjectIsNull() ) {
+						idParent = oParent.get_id().toString();
+						if( ! aChildren[ idParent ] ) {
+							aChildren[ idParent ] = [];
+						}
+						aChildren[ idParent ].push( guid );
+					}
+					aTerms[ sMain ] = {
+						  guid : guid
+						, lsLabels : []
+					};
+					aGuids[ guid ] = sMain;
+					var oLabels = oTerm.getAllLabels( 1033 );
+					ctx.load( oLabels );
+					__.SP.exec( ctx, oLabels, function( oLabels, sMain ) {
+						var loLabels = oLabels.getEnumerator();
+						var sTerm = "";
+						var vLookup = {};
+						while( loLabels.moveNext() ) {
+							var oLabel = loLabels.get_current();
+							var sLabel = oLabel.get_value();
+							if( aTerms[ sLabel ] ) {
+								sTerm = sLabel;
+								vLookup = {
+									  sTerm : sTerm
+									, guid : aTerms[ sTerm ].guid
+								};
+								aLabels[ sLabel ] = vLookup;
+								aLabels[ sLabel.__tokenize() ] = vLookup;
+							}
+							else {
+								aTerms[ sTerm ].lsLabels.push( sLabel );
+								aLabels[ sLabel ] = vLookup;
+								aLabels[ sLabel.__tokenize() ] = vLookup;
+							}
+						}
+						if( ( sLastTerm == sTerm ) ) {
+							var aResult = {
+								  aTerms : aTerms
+								, aGuids : aGuids
+								, aLabels : aLabels
+								, aChildren : aChildren
+							}
+							__.SP.taxonomy.aTerms[ args.sTermSet ] = aResult;
+							async.resolve( { oTerms : aResult } );
+						}
+					} );
+					// add the otherway around
+				}
+			}
+		} );
 	} );
+	async.resolve();
 };
 
 /**
@@ -282,23 +305,27 @@ __.SP.taxonomy.children = function( args ) {
  */
 __.SP.taxonomy.addTerm = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
-	var sTermStore = args.sTermStore || "Managed Metadata Service";
-	var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
-	var oStore = oTax.get_termStores().getByName( sTermStore );
-	var oSet = oStore.getTermSet( args.sTermSet );
-	args.lsTerms.forEach( function( sTerm ) {
-		oSet.createTerm( sTerm, 1033, SP.Guid.newGuid().toString() );
+	async.then( __.SP.taxonomy, "loadSPScripts" )
+	async.then( function( args ) {
+		var ctx = __.SP.ctx();
+		var sTermStore = args.sTermStore || "Managed Metadata Service";
+		var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
+		var oStore = oTax.get_termStores().getByName( sTermStore );
+		var oSet = oStore.getTermSet( args.sTermSet );
+		args.lsTerms.forEach( function( sTerm ) {
+			oSet.createTerm( sTerm, 1033, SP.Guid.newGuid().toString() );
+		} );
+		ctx.load( oSet );
+		__.SP.exec( ctx, oSet, function( oSet ) {
+			if( oSet.sError ) {
+				async.reject( oSet.sError );
+			}
+			else {
+				async.resolve();
+			}
+		} );
 	} );
-	ctx.load( oSet );
-	__.SP.exec( ctx, oSet, function( oSet ) {
-		if( oSet.sError ) {
-			async.reject( oSet.sError );
-		}
-		else {
-			async.resolve();
-		}
-	} );
+	async.resolve();
 }
 
 /* DEV */
@@ -318,7 +345,7 @@ __.SP.taxonomy.oStore = {
 	}
 };
 /* TEST */
-if( /test-jarvis/.test( self.location.href ) ) {
+if( /^https:\/\/test-jarvis/.test( self.location.href ) ) {
 	__.SP.taxonomy.oStore = {
 		  sTermStore : "Managed Metadata Service"
 		, guidTermStore : "c2caf26efa5d429a945ed57554249ca1"
@@ -331,6 +358,23 @@ if( /test-jarvis/.test( self.location.href ) ) {
 			, PartnerStates : "40d80d0e-7ef1-4ebc-af48-fe38450b9929"
 			, MainCategory : "f9962d01-42b7-47f9-b092-9ea8e61653e4"
 			, CustomTags : "a12b2608-e6f8-4f14-bf75-083d8b1d1691"
+		}
+	};
+}
+/* PROD */
+if( /^https:\/\/jarvis/.test( self.location.href ) ) {
+	__.SP.taxonomy.oStore = {
+		  sTermStore : "Managed Metadata Service"
+		, guidTermStore : "c5794c29a64a47ee98f7e64d4f1357cc"
+		, guidTermSet : {
+			  Country : "3743b356-9560-4283-974d-38269333882c"
+			, AreaOfExpertise : "7b880df9-f193-4ce6-b64a-2d685ec39552"
+			, ExecutiveStructure : "fb698d7a-4fd0-41fd-a193-f13b2f393e45"
+			, InternationalOrganization : "30914819-db3e-45a0-9227-74dfa9c2779d"
+			, ParticpatingStates : "afd94263-f917-4441-9754-81d2f6d7e165"
+			, PartnerStates : "afd94263-f917-4441-9754-81d2f6d7e165"
+			, MainCategory : "cf123dd7-6a4a-4343-b486-d1cc7262b930"
+			, CustomTags : "a593da20-da70-47ff-901b-794043be996d"
 		}
 	};
 }

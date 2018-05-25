@@ -43,6 +43,7 @@ __.SP.webpart = {
 			else {
 				var oDef = null;
 				oDef = loWP.get_item( args.ixWP || 0 );
+				console.log( oDef );
 				if( ! oDef ) {
 					async.reject( { sError : "No webpart with index: " + args.ixWP } );
 				}
