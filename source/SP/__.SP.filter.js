@@ -1019,10 +1019,10 @@ __.SP.filter.form.field.lookupdate = {
 		h += ", '" + _spPageContextInfo.siteServerRelativeUrl;
 		h += "/_layouts/15/iframe.aspx?cal=1&amp;lcid=2057&amp;langid=1033&amp;tz=00:59:59.9990041&amp;ww=0111110&amp;fdow=1&amp;fwoy=0&amp;hj=0&amp;swn=false&amp;minjday=109207&amp;maxjday=2666269&amp;date='";
 		h += ', \'\', event); return false;">';
-		h += '<img id="' + sid + 'DatePickerImage" src="/_layouts/15/images/calendar_25.gif?rev=23"';
+		h += '<img id="' + sid + 'DatePickerImage" src="' + __.SP.icon.mp.x16.calendar + '"';
 		h += ' border="0" class="osce-sp-calendar" alt="Select a date from the calendar.">';
 		h += '</a>';
-		h += '<iframe id="' + sid + 'DatePickerFrame" src="/_layouts/15/images/blank.gif?rev=23" ';
+		h += '<iframe id="' + sid + 'DatePickerFrame" src="' + __.SP.icon.mp.x8.blank + '" ';
 		h += ' frameborder="0" scrolling="no" style="display:none; position:absolute; width:200px; z-index:101;" ';
 		h += ' title="Select a date from the calendar."></iframe>';
 		h += "</div>";

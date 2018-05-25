@@ -23,6 +23,13 @@ Object.defineProperty( Array.prototype, "__each", {
 		}
 	}
 } );
+
+Object.defineProperty( Node.prototype, "__each", {
+	value : function( cb ) {
+		cb( this );
+	}
+} );
+
 /**
  * Takes a CSS selector string and queries the DOM for matching nodes. If not used as node method it will assume document.body.
  * <br>

@@ -144,8 +144,8 @@ __.SP.grid = {
 
 __.SP.icon = {
 	mp : {
-		  32 : {
-			, placeholder : "/_layouts/15/images/placeholder32x32.png"
+		  "x32" : {
+			  placeholder : "/_layouts/15/images/placeholder32x32.png"
 			, approved : "/_layouts/15/images/osce/checkmark.png"
 			, approve : "/_layouts/15/images/osce/checkmark.png"
 			, publish : "/_layouts/15/images/osce/checkmark.png"
@@ -155,19 +155,21 @@ __.SP.icon = {
 			, cancel : "/_layouts/15/images/osce/cancel.png"
 			, save : "/_layouts/15/images/osce/save.png"
 		}
-		, 16 : {
+		, "x16" : {
 			  folder : "/_layouts/15/images/osce/folder.gif"
 			, contact : "/_layouts/15/images/osce/contact.png"
 			, danger : "/_layouts/15/images/osce/danger.png"
 			, contact : "/_layouts/15/images/osce/contact.png"
 			, loading : "/_layouts/15/images/osce/loading.gif"
+			, tags : "/_layouts/15/images/EMMCopyTerm.png"
+			, calendar : "/_layouts/15/images/calendar_25.gif?rev=23"
 		}
-		, 8 : { // evntually 9
+		, "x8" : { // evntually 9
 			  locked : "/_layouts/15/images/lockoverlay.png"
 			, unlocked : "/_layouts/15/images/osce/lockoverlay-green.png"
 			, danger : "/_layouts/15/images/osce/danger-small.png"
 			, reject : "/_layouts/15/images/osce/danger-small.png"
-		
+			, blank : "/_layouts/15/images/blank.gif?rev=23"
 		}
 	}
 };

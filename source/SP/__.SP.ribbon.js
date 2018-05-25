@@ -138,7 +138,7 @@ __.SP.ribbon.syncEnabledScript = function( dnIcon, oAsync ) {
 				? 'position:absolute;top:13px;margin-left:12px'
 				: 'position:absolute;top:13px;margin-left:-7px' ;
 			var hLoading = "<img class='osce-loader' style='" + sStyle + "' ";
-			hLoading += " src='" + __.SP.icon.mp.16.loading + "'/>";
+			hLoading += " src='" + __.SP.icon.mp.x16.loading + "'/>";
 			dnIcon.__append( hLoading );
 		}, 501 );
 		// reload ribbon with new state
@@ -191,9 +191,9 @@ __.SP.ribbon.syncEnabledScript = function( dnIcon, oAsync ) {
 __.SP.ribbon.addTempIcon = function( args ) {
 	var hButton, sLabel;
 	var kmpIcons = args.sLabel.toLowerCase().replace( /\s/g, "_" );
-	var pathIconImg = __.SP.icon.mp.32[ kmpIcons ];
+	var pathIconImg = __.SP.icon.mp.x32[ kmpIcons ];
 	if( ! pathIconImg ) {
-		pathIconImg = __.SP.icon.mp.32.placeholder;
+		pathIconImg = __.SP.icon.mp.x32.placeholder;
 	}
 	var hIcon = ' \
 		<span class="ms-cui-section" id="" unselectable="on"> \
@@ -211,7 +211,7 @@ __.SP.ribbon.addTempIcon = function( args ) {
 	';
 	var dnIcons = args.dnGroup.__find( ".ms-cui-layout" );
 	var dnIcon;
-	if( args.nPosition && typeof args.nPosition == "number" ) {
+	if( typeof args.nPosition == "number" ) {
 		var dnInsertBefore = dnIcons.__find( "span.ms-cui-section:nth-child(" + ( args.nPosition + 1 ) + ")" );
 		console.log( dnInsertBefore );
 		if( dnInsertBefore ) {
@@ -269,7 +269,7 @@ __.SP.ribbon.addTempGroup = function( args ) {
 			<span class="ms-cui-groupSeparator" unselectable="on"></span> \
 		</li> \
 	';
-	if( args.nPosition && typeof args.nPosition == "number" ) {
+	if( typeof args.nPosition == "number" ) {
 		var dnInsertBefore = args.dnRibbon.__find( "li:nth-child(" + ( args.nPosition + 1 ) + ")" );
 		if( dnInsertBefore ) {
 			return dnInsertBefore.__before( hGroup );

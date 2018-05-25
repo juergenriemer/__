@@ -158,7 +158,7 @@ __.SP.modal = {
 		var h = "<div class='osce-action-panel'>";
 		h += "  <div class='osce-message'></div>";
 		h += "  <div class='osce-loading'>";
-		h += "   <img src='" + __.SP.icon.mp.16.loading + "' />";
+		h += "   <img src='" + __.SP.icon.mp.x16.loading + "' />";
 		h += "   <span>" + args.sLoading + "</span></div>";
 		h += "  <div class='osce-buttons'>";
 		if( args.sOk ) {
