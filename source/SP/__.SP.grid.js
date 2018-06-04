@@ -169,6 +169,8 @@ __.SP.icon = {
 			, unlocked : "/_layouts/15/images/osce/lockoverlay-green.png"
 			, danger : "/_layouts/15/images/osce/danger-small.png"
 			, reject : "/_layouts/15/images/osce/danger-small.png"
+			, expanded : "/_layouts/15/images/osce/expanded.png"
+			, collapsed : "/_layouts/15/images/osce/collapsed.png"
 			, blank : "/_layouts/15/images/blank.gif?rev=23"
 		}
 	}

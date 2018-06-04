@@ -1,7 +1,7 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @output_file_name __.utils.min.js
-// @js_externs var __; __.e; __.e.stop; __.utils; __.css; __.utils.dt; __.utils.dt.date; __.cookie; __.cookie.get; __.cookie.set; __.cookie.del; __.url; __.url.oParams; __.misc; __.misc.isIE;
+// @js_externs var __; __.e; __.e.stop; __.utils; __.css; __.utils.dt; __.utils.dt.date; __.utils.dt.diff; __.cookie; __.cookie.get; __.cookie.set; __.cookie.del; __.url; __.url.oParams; __.misc; __.misc.isIE;
 // ==/ClosureCompiler==
 /**
  * @namespace __
@@ -733,6 +733,14 @@ __.utils.dt = {
 			, "sMonth" : sMonth
 			, "sMonthShort" : sMonth.substring( 0, 3 )
 		}
+	}
+	, diff : function( dt1, dt2 ) {
+		var date1 = dt1;
+		var date2 = dt2 || new Date();
+		var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+		var timeDiff = date1.getTime() - date2.getTime();
+		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+		return diffDays;
 	}
 };
 

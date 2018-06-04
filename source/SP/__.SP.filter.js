@@ -47,12 +47,12 @@ __.SP.Filter = __.Class.extend( {
 		this.cbCreate = aConf.cbCreate || null;
 		this.cbClear = aConf.cbClear || null;
 		this.oTax = aConf.oTax || __.SP.taxonomy.oStore;
-		this.defaultView = aConf.defaultView || "All Items";
+		this.defaultView = aConf.defaultView || "AllItems";
 		// SP's OOTB default views differ in internal and display name
 		this.sdftView = aConf.defaultView || "AllItems";
 		this.sFilter = "_filter_" + this.sList.__tokenize() + "_";
 		this.sFilterFieldStore = this.sFilter + "_filter_";
-		this.sExportFieldStore = this.sFilter + "_export_";
+		this.sExportFieldStore = this.sFilter + "xls_export";
 		// check if filter has already been created
 		console.log( '>>>' );
 		( new __.Async( {
@@ -143,21 +143,22 @@ __.SP.Filter = __.Class.extend( {
 		localStorage.setItem( this.sExportFieldStore, this.lsExportFields.__toString() );
 	}
 	, exportView : function( lsFields, dnModal, sView ) {
+		var that = this;
 		( new __.Async( {
 			  id : "__.SP.Filter.exportView"
 			, sdftError : "Failed to export a view."
 		} ) )
 		.then( __.SP.view, "copy", {
-			  sList:"OSCE Contacts"
-			, sOldView: sView || ctx.viewTitle
-			, sNewView : "_export_"
+			  sList : that.sList
+			, sOldView : sView || ctx.viewTitle
+			, sNewView : "xls_export"
 		}, "copy current view" )
 		.clear()
 		.then( function( args ) {
 			var async = __.Async.promise( args );
 			async.then( __.SP.view, "update", {
-				  sList:"OSCE Contacts"
-				, sView : "_export_"
+				  sList : that.sList
+				, sView : "xls_export"
 				, lsFields : lsFields
 			}, "added all fields to view" ).resolve();
 		}, "update export view" )

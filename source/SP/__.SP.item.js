@@ -210,6 +210,14 @@ __.SP.item = {
 						if( ! oField ) {
 							_kv[ sField ] = ""; // null values
 						}
+						else if( SP.Taxonomy && oField instanceof SP.Taxonomy.TaxonomyFieldValueCollection ) {
+							_kv[ sField ] = [];
+							var loTaxTerms = oField.getEnumerator();
+							while( loTaxTerms.moveNext() ) {
+								var oTaxTerm = loTaxTerms.get_current();
+								_kv[ sField ].push( convert( sField, oTaxTerm ) );
+							}
+						}
 						else if( oField instanceof Array ) {
 							_kv[ sField ] = [];
 							oField.forEach( function( o ) {
