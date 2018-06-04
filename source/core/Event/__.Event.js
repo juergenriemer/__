@@ -28,6 +28,12 @@ __.Event = {
 		} );
 		return ( "on" + ls.join( "" ) );
 	}
+	, setScroll : function() {
+		var that = this;
+		__onScroll( function( aInfo ) {
+			that.trigger( "scroll", aInfo );
+		} );
+	}
 	/**
 	 * Lets an object listen to one or many events. It needs to 
 	 * provide a method with the camelcased name of the event
@@ -54,6 +60,9 @@ __.Event = {
 		var larg = Array.prototype.slice.call( arguments );
 		var oListener = larg.shift();
 		larg.forEach( function( sEvent ) {
+			if( sEvent == "scroll" ) {
+				that.setScroll();
+			}
 			sEvent = that.sEvent( sEvent );
 			if( ! that.oListeners[ sEvent ] ) {
 				that.oListeners[ sEvent ] = [];

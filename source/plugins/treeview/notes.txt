@@ -1,0 +1,87 @@
+loadRoot
+	get doc libs
+	createFolderStructure
+loadFolder( start )
+	load 1st level of folders
+	createFolderStructure
+	set "loaded" (or use timestamp) on root node
+	scroll to view
+expandFolder
+	if "loaded" (or use timestamp) show
+	otherwise -> createSubfolders
+collapseFolder
+	show plus sign
+	hide nodes
+setCache
+getCache
+createFolderStructure
+loadPath
+	split path
+	for split path
+		loadFolder( split, start )
+		click on split	
+	
+<ul>
+	<li>
+		<div class='node'>
+		<img class='icon'></img>
+		<a href="#path/to/folder/">
+			<img class='folder'></img>
+			<span>folder name</span>
+		</a>
+		</div>	
+		<ul class="js-loaded">
+			<li> ... </li>
+			<li> ... </li>
+			<li> ... </li>
+		</ul>
+	</li>
+	<li>
+		<div class='node'>
+		<img class='icon'></img>
+		<a href="#path/to/folder/">
+			<img class='folder'></img>
+			<span>folder name</span>
+		</a>
+		</div>	
+		<ul class="js-loaded js-empty"></ul>
+	</li>
+	<li>
+		<div class='node'>
+		<img class='icon'></img>
+		<a href="#path/to/folder/">
+			<img class='folder'></img>
+			<span>folder name</span>
+		</a>
+		</div>	
+		<ul class="js-not-loaded"></ul>
+	</li>
+</ul>
+
+[
+	{
+		  sName : "meeting notes"
+		, path : "/path/to/meetingnotes"
+		, sType : "rm-container"
+		, lsOverlays : [ "yearly" ]
+		, laFolders : [
+			{
+			  sName : "meeting notes 2"
+			, path : "/path/to/meetingnotes2"
+			, sType : "folder"
+			}
+		]
+	}
+	, {
+		  sName : "sec notes"
+		, path : "/path/to/sn"
+		, sType : "rm-container"
+		, lsOverlays : [ "forbidden" ]
+	}	
+	, {
+		  sName : "project files"
+		, path : "/path/to/pf"
+		, sType : "rm-container"
+	}	
+]
+

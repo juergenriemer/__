@@ -1,0 +1,45 @@
+<html>
+<script src="../../core/DOM/__.DOM.js"></script>
+<script src="../../core/Utils/__.utils.js"></script>
+<script src="../../core/Async/__.async.js"></script>
+<script src="../../core/Class/__.class.js"></script>
+<script>
+if( /\?min/.test( self.location.href ) ) {
+	document.write( '<sc'+'ript src="__.treeview.min.js"></sc'+'ript>' );
+}
+else {
+	document.write( '<sc'+'ript src="__.treeview.js"></sc'+'ript>' );
+}
+</script>
+
+<body>
+<h3>Unit tests for __.Event.js</h3>
+<div id="output"></div>
+
+<script>
+var dnTreeview = __find( "#output" );
+dnTreeview.__treeview( {
+	  pathRoot : "hi/mom"
+	, fnLoad : function( path, cbLoaded ) {
+		oResult = {
+			  sErrMsg : null
+			, laFolders : [  {
+					  sName : "sec notes"
+					, path : "/path/to/sn"
+					, sType : "rm-container"
+					, lsOverlays : [ "forbidden" ]
+				}	
+				, {
+					  sName : "project files"
+					, path : "/path/to/pf"
+					, sType : "rm-container"
+				}
+			]
+		};
+		cbLoaded( oResult );
+	}
+} );
+console.log( dnTreeview );
+</script>
+</body>
+</html>

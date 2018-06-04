@@ -1,4 +1,5 @@
 <html>
+<script src="../DOM/__.DOM.js"></script>
 <script>
 if( /\?min/.test( self.location.href ) ) {
 	document.write( '<sc'+'ript src="__.event.min.js"></sc'+'ript>' );
@@ -11,7 +12,9 @@ else {
 <body>
 <h3>Unit tests for __.Event.js</h3>
 <div id="output"></div>
+<div style="width:110%;height:110%;border:1px solid blue">scroll test</div>
 <script>
+__scrollTo( "top" );
 dnOutput = document.getElementById( "output" );
 o1 = {
 	  one : function() {
@@ -79,13 +82,35 @@ o1.four();
 
 o = {
 	init : function() {
-		__.Event.listen( this, "hashchange", "newsLoaded" );
+		__.Event.listen( this, "hashchange", "newsLoaded", "scroll" );
 	}
 	, onHashchange : function( sHash ) {
 		dnOutput.innerHTML += sHash + ",";
 	}
+	, onScroll : function( aInfo ) {
+		if( aInfo.bBottom ) {
+			dnOutput.innerHTML += "btm1,";
+		}
+		if( aInfo.bTop ) {
+			dnOutput.innerHTML += "top1,";
+		}
+	}
 };
 o.init();
+oScroll = {
+	init : function() {
+		__.Event.listen( this, "scroll" );
+	}
+	, onScroll : function( aInfo ) {
+		if( aInfo.bBottom ) {
+			dnOutput.innerHTML += "btm2,";
+		}
+		if( aInfo.bTop ) {
+			dnOutput.innerHTML += "top2,";
+		}
+	}
+};
+oScroll.init();
 window.addEventListener( "hashchange", function() {
 	__.Event.trigger( "hashchange", self.location.hash );
 } );
@@ -96,17 +121,24 @@ setTimeout( function() {
 setTimeout( function() {
 	self.location.hash = "9";
 }, 200 );
+setTimeout( function() {
+	__scrollTo( "bottom" );
+}, 600 );
+setTimeout( function() {
+	__scrollTo( "top" );
+}, 1000 );
 
 setTimeout( function() {
 	var h = dnOutput.innerHTML;
-	var eh = "subed,5,1,2,1,1,4,#8,#9,";
+	var eh = "subed,5,1,2,1,1,4,#8,#9,btm1,btm2,top1,top2,";
 	if( h == eh ) {
 		console.log( "OK" );
 	}
 	else {
 		console.log( "ERR", h, eh );
 	}
-}, 500 );
+}, 1800 );
+
 </script>
 </body>
 </html>
