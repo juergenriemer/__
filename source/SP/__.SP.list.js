@@ -17,7 +17,7 @@ __.SP.list = {
 	 * @method get
 	 * @todo use arguments object
 	 * @todo improve error capturing
-	 * @example __.SP.folder.get( ctx, "Shared Documents" );
+	 * @example __.SP.folder.get( ctx, "Documents" );
 	 * @param {Object} ctx SharePoint site context
 	 * @param {String} x either name of the list or its guid in curly brackets
 	 * @returns {Object} context of the list
@@ -41,9 +41,9 @@ __.SP.list = {
 	 * @method read
 	 * @example
 	 * __.SP.list.read( {
-	 * 	  sList : "Shared Documents"
+	 * 	  sList : "Documents"
 	 *	, lsFields : [ "Title", "ID" ]
-	 *	, xmlQuery : "<Query><Where><FieldRef Name='ID' /><Lt><Value Type='Number'>5</Value></Lt></Where></Query>"
+	 *	, xmlQuery : "<Where><FieldRef Name='ID' /><Lt><Value Type='Number'>5</Value></Lt></Where>"
 	 * } );
 	 * @param {Object} args a parameter object holding the following values
 	 * @param {String} args.sList name or guid of a list
@@ -158,7 +158,7 @@ __.SP.list = {
  * @method exists
  * @example
  * __.SP.list.exists( {
- * 	  sList : "Shared Documents"
+ * 	  sList : "Documents"
  * } );
  * @param {Object} args a parameter object holding the following values
  * @param {String} args.sList name or guid of a list
@@ -190,7 +190,7 @@ __.SP.list = {
  * @method id
  * @example
  * __.SP.list.id( {
- * 	  sList : "Shared Documents"
+ * 	  sList : "Documents"
  * } );
  * @param {Object} args a parameter object holding the following values
  * @param {String} args.sList name of a list
@@ -231,7 +231,7 @@ __.SP.list.id = function( args ) {
  * @method settings
  * @example
  * __.SP.list.settings( {
- * 	  sList : "Shared Documents"
+ * 	  sList : "Documents"
  *	, kvFeatures : {
  * 		  set_enableVersioning : true
  *		, set_onQuickLaunch : false

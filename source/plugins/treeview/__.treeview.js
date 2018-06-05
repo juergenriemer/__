@@ -10,13 +10,16 @@ __.Treeview = __.Class.extend( {
 	, fnLoad : null
 	, lpath : []
 	, init : function( args ) {
+		console.log( args );
 		if( ! this.bInit ) {
 		}
 		this.bInit = true;
 		this.dnRoot = args.dnRoot;
+		this.dnRoot.classList.add( "ls-treeview" );
 		this.pathRoot = "/" + args.pathRoot + "/";
 		this.pathRoot = this.pathRoot.replace( /\/\//g, "/" );
 		this.fnLoad = args.fnLoad;
+		this.fnInit = args.fnInit || args.fnLoad;
 		this.behaviour();
 		this.createPreloadPaths( args );
 		this.loadRoot( this.pathRoot );
@@ -54,7 +57,10 @@ __.Treeview = __.Class.extend( {
 		} );
 	}
 	, loadRoot : function( path ) {
-		this.loadFolder( this.dnRoot, path );
+		var that = this;
+		this.fnInit( path, function( oResult ) {
+			that.createStructure( that.dnRoot, oResult );
+		} );
 	}
 	, loadFolder : function( dnNode, path, dnContainer ) {
 		var that = this;
@@ -68,13 +74,20 @@ __.Treeview = __.Class.extend( {
 	}
 	, hNode : function( aResult ) {
 		var path = aResult.path.replace( /\/\//g, "/" );
+		var sCustomProps = "";
+		if( aResult.aCustom ) {
+			for( var kProp in aResult.aCustom ) {
+				var vProp = aResult.aCustom[ kProp ];
+				sCustomProps += ' ' + kProp + '="' + vProp + '" ';
+			}
+		}
 		//aResult.sType = "folder-open";
-		return "<li> \
+		return "<li " + sCustomProps + "> \
 			<div class='node'> \
 				<img class='ls-expando' alt='+'></img> \
 				<a href='#" + path + "'> \
 					<img class='ls-container " + aResult.sType + "'></img> \
-					<span>" + aResult.sName + "</span> \
+					<span class='ls-name'>" + aResult.sName + "</span> \
 				</a> \
 			</div> \
 			<ul class='js-not-loaded'></ul> \
@@ -118,6 +131,7 @@ __.Treeview = __.Class.extend( {
 		if( oResult.sErrMsg ) {
 			return;
 		}
+		console.log( 'ulla' );
 		this._render( dnNode, oResult );
 		dnNode.classList.remove( "js-not-loaded" );
 		dnNode.classList.add( "js-loaded" );
@@ -139,34 +153,40 @@ __.Treeview = __.Class.extend( {
 } );
 
 __css( ' \
-	ul { \
+	.ls-treeview ul { \
 		xmargin : 0; \
 		xpadding : 0; \
 	} \
-	li { \
+	.ls-treeview li { \
 		list-style : none; \
 	} \
-	  img.ls-container \
-	, img.ls-expando { \
+	  .ls-treeview img.ls-container \
+	, .ls-treeview img.ls-expando { \
 		width : 16px; \
 		height : 16px; \
 		cursor : pointer; \
 	} \
-	img.folder { \
-		background-image:url(/moviezamlr/img/folder.gif) \
+	.ls-treeview img.folder { \
+		background-image:url( folder.png ) \
 	} \
-	img.folder.open { \
-		background-image:url(/moviezamlr/img/folder-open.gif) \
+	.ls-treeview img.folder.open { \
+		background-image:url( folder-open.png ) \
 	} \
-	img.loading { \
-		border : 2px solid red; \
-		background-image:url(/moviezamlr/img/ajax-loader.gif) \
+	.ls-treeview img.loading { \
+		background-image:url( loading.gif ) \
 	} \
-	body { background : #efefef } \
+	.ls-treeview img.expanded { \
+		background-image:url( expanded.png ) \
+	} \
+	.ls-treeview img.collapsed { \
+		background-image:url( collapsed.png ) \
+	} \
 ' );
+	/*
 Object.defineProperty( Node.prototype, "__treeview", {
 	value : function( args ) {
 		args.dnRoot = this;
 		this.__oTreeview = __.Class.instantiate( __.Treeview, args );
 	}
 } );
+	*/

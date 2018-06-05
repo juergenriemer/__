@@ -9,11 +9,9 @@ __.SP.workflow = {};
 __.SP.workflow.loadSPScripts = function( args ) {
 	var async = __.Async.promise( args );
 	if( SP && SP.WorkManagement ) {
-		console.log( 'loaded' );
 		async.resolve();
 	}
 	else {
-		console.log( 'load now' );
 		var hdTimeout = setTimeout( function() {
 			async.reject( "Could not load work management from SharePoint" );
 		}, 10000 );
@@ -25,7 +23,7 @@ __.SP.workflow.loadSPScripts = function( args ) {
 				clearTimeout( hdTimeout );
 				async.resolve();
 			} )
-		}, 0 );
+		}, 100 );
 	}
 };
 

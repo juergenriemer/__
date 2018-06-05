@@ -1,0 +1,50 @@
+<html>
+<script src="../../core/DOM/__.DOM.js"></script>
+<script src="../../core/Utils/__.utils.js"></script>
+<script src="../../core/Async/__.async.js"></script>
+<script src="../../core/Class/__.class.js"></script>
+<script>
+if( /\?min/.test( self.location.href ) ) {
+	document.write( '<sc'+'ript src="__.treeview.min.js"></sc'+'ript>' );
+}
+else {
+	document.write( '<sc'+'ript src="__.treeview.js"></sc'+'ript>' );
+}
+</script>
+
+<body>
+<h3>Unit tests for __.Treeview.js</h3>
+<ul id="output"></ul>
+
+<script>
+var dnTreeview = __find( "#output" );
+dnTreeview.__treeview( {
+	  pathRoot : "/Users/juergenriemer/Documents/GitHub/__2/"
+	, pathPreload : "source/SP/fonts"
+	, pathPreload : "/docs_old/core_utils/scripts/prettify/"
+	//, pathPreload : ""
+	//, pathPreload : "/Users/juergenriemer/Documents/GitHub/__2/"
+	, fnLoad : function( path, cbLoaded ) {
+		var that = this;
+		var url = "http://localhost:3010/folders?path=" + path;
+		var oAjax = window.XMLHttpRequest ?
+			new XMLHttpRequest() :
+			new ActiveXObject( 'Microsoft.XMLHTTP' );
+		oAjax.open( "GET", url, true );
+		oAjax.onreadystatechange = function() {
+			if( oAjax.readyState === 4 ) {
+				if( oAjax.status < 400  ) {
+					var oResult = oAjax.responseText.__toJson();	
+					cbLoaded( oResult );
+				}
+			}
+		}
+		oAjax.setRequestHeader( "Accept", "application/json" );
+		oAjax.setRequestHeader( "Content-Type", "application/json; charset=UTF-8;" );
+		oAjax.setRequestHeader( "X-Requested-With", "XMLHttpRequest" );
+		oAjax.send();
+	}
+} );
+</script>
+</body>
+</html>
