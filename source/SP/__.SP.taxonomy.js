@@ -21,9 +21,10 @@ __.SP.taxonomy.loadSPScripts = function( args ) {
 	SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
 		SP.SOD.registerSod('sp.taxonomy.js', SP.Utilities.Utility.getLayoutsPageUrl('sp.taxonomy.js'));
 		SP.SOD.executeFunc( 'sp.taxonomy.js', 'SP.Taxonomy.TaxonomySession', function() {
-
 			clearTimeout( hdTimeout );
-			async.resolve();
+			setTimeout( function() {
+				async.resolve();
+			}, 666 );
 		} )
 	} )
 };
