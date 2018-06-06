@@ -10,7 +10,6 @@ __.Treeview = __.Class.extend( {
 	, fnLoad : null
 	, lpath : []
 	, init : function( args ) {
-		console.log( args );
 		if( ! this.bInit ) {
 		}
 		this.bInit = true;
@@ -30,28 +29,25 @@ __.Treeview = __.Class.extend( {
 			var dn = e.target;
 			if( dn.classList.contains( "ls-expando" ) ) {
 				var dnLI = dn.__closest( "li" );
-				var dnNode = dnLI.querySelector( "div.node" );
-				var dnLink = dnNode.__find( "a" );
-				var dnContainer = dnNode.__find( "img.ls-container" );
-				var path = dnLink.getAttribute( "href" ).split( "#" )[ 1 ];
 				var dnUL = dnLI.lastElementChild;
-				switch( dn.getAttribute( "alt" ) ) {
-					case "+" :
-						dn.setAttribute( "alt", "-" );
-						dnContainer.classList.add( "open" );
-						if( dnUL.classList.contains( "js-loaded" ) ) {
-							dnUL.__show();
-						}
-						else {
-							dnContainer.classList.add( "loading" );
-							that.loadFolder( dnUL, path, dnContainer );
-						}
-					break;
-					case "-" :
-						dn.setAttribute( "alt", "+" );
-						dnContainer.classList.remove( "open" );
-						dnUL.__hide();
-					break;
+				var dnIcon = dnLI.querySelector( "div.node img.ls-icon" );
+				if( dn.classList.contains( "collapsed" ) ) {
+					dn.classList.add( "expanded" );
+					dn.classList.remove( "collapsed" );
+					dnIcon.classList.add( "open" );
+					if( dnUL.classList.contains( "js-loaded" ) ) {
+						dnUL.__show();
+					}
+					else {
+						dn.classList.add( "loading" );
+						that.loadFolder( dnUL, dnLI, dnIcon );
+					}
+				}
+				else {
+					dn.classList.remove( "expanded" );
+					dn.classList.add( "collapsed" );
+					dnIcon.classList.remove( "open" );
+					dnUL.__hide();
 				}
 			}
 		} );
@@ -62,31 +58,35 @@ __.Treeview = __.Class.extend( {
 			that.createStructure( that.dnRoot, oResult );
 		} );
 	}
-	, loadFolder : function( dnNode, path, dnContainer ) {
+	, loadFolder : function( dnNode, dnLI, dnIcon ) {
 		var that = this;
+		var path = dnLI.getAttribute( "path" );
 		this.fnLoad( path, function( oResult ) {
-			if( dnContainer ) {
-				dnContainer.classList.remove( "loading" );
-			}
+			var dnExpando = dnLI.__find( "img.ls-expando" );
+			dnExpando.classList.remove( "loading" );
 			that.createStructure( dnNode, oResult );
 			// scroll into view
-		} );
+		}, dnLI );
+	}
+	, createProperties : function( aResult ) {
+		var sProps = "";
+		var kvProps = aResult.kvProps || {};
+		aResult.kvProps.path = aResult.path;	
+		for( var kProp in kvProps ) {
+			var vProp = kvProps[ kProp ];
+			sProps += ' ' + kProp + '="' + vProp + '" ';
+		}
+		return sProps;
 	}
 	, hNode : function( aResult ) {
 		var path = aResult.path.replace( /\/\//g, "/" );
-		var sCustomProps = "";
-		if( aResult.aCustom ) {
-			for( var kProp in aResult.aCustom ) {
-				var vProp = aResult.aCustom[ kProp ];
-				sCustomProps += ' ' + kProp + '="' + vProp + '" ';
-			}
-		}
-		//aResult.sType = "folder-open";
-		return "<li " + sCustomProps + "> \
+		var sProps = this.createProperties( aResult );
+		var sBlank = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+		return "<li " + sProps + "> \
 			<div class='node'> \
-				<img class='ls-expando' alt='+'></img> \
+				<img src='" + sBlank + "' class='ls-expando collapsed'></img> \
 				<a href='#" + path + "'> \
-					<img class='ls-container " + aResult.sType + "'></img> \
+					<img src='" + sBlank + "' class='ls-icon " + aResult.sType + "'></img> \
 					<span class='ls-name'>" + aResult.sName + "</span> \
 				</a> \
 			</div> \
@@ -131,7 +131,6 @@ __.Treeview = __.Class.extend( {
 		if( oResult.sErrMsg ) {
 			return;
 		}
-		console.log( 'ulla' );
 		this._render( dnNode, oResult );
 		dnNode.classList.remove( "js-not-loaded" );
 		dnNode.classList.add( "js-loaded" );
@@ -146,21 +145,21 @@ __.Treeview = __.Class.extend( {
 			hFolders += "";
 			dnNode.__append( hFolders );
 		}
-		setTimeout( function() {
-			that.render_( dnNode, oResult );
-		}, 1500 );
+		that.render_( dnNode, oResult );
 	}
 } );
 
 __css( ' \
 	.ls-treeview ul { \
-		xmargin : 0; \
-		xpadding : 0; \
+		margin-left : -16px; \
 	} \
 	.ls-treeview li { \
 		list-style : none; \
 	} \
-	  .ls-treeview img.ls-container \
+	  .ls-treeview img { \
+		border : 0; \
+	} \
+	  .ls-treeview img.ls-icon \
 	, .ls-treeview img.ls-expando { \
 		width : 16px; \
 		height : 16px; \
@@ -172,21 +171,19 @@ __css( ' \
 	.ls-treeview img.folder.open { \
 		background-image:url( folder-open.png ) \
 	} \
-	.ls-treeview img.loading { \
-		background-image:url( loading.gif ) \
-	} \
 	.ls-treeview img.expanded { \
 		background-image:url( expanded.png ) \
 	} \
 	.ls-treeview img.collapsed { \
 		background-image:url( collapsed.png ) \
 	} \
+	.ls-treeview img.loading { \
+		background-image:url( loading.gif ) \
+	} \
 ' );
-	/*
 Object.defineProperty( Node.prototype, "__treeview", {
 	value : function( args ) {
 		args.dnRoot = this;
 		this.__oTreeview = __.Class.instantiate( __.Treeview, args );
 	}
 } );
-	*/
