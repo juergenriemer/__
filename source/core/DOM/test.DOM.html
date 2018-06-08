@@ -68,15 +68,15 @@ setTimeout( function() {
 
 
 var u = __find( "#output" );
-assert( typeof u.__each, "undefined", "nodelist conversion 1" );
+assert( typeof u.__each, "function", "nodelist conversion 1" );
 var em = __find( "em" );
 assert( typeof em.__each, "function", "nodelist conversion 2" );
 var a = __find( "[class]" );
 assert( typeof a.__each, "function", "nodelist conversion 3" );
 var cap = __find( "hr" );
-assert( typeof cap.__each, "undefined", "nodelist conversion 4" );
+assert( typeof cap.__each, "function", "nodelist conversion 4" );
 var x = __find( "[id='u']" );
-assert( typeof x.__each, "undefined", "nodelist conversion 5" );
+assert( typeof x.__each, "function", "nodelist conversion 5" );
 
 dnOutput = __find( "#output" );
 h = dnOutput.innerHTML;

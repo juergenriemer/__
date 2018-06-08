@@ -14,6 +14,12 @@
  * @namespace Node
  */
 
+window[ "__css" ] = function( sCSS ) {
+	var dnHead = document.getElementsByTagName( 'head' )[ 0 ];
+	var dn = document.createElement( 'style' );
+	dnHead.appendChild( dn );
+	dn.innerHTML = sCSS;
+};
 
 Object.defineProperty( Array.prototype, "__each", {
 	value : function( cb ) {
@@ -396,70 +402,6 @@ Object.defineProperty( Node.prototype, "__dy", {
 } );
 
 /**
-* Lets an element fade out.
-* @memberof Node
-* @method __fadeOut
-* @example dn.__fadeOut();
-* @example dn.__fadeOut( 25, function() {
-*     dn.__remove();
-* } );
-* @param {Integer} [ms] milliseconds it should take to fade out
-* @param {Function} [cb] callback function to be invoked after element was faded out.
-*/
-Object.defineProperty( Node.prototype, "__fadeOut", {
-	value : function( ms, cb ) {
-		var dn = this;
-		var ms = ( typeof ms == "number" ) ? ms : 250;
-		var cb = ( typeof cb == "function" ) ? ms : cb;
-		var nStep = 25 / ms;
-		dn.style.opacity = dn.style.opacity || 1;
-		( function fader() {
-			if( ( dn.style.opacity -= nStep) < 0 ) {
-				dn[ "__hide" ]();
-				if( cb ) {
-					cb();
-				}
-			}
-			else {
-				setTimeout( fader, 25 );
-			}
-		} )();
-	}
-} );
-
-/**
-* Lets an element fade in.
-* @memberof Node
-* @method __fadeIn
-* @example dn.__fadeIn();
-* @param {Integer} [ms] milliseconds it should take to fade out
-* @param {Function} [cb] callback function to be invoked after element was faded out.
-*/
-Object.defineProperty( Node.prototype, "__fadeIn", {
-	value : function( ms, cb ) {
-		var dn = this;
-		var ms = ( typeof ms == "number" ) ? ms : 250;
-		var cb = ( typeof cb == "function" ) ? ms : cb;
-		var nStep = 25 / ms;
-		dn.style.opacity = this.style.opacity || 0;
-		dn[ "__show" ]();
-		( function fader() {
-			var n = Number( dn.style.opacity ) + nStep;
-			dn.style.opacity = n;
-			if( n > 1 ) {
-				dn.style.opacity = 1;
-				if( cb ) {
-					cb();
-				}
-			}
-			else {
-				setTimeout( fader, 25 );
-			}
-		} )();
-	}
-} );
-
-/**
 * Gets or sets a css attribute
 * @memberof Node
 * @method __style
@@ -682,6 +624,125 @@ __.dn = {
 };
 
 
+/**
+* Lets an element fade out.
+* @memberof Node
+* @method __fadeOut
+* @example dn.__fadeOut();
+* @example dn.__fadeOut( function() {
+*     dn.__remove();
+* } );
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+Object.defineProperty( Node.prototype, "__fadeOut", {
+	value : function( cb ) {
+		this.style.opacity = 0;
+		if( cb ) {
+			setTimeout( cb, 501 );
+		}
+	}
+} );
+
+/**
+* Lets an element fade in.
+* @memberof Node
+* @method __fadeIn
+* @example dn.__fadeIn();
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+
+Object.defineProperty( Node.prototype, "__fadeIn", {
+	value : function( cb ) {
+		this.style.opacity = 100;
+		if( cb ) {
+			setTimeout( cb, 501 );
+		}
+	}
+} );
+
+__css( ".__fade { \
+	opacity : 1; \
+	-webkit-transition: opacity 0.5s ease-in-out; \
+	-moz-transition: opacity 0.5s ease-in-out; \
+	-o-transition: opacity 0.5s ease-in-out; \
+	transition: opacity 0.5s ease-in-out; \
+} " );
+
+/**
+* Lets slide down the content of an element showing it.
+* NB: If the node should be rendered collapsed initially you need to assign a zero max-height (style="max-height:0").
+* @memberof Node
+* @method __slideDown
+* @example dn.__slideDown();
+* @example dn.__slideDown( function() {
+*     console.log( 'done sliding down' );
+* } );
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+
+Object.defineProperty( Node.prototype, "__slideDown", {
+	value : function( cb ) {
+		this.classList.add( "__slide" );
+		var dy = this.scrollHeight;
+		this.style.maxHeight = dy;
+		this.setAttribute( "ls-height", dy );
+		var dn = this;
+		while( dn.tagName !== "BODY" ) {
+			dn = dn.parentNode;
+			if( dn.hasAttribute( "ls-height" ) ) {
+				var dyParent = parseInt( dn.getAttribute( "ls-height" ) );
+				dn.style.maxHeight = dyParent + dy;
+			}
+		}
+		if( cb ) {
+			setTimeout( cb, 501 );
+		}
+	}
+} );
+
+/**
+* Lets slide up the content of an element hiding it.
+* NB: If the node should be rendered collapsed initially you need to assign a zero max-height (style="max-height:0").
+* @memberof Node
+* @method __slideUp
+* @example dn.__slideUp();
+* @example dn.__slideUp( function() {
+*     console.log( 'done sliding up' );
+* } );
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+Object.defineProperty( Node.prototype, "__slideUp", {
+	value : function( cb ) {
+		this.classList.add( "__slide" );
+		var that = this;
+		var dy = that.scrollHeight;
+		that.style.maxHeight = dy;
+		setTimeout( function() {
+			that.style.maxHeight = 0;
+			var dn = that;
+			while( dn.tagName !== "BODY" ) {
+				dn = dn.parentNode;
+				if( dn.hasAttribute( "ls-height" ) ) {
+					var dyParent = dn.scrollHeight;
+					dn.style.maxHeight = dyParent - dy;
+				}
+			}
+			if( cb ) {
+				setTimeout( cb, 501 );
+			}
+		}, 0 );
+	}
+} );
+
+__css( ".__slide { \
+	overflow-y: hidden; \
+	-webkit-transition: max-height 0.5s ease-in-out; \
+	-moz-transition: max-height 0.5s ease-in-out; \
+	-o-transition: max-height 0.5s ease-in-out; \
+	transition: max-height 0.5s ease-in-out; \
+} " );
+
+
 /* *** Polyfills *** */
 /* matches */
 this.Element && function( oPrototype ) {
@@ -761,9 +822,3 @@ window[ "__offScroll" ] = function() {
 	document[ "__offScroll" ]();
 }
 
-window[ "__css" ] = function( sCSS ) {
-	var dnHead = document.getElementsByTagName( 'head' )[ 0 ];
-	var dn = document.createElement( 'style' );
-	dnHead.appendChild( dn );
-	dn.innerHTML = sCSS;
-};

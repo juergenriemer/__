@@ -153,6 +153,7 @@ __.SP.icon = {
 			, reject : "/_layouts/15/images/osce/x.png"
 			, unpublish : "/_layouts/15/images/osce/x.png"
 			, cancel : "/_layouts/15/images/osce/cancel.png"
+			, close : "/_layouts/15/images/osce/cancel.png"
 			, save : "/_layouts/15/images/osce/save.png"
 		}
 		, "x16" : {
