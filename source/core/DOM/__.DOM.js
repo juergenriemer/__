@@ -636,10 +636,13 @@ __.dn = {
 */
 Object.defineProperty( Node.prototype, "__fadeOut", {
 	value : function( cb ) {
+		this.classList.add( "__effects" );
 		this.style.opacity = 0;
 		if( cb ) {
-			setTimeout( cb, 501 );
+			setTimeout( function(){cb(this)}, 501 );
+			//setTimeout( cb, 501 );
 		}
+		return this;
 	}
 } );
 
@@ -653,20 +656,14 @@ Object.defineProperty( Node.prototype, "__fadeOut", {
 
 Object.defineProperty( Node.prototype, "__fadeIn", {
 	value : function( cb ) {
-		this.style.opacity = 100;
+		this.classList.add( "__effects" );
+		this.style.opacity = 1;
 		if( cb ) {
-			setTimeout( cb, 501 );
+			setTimeout( function(){cb(this)}, 501 );
 		}
+		return this;
 	}
 } );
-
-__css( ".__fade { \
-	opacity : 1; \
-	-webkit-transition: opacity 0.5s ease-in-out; \
-	-moz-transition: opacity 0.5s ease-in-out; \
-	-o-transition: opacity 0.5s ease-in-out; \
-	transition: opacity 0.5s ease-in-out; \
-} " );
 
 /**
 * Lets slide down the content of an element showing it.
@@ -682,21 +679,26 @@ __css( ".__fade { \
 
 Object.defineProperty( Node.prototype, "__slideDown", {
 	value : function( cb ) {
-		this.classList.add( "__slide" );
-		var dy = this.scrollHeight;
+		this.classList.add( "__effects" );
+		this.style.overflowY = "hidden";
+		var dy = parseInt( this.scrollHeight );
+		if( dy == 0 ) {
+			return this;
+		}
 		this.style.maxHeight = dy;
-		this.setAttribute( "ls-height", dy );
 		var dn = this;
 		while( dn.tagName !== "BODY" ) {
 			dn = dn.parentNode;
-			if( dn.hasAttribute( "ls-height" ) ) {
-				var dyParent = parseInt( dn.getAttribute( "ls-height" ) );
+			if( dn.hasAttribute( "ls-slide" ) ) {
+				var dyParent = dn.scrollHeight;
 				dn.style.maxHeight = dyParent + dy;
 			}
 		}
+		this.setAttribute( "ls-slide", true );
 		if( cb ) {
-			setTimeout( cb, 501 );
+			setTimeout( cb, 301 );
 		}
+		return this;
 	}
 } );
 
@@ -713,35 +715,44 @@ Object.defineProperty( Node.prototype, "__slideDown", {
 */
 Object.defineProperty( Node.prototype, "__slideUp", {
 	value : function( cb ) {
-		this.classList.add( "__slide" );
+		this.classList.add( "__effects" );
+		this.style.overflowY = "hidden";
 		var that = this;
 		var dy = that.scrollHeight;
+		if( dy == 0 ) {
+			return this;
+		}
 		that.style.maxHeight = dy;
 		setTimeout( function() {
 			that.style.maxHeight = 0;
 			var dn = that;
 			while( dn.tagName !== "BODY" ) {
 				dn = dn.parentNode;
-				if( dn.hasAttribute( "ls-height" ) ) {
+				if( dn.hasAttribute( "ls-slide" ) ) {
 					var dyParent = dn.scrollHeight;
 					dn.style.maxHeight = dyParent - dy;
 				}
 			}
 			if( cb ) {
-				setTimeout( cb, 501 );
+				setTimeout( cb, 301 );
 			}
 		}, 0 );
+		return this;
 	}
 } );
 
-__css( ".__slide { \
-	overflow-y: hidden; \
-	-webkit-transition: max-height 0.5s ease-in-out; \
-	-moz-transition: max-height 0.5s ease-in-out; \
-	-o-transition: max-height 0.5s ease-in-out; \
-	transition: max-height 0.5s ease-in-out; \
-} " );
-
+/* create CSS for slide and fade effects */
+( function() {
+	var sec = 0.3;
+	var sCSS = ".__effects { ";
+	var sTransitions = "opacity " + sec + "s ease-in-out"
+	sTransitions += ", max-height " + sec + "s ease-in-out";
+	[ "-webkit-", "-moz-", "-o-", "" ].forEach( function( sBrowser ) {
+		sCSS += sBrowser + "transition:" + sTransitions + ";";
+	} );
+	sCSS += " } ";
+	__css( sCSS );
+} )();
 
 /* *** Polyfills *** */
 /* matches */

@@ -1,0 +1,67 @@
+<html>
+<script>
+if( /\?min/.test( self.location.href ) ) {
+	document.write( '<sc'+'ript src="__.DOM.min.js"></sc'+'ript>' );
+}
+else {
+	document.write( '<sc'+'ript src="__.DOM.js"></sc'+'ript>' );
+}
+</script>
+<body>
+<h1>slide/fade tests</h1>
+<style>
+</style>
+
+<ul id="sft">
+	<li>asdf asdf</li><li>asdf asdf</li><li>asdf asdf</li>
+	<li>asdf asdf
+		<ul id="sft2">
+			<li>jkl;</li>
+			<li>jkl;</li>
+			<li>jkl;</li>
+			<li>jkl;</li>
+			<li>jkl;</li>
+			<li>jkl;
+				<ul id="sft3"></ul>
+			</li>
+			<li>jkl;</li>
+			<li>jkl;</li>
+			<li>jkl;</li>
+		</ul>
+	</li>
+	<li>asdf asdf</li><li>asdf asdf</li><li>asdf asdf</li>
+</ul> 
+<script>
+var dn = __find( "#sft" );
+var dn2 = __find( "#sft2" );
+var dn3 = __find( "#sft3" );
+setTimeout( function() {
+//dn.__slideUp()//.__fadeOut();
+//dn.__fadeOut();
+}, 500 );
+add = function() {
+	var h = "<li>1234</li><li>1234</li><li>1234</li><li>1234</li><li>1234</li>";
+	dn3.style.maxHeight = 0;
+	dn3.__append( h );
+	dn3.__slideDown();
+}
+</script>
+<button onclick="dn.__slideUp()">close</button>
+<button onclick="dn.__slideDown()">open</button>
+<button onclick="dn.__fadeIn()">show</button>
+<button onclick="dn.__fadeOut()">hide</button>
+<button onclick="dn.__fadeOut().__slideUp()">closehide</button>
+<button onclick="dn.__fadeIn().__slideDown()">showopen</button>
+<button onclick="dn2.__slideUp()">close 2</button>
+<button onclick="dn2.__slideDown()">open 2</button>
+
+<button onclick="add()">add</button>
+<button onclick="dn3.__slideUp()">close 3</button>
+<button onclick="dn3.__slideDown()">open 3</button>
+<hr>
+
+</body>
+</html>
+
+
+
