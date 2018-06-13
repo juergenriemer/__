@@ -181,8 +181,10 @@ dnMenu.__dy( "400" );
 __css( "padding", 0 );
 __css( "margin", 0 );
 __css( "background", "#efefef" );
-assert( dnMenu.__x(), 90, "dn.__x (dnMenu)" );
-assert( dnMenu.__y(), 190, "dn.__y (dnMenu)" );
+var b = Math.abs( dnMenu.__x() - 90 ) < 20;
+assert( b, true, "dn.__x (dnMenu)" );
+var b = Math.abs( dnMenu.__y() - 190 ) < 20;
+assert( b, true, "dn.__y (dnMenu)" );
 assert( dnMenu.__dx(), 400, "dn.__dx (dnMenu)" );
 assert( dnMenu.__dy(), 400, "dn.__dy (dnMenu)" );
 

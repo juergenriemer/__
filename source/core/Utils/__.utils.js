@@ -715,24 +715,50 @@ __.url = {
 __.utils = {};
 __.utils.dt = {
 	  date : function( sdt ) {
-		var dt = ( sdt )
-			? new Date( sdt.replace( /\D/g, '-' ) )
-			: new Date();
-			
+		if( typeof sdt == "object" ) {
+			var dt = sdt;
+		}
+		else if( typeof sdt == "string" ) {
+			var dt = new Date( sdt.replace( /\D/g, '-' ) );
+		}
+		else {
+			dt = new Date();
+		}
 		var lsDays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
 		var lsMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 		var nDay = dt.getDate();
 		var sDay = lsDays[ dt.getDay() ];
+		var sDayShort = sDay.substring( 0, 3 );
 		var nMonth = dt.getMonth();
 		var sMonth = lsMonths[ nMonth ];
-		return {
+		var sMonthShort = sMonth.substring( 0, 3 );
+		var nYear = dt.getFullYear();
+		var nHour = ( dt.getHours ) ? dt.getHours() : 0;
+		var nMinute = ( dt.getMinutes ) ? dt.getMinutes() : 0;
+		var nSecond = ( dt.getSeconds ) ? dt.getSeconds() : 0;
+		var sHour = ( nHour < 10 ) ? "0" + nHour : nHour;
+		var sMinute = ( nMinute < 10 ) ? "0" + nMinute : nMinute;
+		var sSecond = ( nSecond < 10 ) ? "0" + nSecond : nSecond;
+		var sdtdft = [ sMonthShort, nDay, nYear ].join( " " ) + " " + [ sHour, sMinute ].join( ":" );
+		// below we used quotes for keys to not be replaced in google compiler
+		var adtInfo = {
 			  "nDay" : nDay
 			, "sDay" : sDay
-			, "sDayShort" : sDay.substring( 0, 3 )
+			, "sDayShort" : sDayShort
 			, "nMonth" : nMonth
 			, "sMonth" : sMonth
-			, "sMonthShort" : sMonth.substring( 0, 3 )
-		}
+			, "sMonthShort" : sMonthShort
+			, "nYear" : nYear
+			, "nHour" : nHour
+			, "nMinute" : nMinute
+			, "nSecond" : nSecond
+			, "sHour" : sHour
+			, "sMinute" : sMinute
+			, "sSecond" : sSecond
+			, "sdtdft" : sdtdft
+			, "dt" : dt
+		};
+		return adtInfo;
 	}
 	, diff : function( dt1, dt2 ) {
 		var date1 = dt1;
@@ -743,6 +769,7 @@ __.utils.dt = {
 		return diffDays;
 	}
 };
+
 
 __.utils.misc = {
 	  isIE : function() {
