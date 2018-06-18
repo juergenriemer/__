@@ -5,6 +5,17 @@
 
 __.SP.search = {};
 
+/**
+ * Loads external SP scripts to initiate JSOM search API. 
+ * It will wait for 10 seconds before it rejects the promise.
+ * @memberof __.SP.search
+ * @method loadSPScripts
+ * @async 
+ * @instance
+ * @example 
+ * __.SP.search.loadSPScripts();
+ * @returns {Object} Resolved promise
+ */
 __.SP.search.loadSPScripts = function( args ) {
 	var async = __.Async.promise( args );
 	var hdTimeout = setTimeout( function() {
@@ -17,8 +28,6 @@ __.SP.search.loadSPScripts = function( args ) {
 		} );
 	} );
 };
-/*
-*/
 
 /**
  * Searches the index for keywords. Use 
