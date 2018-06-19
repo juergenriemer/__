@@ -255,6 +255,33 @@ __.Async.Promise.prototype = {
 	 * @instance
 	 */
 	// REF: unit test different argument structures
+	, para : function( lAsyncs, sMsg ) {
+		//var that = this;
+		var _args = this._args;
+		this.then( function() {
+			var async = __.Async.promise( _args );
+			var c = lAsyncs.length;
+			var done = function() {
+				if( --c == 0 ) {
+					async.resolve();
+				}
+			}
+			lAsyncs.forEach( function( Async ) {
+				Async.then( function( args ) {
+					done();
+					// add ret. res. to args obj
+					delete args.__guid_async__;
+					for( var s in args ) {
+
+						_args[ s ] = args[ s ];
+					} 
+					Async.resolve();
+					
+				}, "done" ).start();
+			} );
+		}, sMsg );
+		return this;
+	}
 	, then : function( x1, x2, x3, x4 ) {
 		// construct an action's object
 		var ofn = {
@@ -345,6 +372,7 @@ __.Async.Promise.prototype = {
 		}
 	}
 	, _next : function() {
+		var that = this;
 		// cut next function object from list
 		var ofn = this._loTasks.shift();
 		// save the current action message
