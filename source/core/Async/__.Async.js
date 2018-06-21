@@ -1,7 +1,7 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @output_file_name __.async.min.js
-// @js_externs var __; __.Async; __.Async.ix; __.Async.store; __.Async.fnerr; __.Async.fnstat; __.Async.stub; __.Async.resolve; __.Async.reject; __.Async.Promise; __.Async.Promise.debug; __.Async.Promise.clear; __.Async.Promise.wait; __.Async.Promise.then; __.Async.Promise.start; __.Async.Promise.resolve; __.Async.Promise.stop; __.Async.Promise.reject; __.Async.Promise.ctx; __.Async.Promise.fnerr; __.Async.Promise.fnstat; __.Async.Promise._next; __.Async.promise; __.Async.Promise.__guid_async__; __.Async.__guid_async__; __.Async.Promise._args;
+// @js_externs var __; __.Async; __.Async.ix; __.Async.store; __.Async.fnerr; __.Async.fnstat; __.Async.stub; __.Async.resolve; __.Async.reject; __.Async.Promise; __.Async.Promise.debug; __.Async.Promise.clear; __.Async.Promise.wait; __.Async.Promise.parallel; __.Async.Promise.then; __.Async.Promise.start; __.Async.Promise.resolve; __.Async.Promise.stop; __.Async.Promise.reject; __.Async.Promise.ctx; __.Async.Promise.fnerr; __.Async.Promise.fnstat; __.Async.Promise._next; __.Async.promise; __.Async.Promise.sdftError; __.Async.Promise.__guid_async__; __.Async.__guid_async__; __.Async.Promise._args;
 // ==/ClosureCompiler==
 /**
  * @namespace __
@@ -90,9 +90,13 @@ __.Async.promise = function( args ) {
 		// in case we pass on a callback we save it for later
 		// invocation. We attach the callback to the promise
 		// object with double underscores to prevent overriding
-		if( args && args.cb ) {
-			oPromise.__cb__ = args.cb;
-		}
+		// if no callback is attached we assume a console log
+		// of the result as appropriate
+		oPromise.__cb__ = ( args && args[ "cb" ] )
+			? args[ "cb" ]
+			: function( xResult ) {
+				console.log( xResult );
+			} ;
 	}
 	// we set the late arrivals flag on the promise, i.e. any newly
 	// added task will get put at beginning of task queue
@@ -217,6 +221,72 @@ __.Async.Promise.prototype = {
 		return this;
 	}
 	/**
+	 * Registers methods to the task chain that shall get executed
+	 * in parallel. 
+	 * @memberof __.Async
+	 * @method parallel 
+	 * @example
+	 * ( new __.Async() )
+	 * .then( this, "task1", {x:1}, "p1" )
+	 * .parallel( [
+	 * 	  ( new __.Async() )
+	 * 		.then( this, "task2", {x:2}, "p2" )
+	 * 		.then( function( args ) {
+	 * 			var async = __.Async.promise( args );
+	 * 			var p1Results = args.aResult;
+	 * 			delete args.aResult;
+	 * 			async.resolve( { p1Results : p1Results } );
+	 * 		} )
+	 * 	 , ( new __.Async() )
+	 * 		.then( this, "task3", {x:3}, "p3" )
+	 * 		.then( this, "task4", {x:4}, "p4" )
+	 * 	, ( new __.Async() ).then( this, "task5", {x:5}, "p5" )
+	 * 	, ( new __.Async() ).then( this, "task6", {x:6}, "p6" )
+	 * ], "execute in parallel" )
+	 * .then( this, "task7", {x:7}, "p7" )
+	 * .start();
+	 * @param {Array} loAsyncs Array of Async stacks
+	 * @param {String} [sMsg] logging message
+	 * @returns {Object} Promise instance for chaining
+	 * @instance
+	 */
+	, parallel : function( loAsyncs, sMsg ) {
+		// get original arguments
+		var _args = this._args;
+		// set optional loggin message
+		var sMsg = sMsg || "";
+		this.then( function() {
+			var async = __.Async.promise( _args );
+			var c = loAsyncs.length;
+			loAsyncs.forEach( function( oAsync ) {
+				// add last task in parallel task stack
+				// to identify whether we are finished
+				oAsync.then( function( args ) {
+					// add return result to args obj
+					// excluding Async guid
+					delete args.__guid_async__;
+					for( var s in args ) {
+						_args[ s ] = args[ s ];
+					} 
+					// if we went through all paras
+					// we resolve to continue with
+					// original async task stack
+					if( --c == 0 ) {
+						async.resolve();
+					}
+					// resolve last parallel task for
+					// clean up
+					oAsync.resolve();
+					
+				}, "done" )
+				// and start the parallel task stack
+				oAsync.start();
+			} );
+		}, sMsg );
+		// return instance for chaining
+		return this;
+	}
+	/**
 	 * Registers a method to the task chain.
 	 * <br />
 	 * We can either register an existing method by indicating
@@ -254,34 +324,6 @@ __.Async.Promise.prototype = {
 	 * @returns {Object} Promise instance for chaining
 	 * @instance
 	 */
-	// REF: unit test different argument structures
-	, para : function( lAsyncs, sMsg ) {
-		//var that = this;
-		var _args = this._args;
-		this.then( function() {
-			var async = __.Async.promise( _args );
-			var c = lAsyncs.length;
-			var done = function() {
-				if( --c == 0 ) {
-					async.resolve();
-				}
-			}
-			lAsyncs.forEach( function( Async ) {
-				Async.then( function( args ) {
-					done();
-					// add ret. res. to args obj
-					delete args.__guid_async__;
-					for( var s in args ) {
-
-						_args[ s ] = args[ s ];
-					} 
-					Async.resolve();
-					
-				}, "done" ).start();
-			} );
-		}, sMsg );
-		return this;
-	}
 	, then : function( x1, x2, x3, x4 ) {
 		// construct an action's object
 		var ofn = {
@@ -387,9 +429,8 @@ __.Async.Promise.prototype = {
 			var v = ofn.args[ s ];
 			// if we deal with an arguments lookup we
 			// fetch the value using the key/path string
-			// console.log( v );
-			if( typeof v == "object" && v && v.arg ) {
-				var lk = v.arg.split( "." );
+			if( typeof v == "object" && v && v[ "arg" ] ) {
+				var lk = v[ "arg" ].split( "." );
 				v = this._args;
 				lk.forEach( function( k ) {
 					v = v[ k ];
@@ -500,7 +541,7 @@ __.Async.Promise.prototype = {
 	 * error condition 
 	 * @instance
 	 */
-	, reject : function( sError ) {
+	, reject : function( xError ) {
 		var stringify = function( s ) {
 			try {
 				return ( s ) ? JSON.stringify( s ) : "na";
@@ -513,11 +554,11 @@ __.Async.Promise.prototype = {
 		// but we set the status to erroneous
 		this._sStatus = "error";
 		// an error happened, we stop here 
-		var sError = ( typeof sError == "string" )
-			? sError
-			: ( typeof sError ==  "object" )
-				? ( sError.sError )
-					? sError.sError
+		var sError = ( typeof xError == "string" )
+			? xError
+			: ( typeof xError ==  "object" )
+				? ( xError[ "sError" ] )
+					? xError[ "sError" ]
 					: "A task was rejected"
 				: "A task was rejected";
 		var sStack = "id:(" + this.id + ") ";
@@ -526,14 +567,13 @@ __.Async.Promise.prototype = {
 		sStack += "sdftError:(" + this.sdftError + ") ";
 		sStack += "sError:(" + stringify( sError ) + ") ";
 		var oStack = {
-			  ix : this.ix
-			, sError : sError
-			, id : this.id
-			, sErrorTask : this.scurMsg
-			, args : this._args
-			, sdftError : this.sdftError
-			, sError : sError
-			, sStack : sStack
+			  "ix" : this.ix
+			, "id" : this.id
+			, "sErrorTask" : this.scurMsg
+			, "args" : this._args
+			, "sdftError" : this.sdftError
+			, "sError" : sError
+			, "sStack" : sStack
 		};
 		// and invoke the error function with error and args object
 		if( this.fnerr ) {
