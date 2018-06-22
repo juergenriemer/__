@@ -29,9 +29,9 @@ __.SP = {
 	 * @param {String} [sSite] Absolute Url of the SharePoint site
 	 * @returns {Object} SharePoint site context
 	 */
-	  ctx : function( sSite ) {
-		return ( sSite )
-			? new SP.ClientContext( sSite )
+	  ctx : function( args ) {
+		return ( args && args.sSite )
+			? new SP.ClientContext( args.sSite )
 			: new SP.ClientContext.get_current();
 	}
 	/**

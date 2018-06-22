@@ -232,6 +232,64 @@ __.SP.modal = {
 		} );
 	}
 	/**
+	 * Opens a modal alert window with a list of items to select.
+	 * @memberof __.SP.modal
+	 * @method select
+	 * @example __.SP.modal.select( {
+	 *	  sTitle : "Select box"
+	 *	, sMessage : "Please select some items"
+	 *	, laItems : [
+	 *		  { sItem : "item1", vItem : "123", bSelected : true }
+	 *		, { sItem : "item2", vItem : "abc" }
+	 *		, { sItem : "item3", vItem : "x1f" }
+	 *	]
+	 * 	, cb : function( lsItems ) {
+	 *		// do sg with selection
+	 * 	}
+	 * } );
+	 * @param {Object} args a parameter object holding the following values
+	 * @param {String} [args.sTitle] title of alert window (default is "System Message"
+	 * @param {String} [args.sMessage] message of the alert.
+	 * @param {String} args.laItems list of of key value pairs (sItem/vItem) of selected items
+	 * @param {String} args.cb callback receiving list of of key value pairs (sItem/vItem) of selected items
+	 * @returns {Object} the modal object 
+	 */
+	, select : function( args ) {
+		var sMessage = ( args.sMessage ) ? args.sMessage : "";
+		var h = "<p>" + sMessage + "</p>";
+		h += "<table>";
+		args.laItems.forEach( function( aItem ) {
+			var sChecked = ( aItem.bSelected ) ? " checked " : "";
+			h += "<tr>";
+			h += "<td>";
+			h += "<input type='checkbox' ";
+			h += "name='" + aItem.sItem + "' ";
+			h += "value='" + aItem.vItem + "' >";
+			h += "<td>";
+			h += aItem.sItem;
+			h += "</td>";
+			h += "</tr>";
+		} );
+		h += "</table>";
+		return __.SP.modal.open( {
+			  sTitle : args.sTitle || "Select items"
+			, hContent : h
+			, fnact : function( oModal ) {
+				var laItems = [];
+				oModal.dn.__find( "input[value]" ).__each( function( dn ) {
+					if( dn.checked ) {
+						laItems.push( {
+							  sItem : dn.name
+							, vItem : dn.value
+						} );
+					}
+				} );
+				args.cb( laItems );
+				__.SP.modal.close();
+			}
+		} );
+	}
+	/**
 	 * Opens a modal alert window with a message.
 	 * @memberof __.SP.modal
 	 * @method alert

@@ -3,17 +3,11 @@
 if( typeof( __ ) == "undefined" ) {
 	__ = {};
 }
+__css( '.-lck-bag {position : relative;display : none;}  .-lck-bag-back, .-lck-bag-front {position : absolute;width : 100%;height : 100%;left : 0;top : 0;z-index : 66666666666;}.-lck-bag-back {z-index : 55555555555;opacity : 0.6;background : #fff;}.-lck-bag-front{display : table;width : 100%;}.-lck-bag-front div.-lck-loading{font-size:1.4em;font-weight:bold;text-align : center;display: table-cell;vertical-align: middle; }' );
+
 
 __.lock = {
-	  bInit : false
-	, init : function() {
-		if( ! this.bInit ) {
-			__css( ".-lck-bag{position:relative;display:none;} .-lck-bag-back, .-lck-bag-front{position:absolute;width:100%;height:100%;left:0;top:0;z-index:66666666666;} .-lck-bag-back{z-index:55555555555;opacity:0.6;background:#fff;} .-lck-bag-front{display:table;width:100%;}.-lck-bag-frontdiv.-lck-loading{font-size:1.4em;font-weight:bold;text-align:center;display:table-cell;vertical-align:middle;}" );
-		}
-		this.bInit = true;
-	  }
-	, up : function( dn, kv ) {
-		this.init();
+	  up : function( dn, kv ) {
 		// set timeout for we want to ensure this is run
 		// after any other rendering is done and we get
 		// proper CSS values
@@ -23,7 +17,7 @@ __.lock = {
 			// this means its the first call to the server
 			if( ! dnBag ) {
 				dnBag = document.createElement( "div" );
-				dnBag.__style( "height", dn.__style( "minHeight" ) );
+				dnBag.__css( "height", dn.__css( "minHeight" ) );
 				dn.appendChild( dnBag );
 			}
 			// locking blend (bag) does not exist...

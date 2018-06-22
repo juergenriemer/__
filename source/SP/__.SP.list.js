@@ -59,7 +59,7 @@ __.SP.list = {
 	, read : function( args ) { // sList, lsFields, xmlQuery, pathSearch (to limit to subfolder)
 		var async = __.Async.promise( args );
 		// get context
-		var ctx = __.SP.ctx( args.sSite );
+		var ctx = __.SP.ctx( args );
 		// get list
 		var oList = __.SP.list.get( ctx, args.sList );
 		if( ! oList ) {
@@ -78,6 +78,7 @@ __.SP.list = {
 				// not tested
 				oQuery.set_folderServerRelativeUrl( args.pathSearch );
 			}
+			var lsFields = args.lsFields || [ "ID" ];
 			var oItems = oList.getItems( oQuery );
 			ctx.load( oItems );
 			__.SP.exec( ctx, oItems, function( oItems ) {
@@ -90,8 +91,8 @@ __.SP.list = {
 					while( laItems.moveNext() ) {
 						var kv = {};
 						var kvItem = laItems.get_current().get_fieldValues();
-						if( args.lsFields.length > 0 ) {
-							args.lsFields.forEach( function( sField ) {
+						if( lsFields.length > 0 ) {
+							lsFields.forEach( function( sField ) {
 								var oField = kvItem[ sField ];
 								// we also want to show empty fields that are sent back
 								// with null, hence check of type
@@ -115,8 +116,8 @@ __.SP.list = {
 							lkv.push( kvItem );
 						}
 					}
+					async.resolve( { lkv : lkv } );
 				}
-				async.resolve( { lkv : lkv } );
 			} );
 		}
 	}
@@ -672,10 +673,11 @@ __.SP.list.nameByGuid = function( args ) {
  */
 __.SP.list.fields = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oFields = oList.get_fields();
-	ctx.load( oFields, 'Include(Title,InternalName)' );
+	var lsStandardFields = [ "Title", "Created", "Author" ];
+	ctx.load( oFields, 'Include(Title,InternalName,FromBaseType)' );
 	__.SP.exec( ctx, oFields, function( oFields ) {
 		if( oFields.sError ) {
 			async.reject( oFields.sError );
@@ -685,10 +687,20 @@ __.SP.list.fields = function( args ) {
 			var mpIntNames = {};
 			var mpDispNames = {};
 			while( laFields.moveNext() ) {
-				var sIntName = laFields.get_current().get_internalName();
-				var sDispName = laFields.get_current().get_title();
-				mpIntNames[ sIntName ] = sDispName;
-				mpDispNames[ sDispName ] = sIntName;
+				var aField = laFields.get_current();
+				var sIntName = aField.get_internalName();
+				var sDispName = aField.get_title();
+				if( args.bOnlyCustom ) {
+					if( ! aField.get_fromBaseType() ||
+						lsStandardFields.__contains( sIntName ) ) {
+						mpIntNames[ sIntName ] = sDispName;
+						mpDispNames[ sDispName ] = sIntName;
+					}
+				}
+				else {
+					mpIntNames[ sIntName ] = sDispName;
+					mpDispNames[ sDispName ] = sIntName;
+				}
 			}
 			async.resolve( {
 				  mpIntNames : mpIntNames
