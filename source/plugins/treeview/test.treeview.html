@@ -15,16 +15,52 @@ else {
 <body>
 <h3>Unit tests for __.Treeview.js</h3>
 <ul name="top" id="output"></ul>
+<ul name="top" id="output2"></ul>
 
 <script>
 var dnTreeview = __find( "#output" );
-console.log( dnTreeview );
+var dnTreeview2 = __find( "#output2" );
 dnTreeview.__treeview( {
 	  pathRoot : "/Users/juergenriemer/Documents/GitHub/__2/"
 	, pathPreload : "source/SP/fonts"
 	, pathPreload : "/docs_old/core_utils/scripts/prettify/"
 	//, pathPreload : ""
 	//, pathPreload : "/Users/juergenriemer/Documents/GitHub/__2/"
+	, fnLoad : function( path, cbLoaded, dnLI ) {
+		if( dnLI ) {
+			var sList = dnLI.getAttribute( "sTitle" );
+			console.log( "sList", sList );
+		}
+		var that = this;
+		var url = "http://localhost:3010/folders?path=" + path;
+		var oAjax = window.XMLHttpRequest ?
+			new XMLHttpRequest() :
+			new ActiveXObject( 'Microsoft.XMLHTTP' );
+		oAjax.open( "GET", url, true );
+		oAjax.onreadystatechange = function() {
+			if( oAjax.readyState === 4 ) {
+				if( oAjax.status < 400  ) {
+					var oResult = oAjax.responseText.__toJson();	
+					oResult.laFolders.forEach( function( a ) {
+						a.kvProps = {
+							  sTitle : a.sTitle
+							, ullo : "dmiep"
+						};
+					} );
+setTimeout( function() {
+					cbLoaded( oResult );
+}, 100 );
+				}
+			}
+		}
+		oAjax.setRequestHeader( "Accept", "application/json" );
+		oAjax.setRequestHeader( "Content-Type", "application/json; charset=UTF-8;" );
+		oAjax.setRequestHeader( "X-Requested-With", "XMLHttpRequest" );
+		oAjax.send();
+	}
+} );
+dnTreeview2.__treeview( {
+	  pathRoot : "/Users/juergenriemer/"
 	, fnLoad : function( path, cbLoaded, dnLI ) {
 		if( dnLI ) {
 			var sList = dnLI.getAttribute( "sTitle" );

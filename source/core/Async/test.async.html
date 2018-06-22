@@ -62,8 +62,8 @@ assert = function( s, o1, o2 ) {
 		console.warn( o2 );
 	}
 	dn.innerHTML += s + "<br>";
+	cAssert--;
 }
-
 // error async
 Error = new __.Async({
 	  sdftError : "hi mom"
@@ -411,7 +411,86 @@ getKey( { salt : "Y"
 	}
 } );
 getKey( { salt : "Z" } );
+// parallel async tasks
+para = function( args ) {
+	var async = __.Async.promise( args );
+	setTimeout( function() {
+		var aResult = args && args.aResult;
+		if( ! aResult ) {
+			aResult = []
+		}
+		var s = ( args && args.x ) ? args.x : "_";
+		aResult.push( "pp" + s );
+		async.resolve( { aResult : aResult} );
+	}, 100 );
+}
+para2 = function( args ) {
+	var async = __.Async.promise( args );
+	setTimeout( function() {
+		var paraResult = args && args.paraResult;
+		if( ! paraResult ) {
+			paraResult = []
+		}
+		var s = ( args && args.x ) ? args.x : "_";
+		paraResult.push( "p" + s );
+		async.resolve( { paraResult : paraResult} );
+	}, 50 );
+}
+var parallel = new __.Async()
+.then( this, "waiter", {x:1}, "p1" )
+.then( this, "waiter", {x:2}, "p2" )
+.then( this, "waiter", {x:3}, "p3" )
+.parallel( [
+	  ( new __.Async() )
+		.then( this, "para", {x:21}, "p21" )
+		.then( this, "para", {x:22}, "p22" )
+		.then( this, "para", {x:23}, "p23" )
+		.then( function( args ) {
+			var async = __.Async.promise( args );
+			var p1Results = args.aResult;
+			delete args.aResult;
+			async.resolve( { p1Results : p1Results } );
+		} )
+	 , ( new __.Async() )
+		.then( this, "para", {x:32}, "p32" )
+		.then( this, "para", {x:33}, "p33" )
+		.then( this, "para", {x:34}, "p34" )
+		.then( function( args ) {
+			var async = __.Async.promise( args );
+			var p2Results = args.aResult;
+			delete args.aResult;
+			async.resolve( { p2Results : p2Results } );
+			
+		} )
+	, ( new __.Async() ).then( this, "para2", {x:42}, "p42" )
+	, ( new __.Async() ).then( this, "para2", {x:52}, "p52" )
+	, ( new __.Async() ).then( this, "para2", {x:62}, "p62" )
 
+], "execute in parallel" )
+.then( this, "waiter", {x:4}, "p4" )
+.then( this, "waiter", {x:5}, "p5" )
+.then( this, "waiter", {x:6}, "p6" )
+.then( this, "waiter", {x:7}, "p7" )
+.then( function( args ) {
+	assert( "parallel1", ["w1", "w2", "w3", "w4", "w5", "w6", "w7"], args.aResult );
+	assert( "parallel2",["pp21", "pp22", "pp23"]
+ , args.p1Results );
+	assert( "parallel3",["pp32", "pp33", "pp34"] , args.p2Results );
+	assert( "parallel4",["p62"]
+ , args.paraResult );
+	__.Async.promise( args ).resolve();
+} )
+.start()
+
+var cAssert = 22;
+setTimeout( function() {
+	if( cAssert !== 0 ) {
+		alert( 'error: ' + cAssert )
+	}
+	else {
+		console.log( "OK" );
+	}
+}, 3000 );
 </script>
 
 </body>
