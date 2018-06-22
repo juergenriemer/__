@@ -85,6 +85,7 @@ __.SP.Filter = __.Class.extend( {
 		.start();
 	}
 	, extractFilterFields : function( loFields ) {
+		var loFields = loFields.__toString().__toJson().__kSort( "nFilter" );
 		var loFilterFields = [];
 		loFields.forEach( function( oField ) {
 			if( oField.nFilter ) {
@@ -786,6 +787,7 @@ __.SP.Filter = __.Class.extend( {
 	}
 	// sView is optional, default is the current list view
 	// we use it for e.g. cherry picks in ConMan
+
 	, openExportFieldWindow : function( sView ) {
 		var that = this;
 		// first get all filter fields
@@ -796,23 +798,43 @@ __.SP.Filter = __.Class.extend( {
 		h += "<table>";
 		this.getExportFields();
 		var ix = 0;
+		var lhLeftTD = [];
+		var lhRightTD= [];
+		var cFields = 0;
 		this.loAllFields.forEach( function( aField ) {
 			if( aField.bExport ) {
-				ix++;
-				var sChecked = ( that.lsExportFields.__contains( aField.sName ) )
+				cFields++;
+			}
+		} );
+		var nBreak = Math.round( cFields / 2 );
+		var c = 0;
+		h += "<table>";
+		this.loAllFields.forEach( function( aField ) {
+			if( aField.bExport ) {
+				var sDisabled = ( aField.sName == "FrontOffice" )
+					? " disabled "
+					: "";
+				var sChecked = ( that.lsFilterFields.__contains( aField.sName ) )
 					? " checked "
 					: "";
-				if( ix % 2 ) {
-					h += "<tr>";
+				var hTD = "<td><input name='" + aField.sName + "'type='checkbox' ";
+				hTD += sChecked + sDisabled + "'></input></td>";
+				hTD += "<td title='" + aField.sDescription + "'>";
+				hTD += aField.sDisplayName + "</td>";
+				if( c++ < nBreak ) {
+					lhLeftTD.push( hTD );
 				}
-				h += "<td><input name='" + aField.sName + "'type='checkbox' ";
-				h += sChecked + "'></input></td>";
-				h += "<td title='" + aField.sDescription + "'>";
-				h += aField.sDisplayName + "</td>";
-				if( !( ix % 2 ) ) {
-					h += "</tr>";
+				else {
+					lhRightTD.push( hTD );
 				}
 			}
+		} );
+		lhLeftTD.forEach( function( hLeftTD, ix ) {
+			h += "<tr>";
+			h += hLeftTD;
+			h += ( lhRightTD[ ix ] ) ? lhRightTD[ ix ] : "<td></td>";
+			h += "</tr>";
+			
 		} );
 		h += "</table>";
 		var dnModal = __.SP.modal.open( {

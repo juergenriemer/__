@@ -49,7 +49,8 @@ __.lock = {
 			var dnBack = dnBag.lastElementChild;
 			dnBack.__y( -dy );
 			dnBack.__dy( dy );
-			dnFront.__dy( dy );
+			// below will add blind spot in TD elems
+			// dnFront.__dy( dy );
 			dnBack.__show();
 			dnBag.__show();
 		}, 0 );

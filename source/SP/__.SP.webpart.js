@@ -31,7 +31,9 @@ __.SP.webpart = {
 	  settings : function( args ) { // path, ixWP, kv
 		var async = __.Async.promise( args );
 		var ctx = __.SP.ctx();
-		var path = _spPageContextInfo.webServerRelativeUrl + args.path;
+		var path = ( /^http/.test( args.path ) )
+			? args.path
+			: _spPageContextInfo.webServerRelativeUrl + args.path;
 		var oFile = ctx.get_web().getFileByServerRelativeUrl( path );
 		var oWPM = oFile.getLimitedWebPartManager( SP.WebParts.PersonalizationScope.shared );
 		var loWP = oWPM.get_webParts();
@@ -43,7 +45,6 @@ __.SP.webpart = {
 			else {
 				var oDef = null;
 				oDef = loWP.get_item( args.ixWP || 0 );
-				console.log( oDef );
 				if( ! oDef ) {
 					async.reject( { sError : "No webpart with index: " + args.ixWP } );
 				}
