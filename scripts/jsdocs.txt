@@ -1,0 +1,3 @@
+jsdoc -r -c /Users/juergenriemer/Documents/GitHub/__2/deploy/config.json -d docs
+jsdoc src -r -c /Users/juergenriemer/Documents/GitHub/__2/deploy/conf.json -d docs
+

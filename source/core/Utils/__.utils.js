@@ -69,9 +69,21 @@ Object.defineProperty( String.prototype, "__isEmpty", {
 Object.defineProperty( String.prototype, "__toCamelCase", {
 	value : function() {
 		var ls = [];
+		var camelCase = function( s ) {
+			return s.substr( 0, 1 ).toUpperCase() + s.substr( 1 );
+		};
 		this.split( " " ).forEach( function( s, ix ) {
 			if( s ) {
-				ls.push( s.substr( 0, 1 ).toUpperCase() + s.substr( 1 ) );
+				if( /-/.test( s ) ) {
+					var ls2 = [];
+					s.split( "-" ).forEach( function( s ) {
+						ls2.push( camelCase( s ) );
+					} );
+					ls.push( ls2.join( "-" ) );
+				}
+				else {
+					ls.push( camelCase( s ) );
+				}
 			}
 		} );
 		return ( ls.join( " " ) );

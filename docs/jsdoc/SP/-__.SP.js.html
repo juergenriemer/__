@@ -80,9 +80,9 @@ __.SP = {
 	 * @param {String} [sSite] Absolute Url of the SharePoint site
 	 * @returns {Object} SharePoint site context
 	 */
-	  ctx : function( sSite ) {
-		return ( sSite )
-			? new SP.ClientContext( sSite )
+	  ctx : function( args ) {
+		return ( args &amp;&amp; args.sSite )
+			? new SP.ClientContext( args.sSite )
 			: new SP.ClientContext.get_current();
 	}
 	/**
@@ -139,175 +139,6 @@ __.SP = {
 	, bGuid : function( x ) {
 		return /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/.test( x );
 	}
-};
-
-/**
- * @namespace __.SP.folder
- * @memberof __.SP
- */
-__.SP.folder = {
-	/**
-	 * Creates a folder in a document library
-	 * @memberof __.SP.folder
-	 * @method create
-	 * @example __.SP.folder.create( {
-	 * 	  sList : "Shared Documents"
-	 * 	, sFolder "test folder"
-	 * } );
-	 * @param {Object} args a parameter object holding the following values
-	 * @param {String} args.sList name of the list
-	 * @param {String} args.sFolder name of the folder
-	 * @returns {Object} Resolved promise holding the following values 
-	 * &lt;pre>
-	 * oFolder  | (Object) | context of the newly created folder
-	 * idFolder | (Number) | item ID of the newly created folder
-	 * &lt;/pre>
-	 */
-	  create : function( args ) { // sList, sFolder
-		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
-		var path = "";
-		var sFolder = args.sFolder;
-		if( /\//.test( args.sFolder ) ) {
-			var ls = args.sFolder.split( "/" );
-			sFolder = ls.pop();
-			path = _spPageContextInfo.webServerRelativeUrl;
-			path += "/" + args.sList + "/" + ls.join( "/" );
-		}
-		var oList = __.SP.list.get( ctx, args.sList );
-		var oItem = new SP.ListItemCreationInformation();
-		oItem.set_underlyingObjectType( SP.FileSystemObjectType.folder );
-		oItem.set_leafName( sFolder );
-		oItem.set_folderUrl( path );
-		var oItem = oList.addItem( oItem );
-		// also add title for we might use folder in lookup
-		oItem.set_item( "Title", sFolder );
-		oItem.update();
-		ctx.load( oItem );
-		__.SP.exec( ctx, oItem, function( oFolder ) {
-			if( oFolder.sError ) {
-				async.reject( oFolder.sError );
-			}
-			else {
-				var id = oFolder.get_id();
-				async.resolve( { oFolder : oFolder, idFolder : id });
-			}
-		} );
-	}
-	/**
-	 * Reads information of a folder
-	 * @memberof __.SP.folder
-	 * @method read
-	 * @example // stand alone
-	 * __.SP.folder.read( {
-	 * 	  path : "/Lists/Shared Documents/test folder"
-	 * } );
-	 * @example // as promise
-	 * .then( __.SP.folder, "read", {
-	 * 	  path : "/Lists/Shared Documents/test folder"
-	 * } );
-	 * @param {Object} args a parameter object holding the following values
-	 * @param {String} path path of the folder
-	 * @param {Array} lsFields array of internal field names to return
-	 * @returns {Object} Resolved promise holding the following values 
-	 * &lt;pre class='return-object'>
-	 * oFolder | (Object) | context of the newly created folder
-	 * aResult  | (Object) | associate array holding properties of the folder
-	 * &lt;/pre>
-	 */
-	, read : function( args ) {
-		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
-		var oFolder = ctx.get_web().getFolderByServerRelativeUrl( args.path );
-		ctx.load( oFolder, "ListItemAllFields" );
-		__.SP.exec( ctx, oFolder, function( oFolder ) {
-			if( oFolder.sError ) {
-				async.reject( oFolder.sError );
-			}
-			else {
-				oFolder = oFolder.get_listItemAllFields();
-				var aResult = {};
-				args.lsFields.forEach( function( sField ) {
-					var oField = oFolder.get_item( sField );
-					if( oField ) {
-						if( oField.get_lookupId ) {
-							aResult[ sField ] = oField.get_lookupValue();
-							aResult[ "id" + sField ] = oField.get_lookupId();
-						}
-						else {
-							aResult[ sField ] = oField;
-						}
-					}
-				} );
-				async.resolve( { oFolder : oFolder, aResult : aResult } );
-			}
-		} );
-	}
-};
-
-
-/* *** SITE COLUMN *** */
-
-// var xml = '&lt;Field Type="Choice" Name="FrontOffice" DisplayName="Front Office" ';
-//	xml += ' Format="Dropdown" Group="Custom Columns">';
-//	xml += '&lt;CHOICES>&lt;CHOICE>OSG&lt;/CHOICE>&lt;CHOICE>OCEEA&lt;/CHOICE>&lt;/CHOICES>&lt;/Field>';
-// __.SP.site.addColumn( { xml : xml );
-__.SP.site = {};
-__.SP.site.addColumn = function( args ) {
-	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
-	var oFields = ctx.get_web().get_fields();
-	oFields.addFieldAsXml( args.xml );
-	ctx.load( oFields );
-	__.SP.exec( ctx, oFields, function( oFields ) {
-		if( oFields.sError ) {
-			async.reject( oFields );
-		}
-		else {
-			async.resolve();
-		}
-	} );
-};
-// __.SP.site.readColumn({sColumn:"FrontOffice"})
-__.SP.site.readColumn = function( args ) {
-	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
-	var oFields = ctx.get_web().get_fields();
-	var oWeb = ctx.get_site().get_rootWeb();
-	var oColumn = oWeb.get_availableFields().getByInternalNameOrTitle( args.sColumn );
-	ctx.load( oColumn );
-	__.SP.exec( ctx, oColumn, function( oColumn ) {
-		if( oColumn.sError ) {
-			async.reject( oColumn );
-		}
-		else {
-			var ls = [];
-			var xml = oColumn.get_schemaXml();
-			xml.match( /&lt;CHOICE>(.*?)&lt;\/CHOICE>/g ).forEach( function( s ) {
-				ls.push( s.match( /&lt;CHOICE>(.*?)&lt;\/CHOICE>/ )[ 1 ] ) ;
-			} );
-			async.resolve( {
-				lsValues : ls
-			} );
-		}
-	} );
-};
-
-__.SP.site.addCSS = function( args ) {
-	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
-	var ctx = SP.ClientContext.get_current()
-	var oWeb = ctx.get_web();
-	oWeb.set_alternateCssUrl( args.url );
-	oWeb.update();
-	__.SP.exec( ctx, oWeb, function( oWeb ) {
-		if( oWeb.sError ) {
-			async.reject( oWeb.sError );
-		}
-		else {
-			async.resolve();
-		}
-	} );
 };
 
 __.SP.deploy = {
@@ -445,44 +276,6 @@ if( self == top ) {
 	} );
 }
 
-
-O$C3.Urls = {
-	aaurl : {
-		  prod : {
-			rso : 'https://rso.osce.org/',
-			docin : 'https://docin.osce.org/',
-			sharepoint : 'https://sharepoint.osce.org/',
-			mySite : 'https://sp-selfservice.osce.org/',
-			midtier : 'https://ws-sharepoint.osce.org/WebService.asmx/'
-		}
-		, test : {
-			rso : 'https://test-rso.osce.org/',
-			docin : 'https://test-docin.osce.org/',
-			sharepoint : 'https://test-jarvis.osce.org/',
-			mySite : 'https://test-sp-selfservice.osce.org/',
-			midtier : 'https://test-ws-sharepoint.osce.org/WebService.asmx/'
-		}
-		, dev : {
-			rso : 'https://dev-rso.osce.org/',
-			docin : 'https://dev-docin.osce.org/',
-			sharepoint : 'https://dev-sharepoint.osce.org/',
-			mySite : 'https://dev-sp-selfservice.osce.org/',
-			midtier : 'https://dev-ws-sharepoint.osce.org/WebService.asmx/'
-		}
-	}
-	, get : function( sDomain ) {
-		var sEnv = "prod";
-			if( /^https:\/\/test/.test( self.location.href ) ) {
-			sEnv = "test";
-		}
-		else if( /^https:\/\/dev/.test( self.location.href ) ) {
-			sEnv = "dev";
-		}
-		var url = this.aaurl[ sEnv ][ sDomain ];
-		return url;
-	}
-};
-
 </code></pre>
         </article>
     </section>
@@ -496,7 +289,7 @@ O$C3.Urls = {
 	<h3><a href="../../index.html">Home</a></h3>
 	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
 	<ul id="methods"></ul>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-__.SP.Filter.html">Filter</a></li></ul><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.form.html">form</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-__.SP.Filter.html">Filter</a></li></ul><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.form.html">form</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.search.html">search</a></li><li><a href="-__.SP.site.html">site</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li><li><a href="-__.SP.workflow.html">workflow</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 <script>
 /*
@@ -600,7 +393,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 15:50:00 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 11:31:49 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

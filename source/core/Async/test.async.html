@@ -485,10 +485,12 @@ var parallel = new __.Async()
 var cAssert = 22;
 setTimeout( function() {
 	if( cAssert !== 0 ) {
-		alert( 'error: ' + cAssert )
+		//alert( 'error: ' + cAssert )
+		document.body.style.background = "red";
 	}
 	else {
 		console.log( "OK" );
+		document.body.style.background = "green";
 	}
 }, 3000 );
 </script>

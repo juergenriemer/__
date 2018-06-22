@@ -65,6 +65,12 @@ h4.name span {
  * @namespace Node
  */
 
+window[ "__css" ] = function( sCSS ) {
+	var dnHead = document.getElementsByTagName( 'head' )[ 0 ];
+	var dn = document.createElement( 'style' );
+	dnHead.appendChild( dn );
+	dn.innerHTML = sCSS;
+};
 
 Object.defineProperty( Array.prototype, "__each", {
 	value : function( cb ) {
@@ -74,6 +80,13 @@ Object.defineProperty( Array.prototype, "__each", {
 		}
 	}
 } );
+
+Object.defineProperty( Node.prototype, "__each", {
+	value : function( cb ) {
+		cb( this );
+	}
+} );
+
 /**
  * Takes a CSS selector string and queries the DOM for matching nodes. If not used as node method it will assume document.body.
  * &lt;br>
@@ -440,70 +453,6 @@ Object.defineProperty( Node.prototype, "__dy", {
 } );
 
 /**
-* Lets an element fade out.
-* @memberof Node
-* @method __fadeOut
-* @example dn.__fadeOut();
-* @example dn.__fadeOut( 25, function() {
-*     dn.__remove();
-* } );
-* @param {Integer} [ms] milliseconds it should take to fade out
-* @param {Function} [cb] callback function to be invoked after element was faded out.
-*/
-Object.defineProperty( Node.prototype, "__fadeOut", {
-	value : function( ms, cb ) {
-		var dn = this;
-		var ms = ( typeof ms == "number" ) ? ms : 250;
-		var cb = ( typeof cb == "function" ) ? ms : cb;
-		var nStep = 25 / ms;
-		dn.style.opacity = dn.style.opacity || 1;
-		( function fader() {
-			if( ( dn.style.opacity -= nStep) &lt; 0 ) {
-				dn[ "__hide" ]();
-				if( cb ) {
-					cb();
-				}
-			}
-			else {
-				setTimeout( fader, 25 );
-			}
-		} )();
-	}
-} );
-
-/**
-* Lets an element fade in.
-* @memberof Node
-* @method __fadeIn
-* @example dn.__fadeIn();
-* @param {Integer} [ms] milliseconds it should take to fade out
-* @param {Function} [cb] callback function to be invoked after element was faded out.
-*/
-Object.defineProperty( Node.prototype, "__fadeIn", {
-	value : function( ms, cb ) {
-		var dn = this;
-		var ms = ( typeof ms == "number" ) ? ms : 250;
-		var cb = ( typeof cb == "function" ) ? ms : cb;
-		var nStep = 25 / ms;
-		dn.style.opacity = this.style.opacity || 0;
-		dn[ "__show" ]();
-		( function fader() {
-			var n = Number( dn.style.opacity ) + nStep;
-			dn.style.opacity = n;
-			if( n > 1 ) {
-				dn.style.opacity = 1;
-				if( cb ) {
-					cb();
-				}
-			}
-			else {
-				setTimeout( fader, 25 );
-			}
-		} )();
-	}
-} );
-
-/**
 * Gets or sets a css attribute
 * @memberof Node
 * @method __style
@@ -564,6 +513,8 @@ Object.defineProperty( Node.prototype, "__scrollTo", {
 * A callback function is invoked with a data object providing information
 * about the current position which is, if not manually set, called every
 * 300 milliseconds.
+* &lt;br>NB: remove &lt;!DOCTYPE html> notation from HTML file for this breaks
+* scrollTop/Left
 * @memberof Node
 * @method __onScroll
 * @example dn.__onScroll( function( aInfo ) {
@@ -591,27 +542,29 @@ Object.defineProperty( Node.prototype, "__scrollTo", {
 Object.defineProperty( Node.prototype, "__onScroll", {
 	value : function( cb, msInterval ) {
 		var msInterval = msInterval || 300;
+		var dn = ( this == document ) ? document.body : this;
 		var cbScroll = function() {
-			var dn = ( this == document ) ? document.body : this;
 			if( dn.__hd ) {
 				clearInterval( dn.__hd );
 			}
 			dn.__hd = setTimeout( function() {
-				var xcur = dn.scrollHeight;
-				var x = dn.scrollTop
-				var dx = dn.clientHeight 
-				var ycur = dn.scrollWidth;
-				var y = dn.scrollLeft
-				var dy = dn.clientWidth
+				var dycur = dn.scrollHeight;
+				var y = dn.scrollTop
+				var dy = dn.clientHeight 
+				var dxcur = dn.scrollWidth;
+				var x = dn.scrollLeft
+				var dx = dn.clientWidth
 				cb( {
-					  "x" : xcur
-					, "y" : ycur
+					  "x" : x
+					, "y" : y
+					, "dxcur" : dxcur
+					, "dycur" : dycur
 					, "dy" : dy
 					, "dx" : dx
-					, "bTop" : ( x == 0 )
-					, "bBottom" : ( xcur == ( x + dx ) )
-					, "bLeft" : ( y == 0 )
-					, "bRight" : ( ycur == ( y + dy ) )
+					, "bTop" : ( y == 0 )
+					, "bBottom" : ( ( y + dy ) >= dycur )
+					, "bLeft" : ( x == 0 )
+					, "bRight" : ( ( x + dx ) >= dxcur )
 				} );
 			}, msInterval );
 		};
@@ -722,6 +675,136 @@ __.dn = {
 };
 
 
+/**
+* Lets an element fade out.
+* @memberof Node
+* @method __fadeOut
+* @example dn.__fadeOut();
+* @example dn.__fadeOut( function() {
+*     dn.__remove();
+* } );
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+Object.defineProperty( Node.prototype, "__fadeOut", {
+	value : function( cb ) {
+		this.classList.add( "__effects" );
+		this.style.opacity = 0;
+		if( cb ) {
+			setTimeout( function(){cb(this)}, 501 );
+			//setTimeout( cb, 501 );
+		}
+		return this;
+	}
+} );
+
+/**
+* Lets an element fade in.
+* @memberof Node
+* @method __fadeIn
+* @example dn.__fadeIn();
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+
+Object.defineProperty( Node.prototype, "__fadeIn", {
+	value : function( cb ) {
+		this.classList.add( "__effects" );
+		this.style.opacity = 1;
+		if( cb ) {
+			setTimeout( function(){cb(this)}, 501 );
+		}
+		return this;
+	}
+} );
+
+/**
+* Lets slide down the content of an element showing it.
+* NB: If the node should be rendered collapsed initially you need to assign a zero max-height (style="max-height:0").
+* @memberof Node
+* @method __slideDown
+* @example dn.__slideDown();
+* @example dn.__slideDown( function() {
+*     console.log( 'done sliding down' );
+* } );
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+
+Object.defineProperty( Node.prototype, "__slideDown", {
+	value : function( cb ) {
+		this.classList.add( "__effects" );
+		this.style.overflowY = "hidden";
+		var dy = parseInt( this.scrollHeight );
+		if( dy == 0 ) {
+			return this;
+		}
+		this.style.maxHeight = dy;
+		var dn = this;
+		while( dn.tagName !== "BODY" ) {
+			dn = dn.parentNode;
+			if( dn.hasAttribute( "ls-slide" ) ) {
+				var dyParent = dn.scrollHeight;
+				dn.style.maxHeight = dyParent + dy;
+			}
+		}
+		this.setAttribute( "ls-slide", true );
+		if( cb ) {
+			setTimeout( cb, 301 );
+		}
+		return this;
+	}
+} );
+
+/**
+* Lets slide up the content of an element hiding it.
+* NB: If the node should be rendered collapsed initially you need to assign a zero max-height (style="max-height:0").
+* @memberof Node
+* @method __slideUp
+* @example dn.__slideUp();
+* @example dn.__slideUp( function() {
+*     console.log( 'done sliding up' );
+* } );
+* @param {Function} [cb] callback function to be invoked after element was faded out.
+*/
+Object.defineProperty( Node.prototype, "__slideUp", {
+	value : function( cb ) {
+		this.classList.add( "__effects" );
+		this.style.overflowY = "hidden";
+		var that = this;
+		var dy = that.scrollHeight;
+		if( dy == 0 ) {
+			return this;
+		}
+		that.style.maxHeight = dy;
+		setTimeout( function() {
+			that.style.maxHeight = 0;
+			var dn = that;
+			while( dn.tagName !== "BODY" ) {
+				dn = dn.parentNode;
+				if( dn.hasAttribute( "ls-slide" ) ) {
+					var dyParent = dn.scrollHeight;
+					dn.style.maxHeight = dyParent - dy;
+				}
+			}
+			if( cb ) {
+				setTimeout( cb, 301 );
+			}
+		}, 0 );
+		return this;
+	}
+} );
+
+/* create CSS for slide and fade effects */
+( function() {
+	var sec = 0.3;
+	var sCSS = ".__effects { ";
+	var sTransitions = "opacity " + sec + "s ease-in-out"
+	sTransitions += ", max-height " + sec + "s ease-in-out";
+	[ "-webkit-", "-moz-", "-o-", "" ].forEach( function( sBrowser ) {
+		sCSS += sBrowser + "transition:" + sTransitions + ";";
+	} );
+	sCSS += " } ";
+	__css( sCSS );
+} )();
+
 /* *** Polyfills *** */
 /* matches */
 this.Element &amp;&amp; function( oPrototype ) {
@@ -794,19 +877,13 @@ window[ "__scrollTo" ] = function( sPos, nPos ) {
 }
 
 window[ "__onScroll" ] = function( cb, msInterval ) {
-	document.body[ "__onScroll" ]( cb, msInterval );
+	document[ "__onScroll" ]( cb, msInterval );
 }
 
 window[ "__offScroll" ] = function() {
-	document.body[ "__offScroll" ]();
+	document[ "__offScroll" ]();
 }
 
-window[ "__css" ] = function( sCSS ) {
-	var dnHead = document.getElementsByTagName( 'head' )[ 0 ];
-	var dn = document.createElement( 'style' );
-	dnHead.appendChild( dn );
-	dn.innerHTML = sCSS;
-};
 </code></pre>
         </article>
     </section>
@@ -924,7 +1001,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 15:50:00 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 11:31:47 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

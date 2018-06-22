@@ -1,0 +1,23 @@
+.prettyprint {
+	width : 100%;
+}
+h1 {
+	font-size : 2em;
+}
+h4.name {
+	margin-top : 2em;
+	font-size : 1.7em;
+	border-bottom : 1px dashed #c0c0c0;
+}
+h4.name span.signature {
+	font-size : 70%;
+	padding : 5px;
+}
+h4.name span {
+	font-size : 50%;
+}
+  nav h2
+, a[href="-__.html"] {
+	display : none;
+}
+

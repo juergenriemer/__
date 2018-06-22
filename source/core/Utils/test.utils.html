@@ -15,7 +15,7 @@ else {
 cAsserts = 0;
 bError = false;
 msCheck = 0;
-ecAsserts = 161; 
+ecAsserts = 162; 
 assert = function( x1, x2, s ) {
 	cAsserts++;
 	var dn = document.getElementById( "output" );
@@ -101,6 +101,10 @@ assert( b, eb, "s.empty (string)" );
 // __.s.toCamelCase
 var s = "   hi mom   how are you".__toCamelCase();
 var es = "Hi Mom How Are You";
+assert( s, es, "__.s.toCamelCase" );
+
+var s = "test-with-hyphen".__toCamelCase();
+var es = "Test-With-Hyphen";
 assert( s, es, "__.s.toCamelCase" );
 
 // __.s.unCamelCase

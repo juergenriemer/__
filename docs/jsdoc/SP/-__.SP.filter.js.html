@@ -67,6 +67,8 @@ h4.name span {
  * @example n/a
  */
 __.SP.filter = {};
+
+
 __.SP.Filter = __.Class.extend( {
 	  dnRoot : null
 	, dnForm : null
@@ -96,17 +98,19 @@ __.SP.Filter = __.Class.extend( {
 		this.cbCreate = aConf.cbCreate || null;
 		this.cbClear = aConf.cbClear || null;
 		this.oTax = aConf.oTax || __.SP.taxonomy.oStore;
-		this.defaultView = aConf.defaultView || "All Items";
+		this.defaultView = aConf.defaultView || "AllItems";
 		// SP's OOTB default views differ in internal and display name
 		this.sdftView = aConf.defaultView || "AllItems";
 		this.sFilter = "_filter_" + this.sList.__tokenize() + "_";
 		this.sFilterFieldStore = this.sFilter + "_filter_";
-		this.sExportFieldStore = this.sFilter + "_export_";
+		this.sExportFieldStore = this.sFilter + "xls_export";
 		// check if filter has already been created
+		console.log( '>>>' );
 		( new __.Async( {
 			  id : "__.SP.Filter.init"
 			, sdftError : "Failed to initialize a list filter."
 		} ) )
+		.then( __.SP.filter.form, "loadSPScripts" )
 		.then( function( args ) {
 			var h = "&lt;div id='"+ that.sFilter +"' style='display:none' class='osce-filter'>&lt;/div>";
 			that.dnSideNav = __find( "#sideNavBox" );
@@ -132,6 +136,7 @@ __.SP.Filter = __.Class.extend( {
 		.start();
 	}
 	, extractFilterFields : function( loFields ) {
+		var loFields = loFields.__toString().__toJson().__kSort( "nFilter" );
 		var loFilterFields = [];
 		loFields.forEach( function( oField ) {
 			if( oField.nFilter ) {
@@ -190,21 +195,22 @@ __.SP.Filter = __.Class.extend( {
 		localStorage.setItem( this.sExportFieldStore, this.lsExportFields.__toString() );
 	}
 	, exportView : function( lsFields, dnModal, sView ) {
+		var that = this;
 		( new __.Async( {
 			  id : "__.SP.Filter.exportView"
 			, sdftError : "Failed to export a view."
 		} ) )
 		.then( __.SP.view, "copy", {
-			  sList:"OSCE Contacts"
-			, sOldView: sView || ctx.viewTitle
-			, sNewView : "_export_"
+			  sList : that.sList
+			, sOldView : sView || ctx.viewTitle
+			, sNewView : "xls_export"
 		}, "copy current view" )
 		.clear()
 		.then( function( args ) {
 			var async = __.Async.promise( args );
 			async.then( __.SP.view, "update", {
-				  sList:"OSCE Contacts"
-				, sView : "_export_"
+				  sList : that.sList
+				, sView : "xls_export"
 				, lsFields : lsFields
 			}, "added all fields to view" ).resolve();
 		}, "update export view" )
@@ -275,7 +281,7 @@ __.SP.Filter = __.Class.extend( {
 	}
 	, loadDefaultView : function() {
 		var url = _spPageContextInfo.webServerRelativeUrl;
-		url += "/_layouts/15/start.aspx#/Lists/" + this.sList + "/";
+		url += "/_layouts/15/start.aspx#/Lists/" + ctx.ListTitle +"/";
 		url += this.defaultView + ".aspx?r=" + Math.random();
 		self.location.href = url;
 	}
@@ -832,6 +838,7 @@ __.SP.Filter = __.Class.extend( {
 	}
 	// sView is optional, default is the current list view
 	// we use it for e.g. cherry picks in ConMan
+
 	, openExportFieldWindow : function( sView ) {
 		var that = this;
 		// first get all filter fields
@@ -842,23 +849,43 @@ __.SP.Filter = __.Class.extend( {
 		h += "&lt;table>";
 		this.getExportFields();
 		var ix = 0;
+		var lhLeftTD = [];
+		var lhRightTD= [];
+		var cFields = 0;
 		this.loAllFields.forEach( function( aField ) {
 			if( aField.bExport ) {
-				ix++;
-				var sChecked = ( that.lsExportFields.__contains( aField.sName ) )
+				cFields++;
+			}
+		} );
+		var nBreak = Math.round( cFields / 2 );
+		var c = 0;
+		h += "&lt;table>";
+		this.loAllFields.forEach( function( aField ) {
+			if( aField.bExport ) {
+				var sDisabled = ( aField.sName == "FrontOffice" )
+					? " disabled "
+					: "";
+				var sChecked = ( that.lsFilterFields.__contains( aField.sName ) )
 					? " checked "
 					: "";
-				if( ix % 2 ) {
-					h += "&lt;tr>";
+				var hTD = "&lt;td>&lt;input name='" + aField.sName + "'type='checkbox' ";
+				hTD += sChecked + sDisabled + "'>&lt;/input>&lt;/td>";
+				hTD += "&lt;td title='" + aField.sDescription + "'>";
+				hTD += aField.sDisplayName + "&lt;/td>";
+				if( c++ &lt; nBreak ) {
+					lhLeftTD.push( hTD );
 				}
-				h += "&lt;td>&lt;input name='" + aField.sName + "'type='checkbox' ";
-				h += sChecked + "'>&lt;/input>&lt;/td>";
-				h += "&lt;td title='" + aField.sDescription + "'>";
-				h += aField.sDisplayName + "&lt;/td>";
-				if( !( ix % 2 ) ) {
-					h += "&lt;/tr>";
+				else {
+					lhRightTD.push( hTD );
 				}
 			}
+		} );
+		lhLeftTD.forEach( function( hLeftTD, ix ) {
+			h += "&lt;tr>";
+			h += hLeftTD;
+			h += ( lhRightTD[ ix ] ) ? lhRightTD[ ix ] : "&lt;td>&lt;/td>";
+			h += "&lt;/tr>";
+			
 		} );
 		h += "&lt;/table>";
 		var dnModal = __.SP.modal.open( {
@@ -925,6 +952,21 @@ __.SP.Filter = __.Class.extend( {
 
 
 __.SP.filter.form = {};
+
+__.SP.filter.form.loadSPScripts = function( args ) {
+	var async = __.Async.promise( args );
+	var hdTimeout = setTimeout( function() {
+		async.reject( "Could not load date library from SharePoint" );
+	}, 10000 );
+	SP.SOD.executeFunc('SP.js', 'SP.ClientContext', function() {
+		SP.SOD.executeFunc( 'datepicker.js', 'clickDatePicker ', function() {
+			clearTimeout( hdTimeout );
+			async.resolve();
+		} )
+	} )
+};
+
+
 __.SP.filter.form.create = function( args ) {
 	var h = "&lt;form class='osce-form'>&lt;/form>";
 	var dn = args.dnRoot.__append( h );
@@ -1051,10 +1093,10 @@ __.SP.filter.form.field.lookupdate = {
 		h += ", '" + _spPageContextInfo.siteServerRelativeUrl;
 		h += "/_layouts/15/iframe.aspx?cal=1&amp;amp;lcid=2057&amp;amp;langid=1033&amp;amp;tz=00:59:59.9990041&amp;amp;ww=0111110&amp;amp;fdow=1&amp;amp;fwoy=0&amp;amp;hj=0&amp;amp;swn=false&amp;amp;minjday=109207&amp;amp;maxjday=2666269&amp;amp;date='";
 		h += ', \'\', event); return false;">';
-		h += '&lt;img id="' + sid + 'DatePickerImage" src="/_layouts/15/images/calendar_25.gif?rev=23"';
+		h += '&lt;img id="' + sid + 'DatePickerImage" src="' + __.SP.icon.mp.x16.calendar + '"';
 		h += ' border="0" class="osce-sp-calendar" alt="Select a date from the calendar.">';
 		h += '&lt;/a>';
-		h += '&lt;iframe id="' + sid + 'DatePickerFrame" src="/_layouts/15/images/blank.gif?rev=23" ';
+		h += '&lt;iframe id="' + sid + 'DatePickerFrame" src="' + __.SP.icon.mp.x8.blank + '" ';
 		h += ' frameborder="0" scrolling="no" style="display:none; position:absolute; width:200px; z-index:101;" ';
 		h += ' title="Select a date from the calendar.">&lt;/iframe>';
 		h += "&lt;/div>";
@@ -1266,7 +1308,7 @@ __.SP.filter.form.field.taxonomy = {
 	<h3><a href="../../index.html">Home</a></h3>
 	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
 	<ul id="methods"></ul>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-__.SP.Filter.html">Filter</a></li></ul><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.form.html">form</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-__.SP.Filter.html">Filter</a></li></ul><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.form.html">form</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.search.html">search</a></li><li><a href="-__.SP.site.html">site</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li><li><a href="-__.SP.workflow.html">workflow</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 <script>
 /*
@@ -1370,7 +1412,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 15:50:00 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 11:31:49 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

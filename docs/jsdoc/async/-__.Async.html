@@ -593,7 +593,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line127">line 127</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line131">line 131</a>
     </li></ul></dd>
     
 
@@ -623,6 +623,211 @@ h4.name span {
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>async.clear()</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="parallel"><span class="type-signature"></span>parallel<span class="signature">(loAsyncs, sMsg<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Registers methods to the task chain that shall get executedin parallel.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>loAsyncs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Array of Async stacks</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sMsg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">logging message</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line223">line 223</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Promise instance for chaining
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>( new __.Async() ).then( this, "task1", {x:1}, "p1" ).parallel( [	  ( new __.Async() )		.then( this, "task2", {x:2}, "p2" )		.then( function( args ) {			var async = __.Async.promise( args );			var p1Results = args.aResult;			delete args.aResult;			async.resolve( { p1Results : p1Results } );		} )	 , ( new __.Async() )		.then( this, "task3", {x:3}, "p3" )		.then( this, "task4", {x:4}, "p4" )	, ( new __.Async() ).then( this, "task5", {x:5}, "p5" )	, ( new __.Async() ).then( this, "task6", {x:6}, "p6" )], "execute in parallel" ).then( this, "task7", {x:7}, "p7" ).start();</code></pre>
 
 
 
@@ -776,7 +981,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line148">line 148</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line152">line 152</a>
     </li></ul></dd>
     
 
@@ -953,7 +1158,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line460">line 460</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line529">line 529</a>
     </li></ul></dd>
     
 
@@ -1093,7 +1298,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line406">line 406</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line475">line 475</a>
     </li></ul></dd>
     
 
@@ -1186,7 +1391,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line387">line 387</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line456">line 456</a>
     </li></ul></dd>
     
 
@@ -1299,7 +1504,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line447">line 447</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line516">line 516</a>
     </li></ul></dd>
     
 
@@ -1557,7 +1762,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line219">line 219</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line289">line 289</a>
     </li></ul></dd>
     
 
@@ -1798,7 +2003,7 @@ h4.name span {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line173">line 173</a>
+        <a href="-__.Async.js.html">__.Async.js</a>, <a href="-__.Async.js.html#line177">line 177</a>
     </li></ul></dd>
     
 
@@ -1978,7 +2183,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 15:50:00 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 11:31:44 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

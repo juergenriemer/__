@@ -1,0 +1,14 @@
+{
+    "source": {
+       "includePattern": ".+\\.js(doc|x)?$"
+       , "excludePattern": ".+\\.min\\.js"
+    },
+    "opts": {
+        "sort": false
+    }
+	, "templates" : {
+		"default" : {
+			"layoutFile" : "jsdocs-custom-layout.tmpl"
+		}
+	}
+}

@@ -68,7 +68,7 @@ __.SP.list = {
 	 * @method get
 	 * @todo use arguments object
 	 * @todo improve error capturing
-	 * @example __.SP.folder.get( ctx, "Shared Documents" );
+	 * @example __.SP.folder.get( ctx, "Documents" );
 	 * @param {Object} ctx SharePoint site context
 	 * @param {String} x either name of the list or its guid in curly brackets
 	 * @returns {Object} context of the list
@@ -92,9 +92,9 @@ __.SP.list = {
 	 * @method read
 	 * @example
 	 * __.SP.list.read( {
-	 * 	  sList : "Shared Documents"
+	 * 	  sList : "Documents"
 	 *	, lsFields : [ "Title", "ID" ]
-	 *	, xmlQuery : "&lt;Query>&lt;Where>&lt;FieldRef Name='ID' />&lt;Lt>&lt;Value Type='Number'>5&lt;/Value>&lt;/Lt>&lt;/Where>&lt;/Query>"
+	 *	, xmlQuery : "&lt;Where>&lt;FieldRef Name='ID' />&lt;Lt>&lt;Value Type='Number'>5&lt;/Value>&lt;/Lt>&lt;/Where>"
 	 * } );
 	 * @param {Object} args a parameter object holding the following values
 	 * @param {String} args.sList name or guid of a list
@@ -110,7 +110,7 @@ __.SP.list = {
 	, read : function( args ) { // sList, lsFields, xmlQuery, pathSearch (to limit to subfolder)
 		var async = __.Async.promise( args );
 		// get context
-		var ctx = __.SP.ctx( args.sSite );
+		var ctx = __.SP.ctx( args );
 		// get list
 		var oList = __.SP.list.get( ctx, args.sList );
 		if( ! oList ) {
@@ -129,6 +129,7 @@ __.SP.list = {
 				// not tested
 				oQuery.set_folderServerRelativeUrl( args.pathSearch );
 			}
+			var lsFields = args.lsFields || [ "ID" ];
 			var oItems = oList.getItems( oQuery );
 			ctx.load( oItems );
 			__.SP.exec( ctx, oItems, function( oItems ) {
@@ -141,8 +142,8 @@ __.SP.list = {
 					while( laItems.moveNext() ) {
 						var kv = {};
 						var kvItem = laItems.get_current().get_fieldValues();
-						if( args.lsFields.length > 0 ) {
-							args.lsFields.forEach( function( sField ) {
+						if( lsFields.length > 0 ) {
+							lsFields.forEach( function( sField ) {
 								var oField = kvItem[ sField ];
 								// we also want to show empty fields that are sent back
 								// with null, hence check of type
@@ -166,8 +167,8 @@ __.SP.list = {
 							lkv.push( kvItem );
 						}
 					}
+					async.resolve( { lkv : lkv } );
 				}
-				async.resolve( { lkv : lkv } );
 			} );
 		}
 	}
@@ -209,7 +210,7 @@ __.SP.list = {
  * @method exists
  * @example
  * __.SP.list.exists( {
- * 	  sList : "Shared Documents"
+ * 	  sList : "Documents"
  * } );
  * @param {Object} args a parameter object holding the following values
  * @param {String} args.sList name or guid of a list
@@ -241,7 +242,7 @@ __.SP.list = {
  * @method id
  * @example
  * __.SP.list.id( {
- * 	  sList : "Shared Documents"
+ * 	  sList : "Documents"
  * } );
  * @param {Object} args a parameter object holding the following values
  * @param {String} args.sList name of a list
@@ -282,7 +283,7 @@ __.SP.list.id = function( args ) {
  * @method settings
  * @example
  * __.SP.list.settings( {
- * 	  sList : "Shared Documents"
+ * 	  sList : "Documents"
  *	, kvFeatures : {
  * 		  set_enableVersioning : true
  *		, set_onQuickLaunch : false
@@ -489,57 +490,57 @@ __.SP.list.oFieldType = function( args ) {
  */
 __.SP.list.addFields = function( args ) { // sList, loFields
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
-	var oList = __.SP.list.get( ctx, args.sList );
-	if( args.loFields ) {
-		var oFields = oList.get_fields();
-		args.loFields.forEach( function( a ) {
-			console.log( ">>>>>>>" +  a.sName );
-			if( a.sCAMLType !== "column" &amp;&amp; a.sName !== "Title" ) {
-				var oField = ctx.castTo(
-					  oFields.addFieldAsXml(
-						  __.SP.list.xmlFields( a )
-						, true
-						, SP.AddFieldOptions.addToDefaultContentType
-					)
-					, __.SP.list.oFieldType( a )
-				);
-				if( a.sTitle ) {
-					oField.set_title( a.sTitle );
+	async.then( __.SP.taxonomy, "loadSPScripts" )
+	async.then( function( args ) {
+		var ctx = __.SP.ctx();
+		var oList = __.SP.list.get( ctx, args.sList );
+		if( args.loFields ) {
+			var oFields = oList.get_fields();
+			args.loFields.forEach( function( a ) {
+				if( a.sCAMLType !== "column" &amp;&amp; a.sName !== "Title" ) {
+					var oField = ctx.castTo(
+						  oFields.addFieldAsXml(
+							  __.SP.list.xmlFields( a )
+							, true
+							, SP.AddFieldOptions.addToDefaultContentType
+						)
+						, __.SP.list.oFieldType( a )
+					);
+					if( a.sTitle ) {
+						oField.set_title( a.sTitle );
+					}
+					if( a.sDescription ) {
+						oField.set_description( a.sDescription );
+					}
+					if( a.lsChoices ) {
+						oField.set_choices( a.lsChoices );
+					}
+					if( a.aLookup ) {
+						a.aLookup.oField = oField;
+					}
+					if( a.vDefault ) {
+						oField.set_defaultValue( a.vDefault );
+					}
+					oField.update();
+					ctx.load( oField );
 				}
-				if( a.sDescription ) {
-					oField.set_description( a.sDescription );
-				}
-				if( a.lsChoices ) {
-					oField.set_choices( a.lsChoices );
-				}
-				if( a.aLookup ) {
-					a.aLookup.oField = oField;
-				}
-				if( a.vDefault ) {
-					oField.set_defaultValue( a.vDefault );
-				}
-				oField.update();
-				ctx.load( oField );
-			}
-		} );
-		__.SP.exec( ctx, oFields, function( oFields ) {
-			if( oFields.sError ) {
-				console.log( oFields.sError );
-				if( /Cannot complete this action/.test( oFields.sError ) ) {
-					console.log( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" );
-					async.resolve();
+			} );
+			__.SP.exec( ctx, oFields, function( oFields ) {
+				if( oFields.sError ) {
+					if( /Cannot complete this action/.test( oFields.sError ) ) {
+						async.resolve();
+					}
+					else {
+						async.reject( oFields.sError );
+					}
 				}
 				else {
-					console.log( "&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;" );
-					async.reject( oFields.sError );
+					async.resolve();
 				}
-			}
-			else {
-				async.resolve();
-			}
-		} );
-	}
+			} );
+		}
+	} );
+	async.resolve();
 }
 
 /**
@@ -723,10 +724,11 @@ __.SP.list.nameByGuid = function( args ) {
  */
 __.SP.list.fields = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oFields = oList.get_fields();
-	ctx.load( oFields, 'Include(Title,InternalName)' );
+	var lsStandardFields = [ "Title", "Created", "Author" ];
+	ctx.load( oFields, 'Include(Title,InternalName,FromBaseType)' );
 	__.SP.exec( ctx, oFields, function( oFields ) {
 		if( oFields.sError ) {
 			async.reject( oFields.sError );
@@ -736,10 +738,20 @@ __.SP.list.fields = function( args ) {
 			var mpIntNames = {};
 			var mpDispNames = {};
 			while( laFields.moveNext() ) {
-				var sIntName = laFields.get_current().get_internalName();
-				var sDispName = laFields.get_current().get_title();
-				mpIntNames[ sIntName ] = sDispName;
-				mpDispNames[ sDispName ] = sIntName;
+				var aField = laFields.get_current();
+				var sIntName = aField.get_internalName();
+				var sDispName = aField.get_title();
+				if( args.bOnlyCustom ) {
+					if( ! aField.get_fromBaseType() ||
+						lsStandardFields.__contains( sIntName ) ) {
+						mpIntNames[ sIntName ] = sDispName;
+						mpDispNames[ sDispName ] = sIntName;
+					}
+				}
+				else {
+					mpIntNames[ sIntName ] = sDispName;
+					mpDispNames[ sDispName ] = sIntName;
+				}
 			}
 			async.resolve( {
 				  mpIntNames : mpIntNames
@@ -965,7 +977,7 @@ __.SP.list.field.setJsLink= function( args ) { // sList, [sField], urlJsLink
 	<h3><a href="../../index.html">Home</a></h3>
 	<h3 id="method-header"><span id="method-count"></span>&nbsp;Methods</h3>
 	<ul id="methods"></ul>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-__.SP.Filter.html">Filter</a></li></ul><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.form.html">form</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-__.SP.Filter.html">Filter</a></li></ul><h3>Namespaces</h3><ul><li><a href="-__.html">__</a></li><li><a href="-__.SP.html">SP</a></li><li><a href="-__.SP.caml.html">caml</a></li><li><a href="-__.SP.folder.html">folder</a></li><li><a href="-__.SP.form.html">form</a></li><li><a href="-__.SP.grid.html">grid</a></li><li><a href="-__.SP.group.html">group</a></li><li><a href="-__.SP.item.html">item</a></li><li><a href="-__.SP.list.html">list</a></li><li><a href="-__.SP.list.field.html">field</a></li><li><a href="-__.SP.modal.html">modal</a></li><li><a href="-__.SP.ribbon.html">ribbon</a></li><li><a href="-__.SP.search.html">search</a></li><li><a href="-__.SP.site.html">site</a></li><li><a href="-__.SP.taxonomy.html">taxonomy</a></li><li><a href="-__.SP.user.html">user</a></li><li><a href="-__.SP.view.html">view</a></li><li><a href="-__.SP.webpart.html">webpart</a></li><li><a href="-__.SP.webservice.html">webservice</a></li><li><a href="-__.SP.workflow.html">workflow</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 <script>
 /*
@@ -1069,7 +1081,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 15:50:00 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 11:31:49 GMT+0200 (W. Europe Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
