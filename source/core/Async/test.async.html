@@ -1,19 +1,16 @@
 <html>
-<script>
-if( /\?min/.test( self.location.href ) ) {
-	document.write( '<sc'+'ript src="__.async.min.js"></sc'+'ript>' );
-}
-else {
-	document.write( '<sc'+'ript src="__.async.js"></sc'+'ript>' );
-}
-</script>
-
-
 <body>
-<h3>Unit tests for __.Async.js</h3>
+<script>
+cAsserts = 24;
+msAssertCheck = 2000;
+</script>
+<script src="../test.js"></script>
 <div id="output"></div>
 <script>
 
+assert = function( sMsg, exp, got ) {
+	Test.assert( got, exp, sMsg );
+}
 // Async
 window.name = "doing";
 msw1 = 40;
@@ -51,19 +48,6 @@ waiter2 = function( args ) {
 }
 fnStatus=function( args ){}
 
-assert = function( s, o1, o2 ) {
-	var dn = document.getElementById( "output" );
-	if( JSON.stringify( o1 ) == JSON.stringify( o2 ) ) {
-		s = 'OK: ' + s;
-	} else {
-		s = 'ERR: ' + s + " (check console)";
-		console.warn( 'ERR: ' + s );
-		console.warn( o1 );
-		console.warn( o2 );
-	}
-	dn.innerHTML += s + "<br>";
-	cAssert--;
-}
 // error async
 Error = new __.Async({
 	  sdftError : "hi mom"
@@ -482,17 +466,6 @@ var parallel = new __.Async()
 } )
 .start()
 
-var cAssert = 22;
-setTimeout( function() {
-	if( cAssert !== 0 ) {
-		//alert( 'error: ' + cAssert )
-		document.body.style.background = "red";
-	}
-	else {
-		console.log( "OK" );
-		document.body.style.background = "green";
-	}
-}, 3000 );
 </script>
 
 </body>

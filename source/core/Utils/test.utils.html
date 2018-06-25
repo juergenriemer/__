@@ -1,63 +1,12 @@
 <html>
-<script>
-if( /\?min/.test( self.location.href ) ) {
-	document.write( '<sc'+'ript src="__.utils.min.js"></sc'+'ript>' );
-}
-else {
-	document.write( '<sc'+'ript src="__.utils.js"></sc'+'ript>' );
-}
-</script>
-
 <body>
-<h3>Unit tests for __.Utils.js</h3>
+<script>
+cAsserts = 163;
+msAssertCheck = 500;
+</script>
+<script src="../test.js"></script>
 <div id="output"></div>
 <script>
-cAsserts = 0;
-bError = false;
-msCheck = 0;
-ecAsserts = 162; 
-assert = function( x1, x2, s ) {
-	cAsserts++;
-	var dn = document.getElementById( "output" );
-	var b = true;
-	if( x1 && typeof x1 == "object" && typeof s == "string" ) {
-		if( x1.__diff( x2 ) ) {
-			bError = true;
-			console.warn( 'ERR: ' + s );
-			console.warn( "expected:", x2 );
-			console.warn( "result:", x1 );
-			s = "[ERR] " + s + " check console.log";
-		}
-		else {
-			s = "[OK] " + s;
-		}
-	}
-	else if( x1 && x2 && typeof x1 == "object" && typeof x2 == "string" ) {
-		console.log( '>> single true' );
-	}
-	else {
-		if( x1 !== x2 ) {
-			bError = true;
-			console.warn( 'ERR: ' + s );
-			console.warn( "expected:", x2 );
-			console.warn( "result:", x1 );
-			s = "[ERR] " + s + " check console.log";
-		}
-		else {
-			s = "[OK] " + s;
-		}
-	}
-	dn.innerHTML += s + "<br>";
-}
-setTimeout( function() {
-	if( cAsserts == ecAsserts && ! bError ) {
-		document.body.style.background = "green";
-	}		
-	else {
-		document.body.style.background = "red";
-	}
-}, msCheck );
-
 // STRING
 
 // __.s.o
@@ -65,73 +14,73 @@ setTimeout( function() {
 s = '{"sName":"John","nAge":44}';
 o = s.__toJson();
 eo =  { sName:'John', nAge:44}
-assert( o, eo, "__.s.o" );
+Test.assert( o, eo, "__.s.o" );
 
 s = "{'sName':'John','nAge':44}";
 o = s.__toJson();
 eo = null;
-assert( o, eo, "__.s.o (single quotes)" );
+Test.assert( o, eo, "__.s.o (single quotes)" );
 
 s = "{sName:'John','nAge':44}";
 o = s.__toJson();
 eo = null;
-assert( o, eo, "__.s.o (missing quotes)" );
+Test.assert( o, eo, "__.s.o (missing quotes)" );
 
 s = "sName:'John','nAge':44";
 o = s.__toJson();
 eo = null;
-assert( o, eo, "__.s.o (broken json)" );
+Test.assert( o, eo, "__.s.o (broken json)" );
 
 // __.s.empty
 s = "";
 b = s.__isEmpty();
 eb = true;
-assert( b, eb, "__.s.empty" );
+Test.assert( b, eb, "__.s.empty" );
 
 s = "  ";
 b = s.__isEmpty();
 eb = true;
-assert( b, eb, "s.empty (spaces)" );
+Test.assert( b, eb, "s.empty (spaces)" );
 
 s = " 0 ";
 b = s.__isEmpty();
 eb = false;
-assert( b, eb, "s.empty (string)" );
+Test.assert( b, eb, "s.empty (string)" );
 
 // __.s.toCamelCase
 var s = "   hi mom   how are you".__toCamelCase();
 var es = "Hi Mom How Are You";
-assert( s, es, "__.s.toCamelCase" );
+Test.assert( s, es, "__.s.toCamelCase" );
 
 var s = "test-with-hyphen".__toCamelCase();
 var es = "Test-With-Hyphen";
-assert( s, es, "__.s.toCamelCase" );
+Test.assert( s, es, "__.s.toCamelCase" );
 
 // __.s.unCamelCase
 var s = "   HiMomHowAreYou   ".__unCamelCase();
 var es = "Hi Mom How Are You";
-assert( s, es, "__.s.unCamelCase" );
+Test.assert( s, es, "__.s.unCamelCase" );
 
 var s =  "HiMomIAmHome".__unCamelCase();
 var es = "Hi Mom I Am Home";
-assert( s, es, "s.unCamelCase (single capital)" );
+Test.assert( s, es, "s.unCamelCase (single capital)" );
 
 var s = "OSCE".__unCamelCase();
 var es = "OSCE";
-assert( s, es, "s.unCamelCase (akronym)" );
+Test.assert( s, es, "s.unCamelCase (akronym)" );
 
 var s =  "OCEEAEvents".__unCamelCase();
 var es = "OCEEA Events";
-assert( s, es, "s.unCamelCase (akronym with word)" );
+Test.assert( s, es, "s.unCamelCase (akronym with word)" );
 
 // __.s.tokenize
 s = "Hi 'Mom',\nHi Dad".__tokenize(); // himom,hidad
 es = "himom,hidad";
-assert( s, es, "__.s.tokenize" );
+Test.assert( s, es, "__.s.tokenize" );
 
 s = "   Hi 'Mom',\nHi   Dad   \n\n\n".__tokenize(); // himom,hidad
 es = "himom,hidad";
-assert( s, es, "s.tokenize (multiple spaces, new lines)" );
+Test.assert( s, es, "s.tokenize (multiple spaces, new lines)" );
 
 
 
@@ -144,52 +93,52 @@ assert( s, es, "s.tokenize (multiple spaces, new lines)" );
 _n = 1
 n = _n.__withinBoundary( 5, 9 );
 en = 5;
-assert( n, en, "__.n.within" );
+Test.assert( n, en, "__.n.within" );
 
 _n = 4;
 n = _n.__withinBoundary( 5, 9 );
 en = 5;
-assert( n, en, "n.within (left boundary outside)" );
+Test.assert( n, en, "n.within (left boundary outside)" );
 
 _n = 5;
 n = _n.__withinBoundary( 5, 9 );
 en = 5;
-assert( n, en, "n.within (left boundary inside)" );
+Test.assert( n, en, "n.within (left boundary inside)" );
 
 _n = 6;
 n = _n.__withinBoundary( 5, 9 );
 en = 6;
-assert( n, en, "n.within (left boundary inside 2)" );
+Test.assert( n, en, "n.within (left boundary inside 2)" );
 
 _n = 10;
 n = _n.__withinBoundary( 5, 9 );
 en = 9;
-assert( n, en, "n.within (right boundary outside)" );
+Test.assert( n, en, "n.within (right boundary outside)" );
 
 _n = 9;
 n = _n.__withinBoundary( 5, 9 );
 en = 9;
-assert( n, en, "n.within (right boundary inside)" );
+Test.assert( n, en, "n.within (right boundary inside)" );
 
 _n = 8;
 n = _n.__withinBoundary( 5, 9 );
 en = 8;
-assert( n, en, "n.within (right boundary inside 2)" );
+Test.assert( n, en, "n.within (right boundary inside 2)" );
 
 _n = -8;
 n = _n.__withinBoundary( 5, 9 );
 en = 5;
-assert( n, en, "n.within (negative value)" );
+Test.assert( n, en, "n.within (negative value)" );
 
 _n = -8;
 n = _n.__withinBoundary( -5, 9 );
 en = -5;
-assert( n, en, "n.within (negative boundary)" );
+Test.assert( n, en, "n.within (negative boundary)" );
 
 _n = -5;
 n = _n.__withinBoundary( -5, 9 );
 en = -5;
-assert( n, en, "n.within (negative boundary)" );
+Test.assert( n, en, "n.within (negative boundary)" );
 
 
 
@@ -205,27 +154,27 @@ assert( n, en, "n.within (negative boundary)" );
 l = [ 1, 3, 7 ];
 el = [ 1, 3 ];
 l.__remove( 7 );
-assert( l, el, "l.del (single elem)" );
+Test.assert( l, el, "l.del (single elem)" );
 
 l = [ 1, 3, 7, 7, 8 ];
 el = [ 1, 3, 8 ];
 l.__remove( 7 );
-assert( l, el, "l.del (multiple elems)" );
+Test.assert( l, el, "l.del (multiple elems)" );
 
 l = [ 7, 1, 3, 7, 7 ];
 el = [ 1, 3 ];
 l.__remove( 7 );
-assert( l, el, "l.del (multiple elems boundary)" );
+Test.assert( l, el, "l.del (multiple elems boundary)" );
 
 l = [ 7, 7 ];
 el = [ ];
 l.__remove( 7 );
-assert( l, el, "l.del (all removed)" );
+Test.assert( l, el, "l.del (all removed)" );
 
 l = [ 1, 3 ];
 el = [ 1, 3 ];
 l.__remove( 7 );
-assert( l, el, "l.del (none removed)" );
+Test.assert( l, el, "l.del (none removed)" );
 
 
 
@@ -234,17 +183,17 @@ assert( l, el, "l.del (none removed)" );
 l = [ 1, 3, 7 ];
 b = l.__contains( 7 );
 eb = true;
-assert( b, eb, "l.contains (true)" );
+Test.assert( b, eb, "l.contains (true)" );
 
 l = [ 1, 3 ];
 b = l.__contains( 7 );
 eb = false;
-assert( b, eb, "l.contains (false)" );
+Test.assert( b, eb, "l.contains (false)" );
 
 l = [];
 b = l.__contains( 7 );
 eb = false;
-assert( b, eb, "l.contains (empty array)" );
+Test.assert( b, eb, "l.contains (empty array)" );
 
 // __.l.equal
 
@@ -252,46 +201,46 @@ l1 = [ 1, 2, 3 ];
 l2 = [ 1, 2, 3 ];
 b = l1.__equal( l2 );
 eb = true;
-assert( b, eb, "l.equal (simple)" );
+Test.assert( b, eb, "l.equal (simple)" );
 
 l1 = [ 2, 1, 3 ];
 l2 = [ 1, 2, 3 ];
 b = l1.__equal( l2 );
 eb = true;
-assert( b, eb, "l.equal (different order)" );
+Test.assert( b, eb, "l.equal (different order)" );
 
 l1 = [ 2, 1, 3 ];
 l2 = [];
 b = l1.__equal( l2 );
 eb = false;
-assert( b, eb, "l.equal (one empty)" );
+Test.assert( b, eb, "l.equal (one empty)" );
 
 // __.l.empty
 
 l = [ ];
 b = l.__empty();
 eb = true;
-assert( b, eb, "l.empty (true)" );
+Test.assert( b, eb, "l.empty (true)" );
 
 l = [null];
 b = l.__empty();
 eb = false;
-assert( b, eb, "l.empty (null)" );
+Test.assert( b, eb, "l.empty (null)" );
 
 l = [""];
 b = l.__empty();
 eb = false;
-assert( b, eb, "l.empty (empty string)" );
+Test.assert( b, eb, "l.empty (empty string)" );
 
 l = [0];
 b = l.__empty();
 eb = false;
-assert( b, eb, "l.empty (zero)" );
+Test.assert( b, eb, "l.empty (zero)" );
 
 l = [[]];
 b = l.__empty();
 eb = false;
-assert( b, eb, "l.empty (array)" );
+Test.assert( b, eb, "l.empty (array)" );
 
 
 // l.kSort (put in o?)
@@ -299,42 +248,42 @@ assert( b, eb, "l.empty (array)" );
 lo = [ {v:5}, {v:11}, {v:1} ];
 lo = lo.__kSort( "v" );
 elo = [ {v:1}, {v:5}, {v:11} ];
-assert( lo, elo, "l.kSort (numbers)" );
+Test.assert( lo, elo, "l.kSort (numbers)" );
 
 lo = [ {v:"b"}, {v:"c"}, {v:"a"} ];
 lo = lo.__kSort( "v" );
 elo = [ {v:"a"}, {v:"b"} , {v:"c"} ];
-assert( lo, elo, "l.kSort (strings 1)" );
+Test.assert( lo, elo, "l.kSort (strings 1)" );
 
 lo = [ {v:"Z"}, {v:"b"}, {v:"A"}, {v:"a"}, {v:"z"} ];
 lo = lo.__kSort( "v" );
 elo = [{v:"A"}, {v:"Z"}, {v:"a",}, {v:"b"}, {v:"z"} ];
-assert( lo, elo, "l.kSort (strings)" );
+Test.assert( lo, elo, "l.kSort (strings)" );
 
 lo = [ {v:5}, {v:1}, {v:"a"}, {v:"z"} ];
 lo = lo.__kSort( "v" );
 elo = [ {v:1}, {v:5}, {v:"a"}, {v:"z"} ];
-assert( lo, elo, "l.kSort (mixed)" );
+Test.assert( lo, elo, "l.kSort (mixed)" );
 
 lo = [ {v:12}, { v:11}, {s:"x"}, {v:2} ];
 lo = lo.__kSort( "v" );
 elo = [ {v:2}, {v:11}, {v:12}, {s:"x"} ];
-assert( lo, elo, "l.kSort (add. keys)" );
+Test.assert( lo, elo, "l.kSort (add. keys)" );
 
 lo = [ {v:5 }, {v:11}, {v:1}, {v:-1}, {v:null},{x:'1'} ];
 lo = lo.__kSort( "v" );
 elo = [ {v:-1}, {v:null}, {v:1}, {v:5}, {v:11},{x:'1'} ];
-assert( lo, elo, "l.kSort (null, -1)" );
+Test.assert( lo, elo, "l.kSort (null, -1)" );
 
 lo = [ {v:"g"}, {x:"a"}, {v:"a"} ];
 lo = lo.__kSort( "v" );
 elo = [ {v:"a"}, {v:"g"}, {x:"a"}];
-assert( lo, elo, "l.kSort (string values)" );
+Test.assert( lo, elo, "l.kSort (string values)" );
 
 lo = [ {v:"g"}, {a:"a"}, {v:"a"} ];
 lo = lo.__kSort( "v" );
 elo = [ {v:"a"}, {v:"g"}, {a:"a"}];
-assert( lo, elo, "l.kSort (string values 2)" );
+Test.assert( lo, elo, "l.kSort (string values 2)" );
 
 // OBJECT
 
@@ -342,67 +291,67 @@ assert( lo, elo, "l.kSort (string values 2)" );
 o =  { sName:'John', nAge:44}
 s = o.__toString();
 es = '{"sName":"John","nAge":44}';
-assert( s, es, "o.s (simple)" );
+Test.assert( s, es, "o.s (simple)" );
 
 o = {}
 s = o.__toString();
 es = '{}';
-assert( s, es, "o.s (empty)" );
+Test.assert( s, es, "o.s (empty)" );
 
 o = 12
 s = o.__toString();
 es = "12";
-assert( s, es, "o.s (no object)" );
+Test.assert( s, es, "o.s (no object)" );
 
 o = {};
 o.ref = o;
 s = o.__toString();
 es = null;
-assert( s, es, "o.s (circular reference)" );
+Test.assert( s, es, "o.s (circular reference)" );
 
 // __.o.k
 
 o = { "country" : "Belgium" }
 k = o.__getKey();
 ek = "country";
-assert( k, ek, "o.getKey (single attribute)" );
+Test.assert( k, ek, "o.getKey (single attribute)" );
 
 o = { "country" : "Belgium", "address" : "street 11" }
 k = o.__getKey();
 ek = "country";
-assert( k, ek, "o.getKey (mulitple attributes)" );
+Test.assert( k, ek, "o.getKey (mulitple attributes)" );
 
 o = {};
 k = o.__getKey();
 ek = null
-assert( k, ek, "o.getKey (empty object)" );
+Test.assert( k, ek, "o.getKey (empty object)" );
 
 o = [ { "country" : "Belgium" } ];
 k = o.__getKey();
 ek = "0" 
-assert( k, ek, "o.getKey (array)" );
+Test.assert( k, ek, "o.getKey (array)" );
 
 o = "country";
 k = o.__getKey();
 ek = "0";
-assert( k, ek, "o.getKey (no object)" );
+Test.assert( k, ek, "o.getKey (no object)" );
 
 // __.o.getKeys
 
 o = { sName : "John" };
 lk = o.__getKeys();
 elk = [ "sName" ];
-assert( lk, elk, "o.getKeys (one attribute)" );
+Test.assert( lk, elk, "o.getKeys (one attribute)" );
 
 o = { sName : "John", nAge : 44, mpCards : { "a" : 1, "b" : 2 } };
 lk = o.__getKeys();
 elk = [ "sName", "nAge", "mpCards" ];
-assert( lk, elk, "o.getKeys (multiple attribues)" );
+Test.assert( lk, elk, "o.getKeys (multiple attribues)" );
 
 o = {};
 lk = o.__getKeys();
 elk = [];
-assert( lk, elk, "o.getKeys (empty object)" );
+Test.assert( lk, elk, "o.getKeys (empty object)" );
 
 // __.o.add
 
@@ -412,51 +361,51 @@ o2 = { c:3, d:4, d:5 };
 o1.__add( o2 );
 eo1 = { a:1, b:2, c:3, d:4, d:5 };
 eo2 = { c:3, d:4, d:5 };
-assert( o1, eo1, "o.add (two, one-level, different objects)" );
-assert( o2, eo2, "o.add (second object unchanged)" );
+Test.assert( o1, eo1, "o.add (two, one-level, different objects)" );
+Test.assert( o2, eo2, "o.add (second object unchanged)" );
 
 o1 = { a:1, b:2 };
 o2 = { a:3, d:4 };
 o1.__add( o2 );
 eo1 = { a:3, b:2, d:4 };
-assert( o1, eo1, "o.add (two, one-level, intersections)" );
+Test.assert( o1, eo1, "o.add (two, one-level, intersections)" );
 
 o1 = { a:1, b:2 };
 o2 = { a:{f:[1,2,{i:{o1:2,o2:3}}]}, d:4 };
 o1.__add( o2 );
 eo1 = { a:{f:[1,2,{i:{o1:2,o2:3}}]}, b:2, d:4 };
-assert( o1, eo1, "o.add (multi-level, intersections)" );
+Test.assert( o1, eo1, "o.add (multi-level, intersections)" );
 
 o1 = {};
 o2 = { a:1, b:2 };
 o1.__add( o2 );
 eo1 = { a:1, b:2 };
-assert( o1, eo1, "o.add (first object empty)" );
+Test.assert( o1, eo1, "o.add (first object empty)" );
 o1 = { a:1, b:2 };
 
 o1 = { a:1, b:2 };
 o2 = {};
 o1.__add( o2 );
 eo1 = { a:1, b:2 };
-assert( o1, eo1, "o.add (second object empty)" );
+Test.assert( o1, eo1, "o.add (second object empty)" );
 
 o1 = {};
 o2 = {};
 o1.__add( o2 );
 eo1 = {};
-assert( o1, eo1, "o.add (both objects empty)" );
+Test.assert( o1, eo1, "o.add (both objects empty)" );
 
 o1 = { a:1, b:2 };
 o2 = "hi";
 o1.__add( o2 );
 eo1 = { 0:"h", 1:"i", a:1, b:2 };
-assert( o1, eo1, "o.add (second param string)" );
+Test.assert( o1, eo1, "o.add (second param string)" );
 
 o1 = "hi";
 o2 = { a:1, b:2 };
 o1.__add( o2 );
 eo1 = "hi";
-assert( o1, eo1, "o.add (first param string)" );
+Test.assert( o1, eo1, "o.add (first param string)" );
 
 o1 = [1,2];
 o2 = { a:1, b:2 };
@@ -464,32 +413,32 @@ o1.__add( o2 );
 eo1 = [ 1, 2 ];
 eo1["a"] = 1;
 eo1["b"] = 2;
-assert( o1, eo1, "o.add (first param array)" );
+Test.assert( o1, eo1, "o.add (first param array)" );
 
 o1 = { a:1, b:2 };
 o2 = [1,2];
 o1.__add( o2 );
 eo1 = { 0:1, 1:2, a:1, b:2 };
-assert( o1, eo1, "o.add (second param array)" );
+Test.assert( o1, eo1, "o.add (second param array)" );
 
 o1 = [1,2];
 o2 = [3,4];
 o1.__add( o2 );
 eo1 = [3,4];
-assert( o1, eo1, "o.add (both params array)" );
+Test.assert( o1, eo1, "o.add (both params array)" );
 
 // __.o.kRename
 
 
 o = { sName : "John", nAge : 44 };
 o.__kRename( "sName", "sFirstName" );
-eo = { sFirstName : "John", nAge : 44 };
-assert( o, eo, "o.kRename (simple)" );
+eo = { nAge : 44, sFirstName : "John" };
+Test.assert( o, eo, "o.kRename (simple)" );
 
 o = {"a":1,"b":2};
 o.__kRename( "a", "b" );
 eo = {"b":1};
-assert( o, eo, "o.kRename (key already exists)" );
+Test.assert( o, eo, "o.kRename (key already exists)" );
 
 
 lo = [ {"a":1},{"a":3},{"a":"hi"} ];
@@ -497,7 +446,7 @@ lo.forEach( function( o ) {
 	o.__kRename( "a", "b" );
 } );
 elo = [ {"b":1},{"b":3},{"b":"hi"} ];
-assert( lo, elo, "o.kRename (iterate list of objects)" );
+Test.assert( lo, elo, "o.kRename (iterate list of objects)" );
 
 // __.o.c
 
@@ -505,220 +454,220 @@ assert( lo, elo, "o.kRename (iterate list of objects)" );
 o = { sName : "John", nAge : 44 };
 c = o.__kCount();
 ec = 2;
-assert( c, ec, "o.c (simple)" );
+Test.assert( c, ec, "o.c (simple)" );
 
 o = { a:{d:{e:1}}, b:2, c:{f:1} };
 c = o.__kCount();
 ec = 3;
-assert( c, ec, "o.c (nested object)" );
+Test.assert( c, ec, "o.c (nested object)" );
 
 o = { a:1, b:2, c:[1,2] };
 c = o.__kCount();
 ec = 3;
-assert( c, ec, "o.c (with arrays)" );
+Test.assert( c, ec, "o.c (with arrays)" );
 
 o = { a:1, b:2, b:4 };
 c = o.__kCount();
 ec = 2;
-assert( c, ec, "o.c (duplicate key)" );
+Test.assert( c, ec, "o.c (duplicate key)" );
 
 o = { a:1, b:2, c:null };
 c = o.__kCount();
 ec = 3;
-assert( c, ec, "o.c (key nulled)" );
+Test.assert( c, ec, "o.c (key nulled)" );
 
 o = [ 1,2,3,4];
 c = o.__kCount();
 ec = 4;
-assert( c, ec, "o.c (object is array)" );
+Test.assert( c, ec, "o.c (object is array)" );
 
 o = "hi mom";
 c = o.__kCount();
 ec = 6;
-assert( c, ec, "o.c (object is string)" );
+Test.assert( c, ec, "o.c (object is string)" );
 
 b = "http://www.orf.at".__isUrl();
-assert( b, true, "s.__isUrl (http valid)" );
+Test.assert( b, true, "s.__isUrl (http valid)" );
 
 b = "http://www.orf.at/asdf/asdf.html".__isUrl();
-assert( b, true, "s.__isUrl (http valid plus path)" );
+Test.assert( b, true, "s.__isUrl (http valid plus path)" );
 
 b = "http://www.orf.at/asdf/asdf.html?a=1&r=4#hash".__isUrl();
-assert( b, true, "s.__isUrl (http valid plus path plus params)" );
+Test.assert( b, true, "s.__isUrl (http valid plus path plus params)" );
 
 b = "https://www.orf.at".__isUrl();
-assert( b, true, "s.__isUrl (https valid)" );
+Test.assert( b, true, "s.__isUrl (https valid)" );
 
 b = "https://www.orf.at/asdf/asdf.html".__isUrl();
-assert( b, true, "s.__isUrl (https valid plus path)" );
+Test.assert( b, true, "s.__isUrl (https valid plus path)" );
 
 b = "https://www.orf.at/asdf/asdf.html?a=1&r=4#hash".__isUrl();
-assert( b, true, "s.__isUrl (https valid plus path plus params)" );
+Test.assert( b, true, "s.__isUrl (https valid plus path plus params)" );
 
 b = "http://orf.at/asdf/asdf.html?a=1&r=4#hash".__isUrl();
-assert( b, true, "s.__isUrl (no subdomain)" )
+Test.assert( b, true, "s.__isUrl (no subdomain)" )
 
 b = "ftp://www.orf.at/asdf/asdf.html?a=1&r=4#hash".__isUrl();
-assert( b, false, "s.__isUrl (wrong protool)" )
+Test.assert( b, false, "s.__isUrl (wrong protool)" )
 
 b = "www.orf.at/asdf/asdf.html?a=1&r=4#hash".__isUrl();
-assert( b, false, "s.__isUrl (no protool)" )
+Test.assert( b, false, "s.__isUrl (no protool)" )
 
 b = "http://orf/asdf/asdf.html?a=1&r=4#hash".__isUrl();
-assert( b, false, "s.__isUrl (no TLD)" )
+Test.assert( b, false, "s.__isUrl (no TLD)" )
 
 b = "http://orf.at/asdf/asdf.ht ml?a=1&r=4#hash".__isUrl();
-assert( b, true, "s.__isUrl (valid variations)" )
+Test.assert( b, true, "s.__isUrl (valid variations)" )
 
 // __.dt.date
 var o = __.utils.dt.date( "2018/04/04" ).sdtdft;
 var eo = "Apr 4 2018 02:00";
-assert( o, eo, "__.utils.dt.date (slashes)" );
+Test.assert( o, eo, "__.utils.dt.date (slashes)" );
 
 var o = __.utils.dt.date( "2018-04-04" ).sdtdft;
 var eo = "Apr 4 2018 02:00";
-assert( o, eo, "__.dt.utils.date (dashes)" );
+Test.assert( o, eo, "__.dt.utils.date (dashes)" );
 
 var o = __.utils.dt.date( "2018 04 04" ).sdtdft;
 var eo = "Apr 4 2018 02:00";
-assert( o, eo, "__.dt.utils.date (spaces)" );
+Test.assert( o, eo, "__.dt.utils.date (spaces)" );
 
 var dt1 = __.utils.dt.date( "2018 04 04" ).dt;
 var dt2 = __.utils.dt.date( "2018 04 06" ).dt;
 var n = __.utils.dt.diff( dt2, dt1 );
 var en = 2;
-assert( n, en, "__.utils.dt.diff()" );
+Test.assert( n, en, "__.utils.dt.diff()" );
 
 var o1 = {a:[1,3,1,[false,true,{a:1},[99,-1,"g"]]]};
 var o2 = {a:[1,3,1,[false,true,{a:1},["g",99,-1]]]};
-assert( true, o1.__equal( o2 ), "nested unordered arrays complex 4" )
+Test.assert( true, o1.__equal( o2 ), "nested unordered arrays complex 4" )
 
 var o1 = [{a:1},[99,-1,"g"]];
 var o2 = [{a:1},[99,-1,"g"]];
-assert( true,  o1.__equal(o2 ), "object with multiple undefined" )
+Test.assert( true,  o1.__equal(o2 ), "object with multiple undefined" )
 
 var o1 = {a:[,[[]],[]]}; 
 var o2 = {a:[,[],[[]]]};
-assert( true,  false === o1.__equal(o2 ), "object with multiple undefined" )
+Test.assert( true,  false === o1.__equal(o2 ), "object with multiple undefined" )
 
 var o1 = {a:[]}; var o2 = {a:[0]};
-assert( true,  false === o1.__equal(o2 ), "object with undefined, zero" )
+Test.assert( true,  false === o1.__equal(o2 ), "object with undefined, zero" )
 
 var o1 = {a:[0,[[0]]]}; var o2 = {a:[0,[0,[]]]};
-assert( true,  false === o1.__equal(o2 ), "nested object with undefined, zero" )
+Test.assert( true,  false === o1.__equal(o2 ), "nested object with undefined, zero" )
 
 var o1 = {a:[[[,0]],]}; var o2 = {a:[,[[0,]]]};
-assert( true,  false === o1.__equal(o2 ), "nested object with undefined, zero 2" )
+Test.assert( true,  false === o1.__equal(o2 ), "nested object with undefined, zero 2" )
 
-assert( true,  false === [].__equal( [0] ), "undefined, zero" )
+Test.assert( true,  false === [].__equal( [0] ), "undefined, zero" )
 
 var o1 = {a:[1,,4]};
 var o2 = {a:[1,,4]};
-assert( true,  o1.__equal( o2 ), "object equal" );
+Test.assert( true,  o1.__equal( o2 ), "object equal" );
 
-assert( true,  false === [0].__equal([] ), "zero, undefined" )
-assert( true,  [].__equal( [] ), "undefined, undefined" )
+Test.assert( true,  false === [0].__equal([] ), "zero, undefined" )
+Test.assert( true,  [].__equal( [] ), "undefined, undefined" )
 
 var o1 = {a:1,b:1,c:1};
 var o2 = {a:1,b:2,c:1};
 var ldiff = {o1:[["diff", "b", 1, 2]],o2:[["diff", "b", 2, 1]]};
-assert( true,  false === o1.__equal( o2 ), "simple object, many keys, diff val" );
-assert( true,  ldiff.__equal( o1.__diff( o2 ) ), "->diff" );
+Test.assert( true,  false === o1.__equal( o2 ), "simple object, many keys, diff val" );
+Test.assert( true,  ldiff.__equal( o1.__diff( o2 ) ), "->diff" );
 
 var o1 = {a:[1]};
 var o2 = {a:[1]};
-assert( true,  o1.__equal( o2 ), "object equal" );
+Test.assert( true,  o1.__equal( o2 ), "object equal" );
 
 var o1 = {a:1};
 var o2 = {a:1};
-assert( true,  o1.__equal( o2 ), "simple object equal" );
+Test.assert( true,  o1.__equal( o2 ), "simple object equal" );
 var o1 = {a:1};
 var o2 = {a:true};
-assert( true,  false === o1.__equal( o2 ), "simple object diff type" );
+Test.assert( true,  false === o1.__equal( o2 ), "simple object diff type" );
 var ldiff = {o1:[["length",null,7,10],["type", "a", 1, true]],o2:[["length",null,7,10],["type", "a", true, 1]]};
-assert( true,  ldiff.__equal( ldiff, o1.__diff( o2 ) ), "->diff" );
+Test.assert( true,  ldiff.__equal( ldiff, o1.__diff( o2 ) ), "->diff" );
 
 var o1 = {a:1,b:1,c:1};
 var o2 = {a:1,b:1,c:1};
-assert( true,  o1.__equal( o2 ), "simple object, many keys" );
+Test.assert( true,  o1.__equal( o2 ), "simple object, many keys" );
 
 var o1 = {a:1,b:1,c:1};
 var o2 = {a:1,b:2,c:1};
-assert( true,  false === o1.__equal( o2 ), "simple object, many keys, diff val" );
+Test.assert( true,  false === o1.__equal( o2 ), "simple object, many keys, diff val" );
 var ldiff = {o1:[["diff", "b", 1, 2]],o2:[["diff", "b", 2, 1]]};
-assert( true,  ldiff.__equal( o1.__diff( o2 ) ), "->diff" );
+Test.assert( true,  ldiff.__equal( o1.__diff( o2 ) ), "->diff" );
 
 var o1 = [1];
 var o2 = [1];
-assert( true,  o1.__equal( o2 ), "simple array" );
+Test.assert( true,  o1.__equal( o2 ), "simple array" );
 
 var o1 = [1,2,3];
 var o2 = [1,2,3];
-assert( true,  o1.__equal( o2 ), "simple array, multiple elements" );
+Test.assert( true,  o1.__equal( o2 ), "simple array, multiple elements" );
 
 var o1 = [1,2,3];
 var o2 = [3,1,2];
-assert( true,  o1.__equal( o2 ), "!!simple array, multiple elements unordered" );
+Test.assert( true,  o1.__equal( o2 ), "!!simple array, multiple elements unordered" );
 
 var o1 = { a: [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ] };
 var o2 = { a: [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ] };
-assert( true,  o1.__equal( o2 ), "complex object" );
+Test.assert( true,  o1.__equal( o2 ), "complex object" );
 
 var o1 = [ { a:1,b:[1] }, { c:[{u:7,l:[[[5]]]}]} ];
 var o2 = [ { a:1,b:[1] }, { c:[{u:7,l:[[[4]]]}]} ];
-assert( true,  false === o1.__equal( o2 ), "complex object, wrong value" );
+Test.assert( true,  false === o1.__equal( o2 ), "complex object, wrong value" );
 var ldiff = {o1:[["diff", "1.c.0.l.0.0.0", 5, 4]],o2:[["diff", "1.c.0.l.0.0.0", 4, 5]]};
-assert( true,  ldiff.__equal( o1.__diff( o2 ) ), "->diff" );
+Test.assert( true,  ldiff.__equal( o1.__diff( o2 ) ), "->diff" );
 
 var o1 = [ [ {a:1},{a:2},{a:3} ], [ {a:1},{a:2},{a:3} ] ];
 var o2 = [ [ {a:1},{a:2},{a:3} ], [ {a:1},{a:2},{a:3} ] ];
-assert( true,  o1.__equal( o2 ), "multiple objects duplicated in arrays" );
+Test.assert( true,  o1.__equal( o2 ), "multiple objects duplicated in arrays" );
 
 var o1 = [ [ {a:1},{b:2},{a:3} ], [ {a:1},{b:2},{a:3} ] ];
 var o2 = [ [ {a:1},{b:2},{a:3} ], [ {a:1},{b:2},{a:3} ] ];
-assert( true,  o1.__equal( o2 ), "multiple objects in arrays" );
+Test.assert( true,  o1.__equal( o2 ), "multiple objects in arrays" );
 
 var o1 = { fn:function(){var x=1} };
 var o2 = { fn:function(){var x=1} };
-assert( true,  o1.__equal( o2 ), "functions" );
+Test.assert( true,  o1.__equal( o2 ), "functions" );
 
 var o1 = { fn:function(){var x=1} };
 var o2 = { fn:function(){var x=1} };
-assert( true,  o1.__equal( o2 ), "functions with spaces" );
+Test.assert( true,  o1.__equal( o2 ), "functions with spaces" );
 
 var o1 = { b:new Date(2018,1,1) };
 var o2 = { b:new Date(2018,1,1) };
-assert( true,  o1.__equal( o2 ), "same dates" );
+Test.assert( true,  o1.__equal( o2 ), "same dates" );
 
 var o1 = { b:new Date(2018,1,1) };
 var o2 = { b:new Date(2018,1,2) };
-assert( true,  false === o1.__equal( o2 ), "different dates" );
+Test.assert( true,  false === o1.__equal( o2 ), "different dates" );
 
-assert( true,  false === {l:[4,3],s:{a:1}}.__equal( {l:[3,4],s:[11112]} ), "object with different types" );
-assert( true,  {l:[4,3],s:{a:1}}.__equal( {l:[3,4],s:{a:1}} ), "unordered objects" );
-assert( true,  false === [null].__equal( [0] ), "null, zero" )
-assert( true,  false === [].__equal( [0] ), "undefined, zero" )
-assert( true,  false === [0].__equal( [""] ), "zero, empty string" )
-assert( true,  false === [].__equal( [""] ), "undefined, empty string" )
-assert( true,  false === [null].__equal( [""] ), "null, empty string" )
-assert( true,  false === [null].__equal( [0] ), "null, zero" )
-assert( true,  false === [null].__equal( [] ), "null, undefined" )
-assert( true,  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
+Test.assert( true,  false === {l:[4,3],s:{a:1}}.__equal( {l:[3,4],s:[11112]} ), "object with different types" );
+Test.assert( true,  {l:[4,3],s:{a:1}}.__equal( {l:[3,4],s:{a:1}} ), "unordered objects" );
+Test.assert( true,  false === [null].__equal( [0] ), "null, zero" )
+Test.assert( true,  false === [].__equal( [0] ), "undefined, zero" )
+Test.assert( true,  false === [0].__equal( [""] ), "zero, empty string" )
+Test.assert( true,  false === [].__equal( [""] ), "undefined, empty string" )
+Test.assert( true,  false === [null].__equal( [""] ), "null, empty string" )
+Test.assert( true,  false === [null].__equal( [0] ), "null, zero" )
+Test.assert( true,  false === [null].__equal( [] ), "null, undefined" )
+Test.assert( true,  { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
 	{ a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 ), "obect various types" );
-assert( true,  false === { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
+Test.assert( true,  false === { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
 	{ a:false,b:new Date(2018,1,1),c:-1,d:[[[1]]] }
 ), "object various types, diff values" );
-assert( true,  false === { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
+Test.assert( true,  false === { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
 	{ a:true,b:new Date(2018,1,2),c:-1,d:[[[1]]] }
 ), "object various types, diff values 2" );
-assert( true,  false === { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
+Test.assert( true,  false === { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
 	{ a:true,b:new Date(2018,1,1),c:0,d:[[[1]]] }
 ), "object various types, diff values 3" );
-assert( true,  false === { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
+Test.assert( true,  false === { a:true,b:new Date(2018,1,1),c:-1,d:[[[1]]] }.__equal(
 	{ a:true,b:new Date(2018,1,1),c:0,d:[[[2]]] }
 ), "object various types, diff values 4" );
-assert( true,  { a:1,b:{c:{d:{e:1}}}}.__equal(
+Test.assert( true,  { a:1,b:{c:{d:{e:1}}}}.__equal(
 	{ a:1,b:{c:{d:{e:1}}}}
 ), "nested objects" );
 o1  = {
@@ -749,66 +698,66 @@ o2  = {
 	, f : function() { return 'olla' }
 }
 
-assert( true,  false === o1.__equal( o2 ), "complex object, diff struc" );
+Test.assert( true,  false === o1.__equal( o2 ), "complex object, diff struc" );
 delete o2.b.b2.bb3;
-assert( true,  false === o1.__equal( o2 ) , "complex object, diff struc 2" );
+Test.assert( true,  false === o1.__equal( o2 ) , "complex object, diff struc 2" );
 o2.c = "by";
-assert( true,  o1.__equal( o2 ), "complex object, corrected" );
-assert( true,  "olla" == o1.f(), "test function of complex object" );
-assert( true,  "olla" == o2.f(), "test function of complex object 2" );
+Test.assert( true,  o1.__equal( o2 ), "complex object, corrected" );
+Test.assert( true,  "olla" == o1.f(), "test function of complex object" );
+Test.assert( true,  "olla" == o2.f(), "test function of complex object 2" );
 var o1 = {a:["a",-1,true]}
 var o2 = {a:["a",-1,true]}
-assert( true,  o1.__equal( o2 ), "mixed arrays" )
+Test.assert( true,  o1.__equal( o2 ), "mixed arrays" )
 
 var o1 = {a:[1,true,"a"]}
 var o2 = {a:["a",1,true]}
 var o1 = ["a",1,2,3,"b"]
 var o2 = ["a","b",3,1,2]
-assert( true,  o1.__equal( o2 ), "mixed arrays unordered" )
+Test.assert( true,  o1.__equal( o2 ), "mixed arrays unordered" )
 
 var o1 = [[[["a",1,2,3,"b"]]]];
 var o2 = [[[["a","b",3,1,2]]]];
-assert( true,  o1.__equal( o2 ), "nested mixed arrays unordered" )
+Test.assert( true,  o1.__equal( o2 ), "nested mixed arrays unordered" )
 
 var o1 = {a:[7,2,3,[5,1,2,[8,1,3]]]};
 var o2 = {a:[7,2,3,[5,1,2,[8,1,3]]]};
-assert( true,  o1.__equal( o2 ), "nested arrays" )
+Test.assert( true,  o1.__equal( o2 ), "nested arrays" )
 
 var o1 = [7,2,3,[5,1,2,[8,1,3]]];
 var o2 = [7,2,3,[5,1,2,[8,1,3]]];
-assert( true,  o1.__equal( o2 ), "nested arrays 1" )
+Test.assert( true,  o1.__equal( o2 ), "nested arrays 1" )
 
 var o1 = [7,2,[5,4,[8,1]]];
 var o2 = [7,2,[5,4,[8,1]]];
-assert( true,  o1.__equal( o2 ), "nested arrays 2" )
+Test.assert( true,  o1.__equal( o2 ), "nested arrays 2" )
 
 var o1 = {a:[{b:1},[1,2],4,5]}
 var o2 = {a:[{b:1},[1,2],4,5]}
-assert( true,  o1.__equal( o2 ), "nested arrays complex" )
+Test.assert( true,  o1.__equal( o2 ), "nested arrays complex" )
 
 var o1 = {a:[1,3,1,[false,true,{a:1},["g",-1,99,[1]]]]};
 var o2 = {a:[1,3,1,[false,true,{a:1},["g",-1,99,[1]]]]};
-assert( true,  o1.__equal( o2 ), "nested ordered arrays complex 2" )
+Test.assert( true,  o1.__equal( o2 ), "nested ordered arrays complex 2" )
 
 var o1 = {a:[["g",-1,99,[1,3]],3,1,1,{a:1}]};
 var o2 = {a:[1,3,1,{a:1},[99,-1,"g",[3,1]]]};
-assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 3" )
+Test.assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 3" )
 
 var o1 = {a:[1,3,1,[false,true,{a:1},[99,-1,"g"]]]};
 var o2 = {a:[1,3,1,[false,true,{a:1},["g",99,-1]]]};
-assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 4" )
+Test.assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 4" )
 
 var o1 = {a:[1,[true,{a:1},[99,-1,"g"]]]};
 var o2 = {a:[1,[true,{a:1},["g",99,-1]]]};
-assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 5" )
+Test.assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 5" )
 
 var o1 = {a:[{a:1},[99,-1,"g"]]};
 var o2 = {a:[{a:1},["g",99,-1]]};
-assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 6" )
+Test.assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 6" )
 
 var o1 = [{a:1},[99,-1,"g"]];
 var o2 = [{a:1},["g",99,-1]];
-assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 7" )
+Test.assert( true,  o1.__equal( o2 ), "nested unordered arrays complex 7" )
 
 
 </script>

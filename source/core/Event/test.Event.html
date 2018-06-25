@@ -1,16 +1,11 @@
 <html>
+<body>
 <script src="../DOM/__.DOM.js"></script>
 <script>
-if( /\?min/.test( self.location.href ) ) {
-	document.write( '<sc'+'ript src="__.event.min.js"></sc'+'ript>' );
-}
-else {
-	document.write( '<sc'+'ript src="__.event.js"></sc'+'ript>' );
-}
+cAsserts = 2;
+msAssertCheck = 2000;
 </script>
-
-<body>
-<h3>Unit tests for __.Event.js</h3>
+<script src="../test.js"></script>
 <div id="output"></div>
 <div style="width:110%;height:110%;border:1px solid blue">scroll test</div>
 <script>
@@ -131,12 +126,7 @@ setTimeout( function() {
 setTimeout( function() {
 	var h = dnOutput.innerHTML;
 	var eh = "subed,5,1,2,1,1,4,#8,#9,btm1,btm2,top1,top2,";
-	if( h == eh ) {
-		console.log( "OK" );
-	}
-	else {
-		console.log( "ERR", h, eh );
-	}
+	Test.assert( h, eh, "All events good" );
 }, 1800 );
 
 </script>

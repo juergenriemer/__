@@ -1,48 +1,13 @@
 <html>
-<script>
-if( /\?min/.test( self.location.href ) ) {
-	document.write( '<sc'+'ript src="__.class.min.js"></sc'+'ript>' );
-}
-else {
-	document.write( '<sc'+'ript src="__.class.js"></sc'+'ript>' );
-}
-</script>
 
 <body>
-<h3>Unit tests for __.Class.js</h3>
-<div id="output"></div>
+<script>
+cAsserts = 28;
+msAssertCheck = 100;
+</script>
+<script src="../test.js"></script>
 <script>
 
-var assert = function( x1, x2, s ) {
-	var dn = document.getElementById( "output" );
-	var b = true;
-	if( typeof x1 == "object" && typeof s == "string" ) {
-		if( __.o.diff( x1, x2 ) ) {
-			s = '[ERR] ' + s;
-			console.warn( 'ERR: ' + s );
-			console.warn( "expected:", x2 );
-			console.warn( "result:", x1 );
-		}
-		else {
-			s = '[OK] ' + s;
-		}
-	}
-	else if( typeof x1 == "object" && typeof x2 == "string" ) {
-		console.log( '>> single true' );
-	}
-	else {
-		if( x1 !== x2 ) {
-			s = '[ERR] ' + s;
-			console.warn( 'ERR: ' + s );
-			console.warn( "expected:", x2 );
-			console.warn( "result:", x1 );
-		}
-		else {
-			s = '[OK] ' + s;
-		}
-	}
-	dn.innerHTML += s + "<br>";
-}
 var test = { x : 4 }
 var Person = __.Class
 .extend( {
@@ -132,25 +97,25 @@ var MincraftEnglishGeneral = General
 
 var tim = __.Class.instantiate( MincraftEnglishGeneral, { sName : "Tim" } );
 var bob = __.Class.instantiate( Person, { sName : "Bob" } );
-assert( bob.greet(), "Hi, I am Bob", "base class method" );
-assert( bob.sneeze(), "Hatshou!", "base class method 2" );
+Test.assert( bob.greet(), "Hi, I am Bob", "base class method" );
+Test.assert( bob.sneeze(), "Hatshou!", "base class method 2" );
 var alice = __.Class.instantiate( Officer, { sName : "Alice", sRank : "Major" } );
-assert( Person.report(), "We are 3 people", "static method 1" )
-assert( alice.greet(), "Hi, I am Alice, Major Alice", "extended class overridden method" );
-assert( alice.sneeze(), "Hatshou!", "extended class inherited mehtod" );
-assert( alice.salute(), "Salute!", "extended class new mehtod" );
+Test.assert( Person.report(), "We are 3 people", "static method 1" )
+Test.assert( alice.greet(), "Hi, I am Alice, Major Alice", "extended class overridden method" );
+Test.assert( alice.sneeze(), "Hatshou!", "extended class inherited mehtod" );
+Test.assert( alice.salute(), "Salute!", "extended class new mehtod" );
 sue = __.Class.instantiate( General, { sName : "Sue", nStars : 3 } );
-assert( sue.greet(), "Hi, I am Sue, ***General*** Sue", "2nd lvl extended class overridden method" );
-assert( sue.sneeze(), "Hatshou!", "2nd lvl extended class double inherited mehtod");
-assert( sue.salute(), "Salute!", "2nd lvl extended class inherited mehtod" );
-assert( tim.say(), "Hi, my name is Tim, I speak english", "mixin on 2nd lvl extended class mixin mehtod" );
-assert( tim.sLanguage, "english", "mixin on 2nd lvl extended class mixin attr" );
-assert( tim.craft(), "wooden pickaxe", "mixin on 2nd lvl extended class mixin method 2" );
-assert( tim.greet(), "Hi, I am Tim, *Admiral* Tim", "2nd lvl extended class overridden method with mixins" );
-assert( Person.c, 4, "static attribute" ); 
-assert( Person.report(), "We are 4 people", "static method 2" )
-assert( General.report(), "We are 2 general ranks", "static method 3" )
-assert( tim.report(), "We are 4 peopleWe are 2 general ranks", "static method 3" )
+Test.assert( sue.greet(), "Hi, I am Sue, ***General*** Sue", "2nd lvl extended class overridden method" );
+Test.assert( sue.sneeze(), "Hatshou!", "2nd lvl extended class double inherited mehtod");
+Test.assert( sue.salute(), "Salute!", "2nd lvl extended class inherited mehtod" );
+Test.assert( tim.say(), "Hi, my name is Tim, I speak english", "mixin on 2nd lvl extended class mixin mehtod" );
+Test.assert( tim.sLanguage, "english", "mixin on 2nd lvl extended class mixin attr" );
+Test.assert( tim.craft(), "wooden pickaxe", "mixin on 2nd lvl extended class mixin method 2" );
+Test.assert( tim.greet(), "Hi, I am Tim, *Admiral* Tim", "2nd lvl extended class overridden method with mixins" );
+Test.assert( Person.c, 4, "static attribute" ); 
+Test.assert( Person.report(), "We are 4 people", "static method 2" )
+Test.assert( General.report(), "We are 2 general ranks", "static method 3" )
+Test.assert( tim.report(), "We are 4 peopleWe are 2 general ranks", "static method 3" )
 
 var Person = __.Class.extend( {
 	sName : null
@@ -167,7 +132,7 @@ var Soldier = Person.extend( {
      }
   } );
 var tom = __.Class.instantiate( Soldier, "Tom" );
-assert( tom.salute(), "My name is Tom Sir", "jsdoc example 1" );
+Test.assert( tom.salute(), "My name is Tom Sir", "jsdoc example 1" );
 
 Person = __.Class.extend( {
      sName : null
@@ -180,7 +145,7 @@ Person = __.Class.extend( {
 } );
 tim = __.Class.instantiate( Person, { sName : "Tim" } );
 tim.say(); // Hi, I am Tim
-assert( tim.say(), "Hi, I am Tim", "jsdoc instantiate examle" );
+Test.assert( tim.say(), "Hi, I am Tim", "jsdoc instantiate examle" );
 
 
 var Minecraft = {
@@ -205,9 +170,9 @@ var Player = __.Class.extend( {
     }
 }).mixin( Minecraft, Ingress );
 var player = __.Class.instantiate( Player );
-assert( player.say(), "Hi", "jsdoc mixin examle 1" );
-assert( player.craft(), "wooden sword", "jsdoc mixin examle 2" );
-assert( player.capture(), "portal green", "jsdoc mixin examle 3" );
+Test.assert( player.say(), "Hi", "jsdoc mixin examle 1" );
+Test.assert( player.craft(), "wooden sword", "jsdoc mixin examle 2" );
+Test.assert( player.capture(), "portal green", "jsdoc mixin examle 3" );
 
 var Person = __.Class.extend( {
     say : function() {
@@ -220,7 +185,7 @@ var Player = Person.extend( {
     }
 } );
 var player = __.Class.instantiate( Player );
-assert( player.say(), "Hi, Teammate", "jsdoc _super example 1" );
+Test.assert( player.say(), "Hi, Teammate", "jsdoc _super example 1" );
 
 
 // a base class
@@ -241,8 +206,8 @@ Person.report = function() {
     return Person.cPerson + " person(s) created";
 }
 var tom = __.Class.instantiate( Person, { sName : "Tom" } );
-assert( tom.say(), "My name is Tom", "jsdoc class example 1" );
-assert( Person.report(), "1 person(s) created", "jsdocs class static 1" );
+Test.assert( tom.say(), "My name is Tom", "jsdoc class example 1" );
+Test.assert( Person.report(), "1 person(s) created", "jsdocs class static 1" );
 
 // an extended class
 var Soldier = Person.extend( {
@@ -251,8 +216,8 @@ var Soldier = Person.extend( {
    }
 } );
 var tom = __.Class.instantiate( Soldier, { sName : "Major Tom" } );
-assert( tom.salute(), "My name is Major Tom, Sir", "jsdoc class example 2" );
-assert( Person.report(), "2 person(s) created", "jsdocs class static 2" );
+Test.assert( tom.salute(), "My name is Major Tom, Sir", "jsdoc class example 2" );
+Test.assert( Person.report(), "2 person(s) created", "jsdocs class static 2" );
 
 </script>
 </body>
