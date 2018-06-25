@@ -939,6 +939,185 @@ __.SP.list.field.setJsLink= function( args ) { // sList, [sField], urlJsLink
 	} );
 };
 
+/**
+ * Breaks the permission inheritance of a list
+ * @memberof __.SP.list
+ * @method breakInheritance
+ * @example
+ * __.SP.list.breakInheritance( {
+ * 	    sList : "Documents"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ */
+
+__.SP.list.breakInheritance = function( args ) { // sList, id
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx( args );
+	var oList = __.SP.list.get( ctx, args.sList );
+	oList.breakRoleInheritance( false, false );
+	ctx.load( oList );
+	__.SP.exec( ctx, oList, function( oList ) {
+		if( oList.sError ) {
+			async.reject( oList.sError );
+		}
+		else {
+			async.resolve();
+		}
+	} );
+};
+
+/**
+ * Resets the original permission inheritance of a list
+ * @memberof __.SP.list
+ * @method resetInheritance
+ * @example
+ * __.SP.list.resetInheritance( {
+ * 	    sList : "Documents"
+ * } );
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ */
+__.SP.list.resetInheritance = function( args ) {
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx();
+	var oList = __.SP.list.get( ctx, args.sList );
+	oList.resetRoleInheritance();
+	ctx.load( oList );
+	__.SP.exec( ctx, oList, function( oList ) {
+		if( oList.sError ) {
+			async.reject( oList.sError );
+		}
+		else {
+			async.resolve();
+		}
+	} );
+}
+
+/**
+ * Adds a group with a permission role to a list
+ * @memberof __.SP.list
+ * @method addGroup
+ * @example
+ * __.SP.list.addGroup( {
+ * 	    sList : "Documents"
+ *	  , sGroup : "Front Office OSG"
+ *	  , sRole : "Read"
+ * } );
+ * @todo provide a full list of roles in documenation
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.sGroup name of the group
+ * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+ */
+
+__.SP.list.addGroup = function( args ) {
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx();
+	var oList = __.SP.list.get( ctx, args.sList );
+	ctx.load( oList );
+	var oGroups = ctx.get_web().get_siteGroups();
+	var oGroup = oGroups.getByName( args.sGroup );
+	var oBinding = SP.RoleDefinitionBindingCollection.newObject( ctx );
+	var oRole = ctx.get_web().get_roleDefinitions().getByName( args.sRole );
+	oBinding.add( oRole );
+	oList.get_roleAssignments().add( oGroup, oBinding );
+	__.SP.exec( ctx, oList, function( oList ) {
+		if( oList.sError ) {
+			async.reject( oList.sError );
+		}
+		else {
+			async.resolve();
+		}
+	} );
+};
+
+/**
+ * Wipes all exising permissions on an list and adds a group with a permission role to it.
+ * @memberof __.SP.list
+ * @method restrictToGroup
+ * @example
+ * __.SP.list.restrictToGroup( {
+ * 	    sList : "Documents"
+ *	  , sGroup : "Front Office OSG"
+ *	  , sRole : "Read"
+ * } );
+ * @todo provide a full list of roles in documenation
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.sGroup name of the group
+ * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+ */
+
+__.SP.list.restrictToGroup = function( args ) {
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx();
+	var oList = __.SP.list.get( ctx, args.sList );
+	ctx.load( oList );
+	var oGroups = ctx.get_web().get_siteGroups();
+	var oGroup = oGroups.getByName( args.sGroup );
+	var oBinding = SP.RoleDefinitionBindingCollection.newObject( ctx );
+	var oRole = ctx.get_web().get_roleDefinitions().getByName( args.sRole );
+	oBinding.add( oRole );
+	oList.breakRoleInheritance( false );
+	oList.get_roleAssignments().add( oGroup, oBinding );
+	__.SP.exec( ctx, oList, function( oList ) {
+		if( oList.sError ) {
+			async.reject( oList.sError );
+		}
+		else {
+			async.resolve();
+		}
+	} );
+};
+
+/**
+ * Wipes all exising permissions on a list and adds a user with a permission role to it.
+ * @memberof __.SP.list
+ * @method restrictToUser
+ * @example
+ * __.SP.list.restrictToUser( {
+ * 	    sList : "Documents"
+ *	  , xUser : _spPageContextInfo.userId
+ *	  , sRole : "Edit"
+ * } );
+ * @todo provide a full list of roles in documenation
+ * @param {Object} args a parameter object holding the following values
+ * @param {String} args.sList name or guid of a list
+ * @param {String} args.xUser either id or email or login name (osce\\jriemer) of a user
+ * @param {String} args.sRole permission role (possible values: Contribute, Read, Edit, Custom Levelname) 
+ */
+__.SP.list.restrictToUser = function( args ) {
+	var async = __.Async.promise( args );
+	var ctx = __.SP.ctx();
+	var oList = __.SP.list.get( ctx, args.sList );
+	ctx.load( oList );
+	var oUsers = ctx.get_web().get_siteUsers();
+	var oUser = null;
+	if( ! isNaN( args.xUser ) ) {
+		oUser = oUsers.getById( args.xUser );
+	}
+	else if( args.xUser.__isEmail() ) {
+		oUser = oUsers.getByEmail( args.xUser );
+	}
+	else {
+		oUser = oUsers.getByLoginName( args.xUser );
+	}
+	var oBinding = SP.RoleDefinitionBindingCollection.newObject( ctx );
+	var oRole = ctx.get_web().get_roleDefinitions().getByName( args.sRole );
+	oBinding.add( oRole );
+	oList.breakRoleInheritance( false );
+	oList.get_roleAssignments().add( oUser, oBinding );
+	__.SP.exec( ctx, oList, function( oList ) {
+		if( oList.sError ) {
+			async.reject( oList.sError );
+		}
+		else {
+			async.resolve();
+		}
+	} );
+}
+
 
 /*
  * get edir rights
@@ -1081,7 +1260,7 @@ for( var ix=0; ix<c; ix++ ) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 22 2018 12:06:06 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>
