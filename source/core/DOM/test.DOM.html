@@ -347,7 +347,7 @@ setTimeout( function() {
 		dnScrollDiv.__offScroll();
 	}, 50 );
 	dnScrollDiv.__scrollTo( "top" );
-}, 200 );
+}, 300 );
 setTimeout( function() {
 	dnScrollDiv.__onScroll( function( aInfo ) {
 		Test.assert( aInfo.bBottom, false, "dn.__onScroll (node right-bBottom)" );
@@ -357,7 +357,7 @@ setTimeout( function() {
 		dnScrollDiv.__offScroll();
 	}, 50 );
 	dnScrollDiv.__scrollTo( "right" );
-}, 300);
+}, 500);
 setTimeout( function() {
 	dnScrollDiv.__onScroll( function( aInfo ) {
 		Test.assert( aInfo.bBottom, false, "dn.__onScroll (node left-bBottom)" );
@@ -367,7 +367,7 @@ setTimeout( function() {
 		dnScrollDiv.__offScroll();
 	}, 5 );
 	dnScrollDiv.__scrollTo( "left" );
-}, 400 );
+}, 700 );
 setTimeout( function() {
 	dnScrollDiv.__onScroll( function( aInfo ) {
 		Test.assert( aInfo.bBottom, false, "dn.__onScroll (node x-bBottom)" );
@@ -377,7 +377,7 @@ setTimeout( function() {
 		dnScrollDiv.__offScroll();
 	}, 5 );
 	dnScrollDiv.__scrollTo( "x", 10 );
-}, 500 );
+}, 900 );
 setTimeout( function() {
 	dnScrollDiv.__onScroll( function( aInfo ) {
 		Test.assert( aInfo.bBottom, false, "dn.__onScroll (node y-bBottom)" );
@@ -387,7 +387,7 @@ setTimeout( function() {
 		dnScrollDiv.__offScroll();
 	}, 5 );
 	dnScrollDiv.__scrollTo( "y", 10 );
-}, 600 );
+}, 1100 );
 
 
 
