@@ -170,7 +170,7 @@ __.SP.list = {
  */
 	, exists : function( args ) {
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oList = __.SP.list.get( ctx, args.sList );
 		ctx.load( oList, 'Id' );
 		__.SP.exec( ctx, oList, function( oList ) {
@@ -202,7 +202,7 @@ __.SP.list = {
  */
 __.SP.list.id = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	ctx.load( oList, 'Id' );
 	__.SP.exec( ctx, oList, function( oList ) {
@@ -244,7 +244,7 @@ __.SP.list.id = function( args ) {
  */
 __.SP.list.settings = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	for( var k in args.kvFeatures ) {
 		var v = args.kvFeatures[ k ];
@@ -294,7 +294,7 @@ __.SP.list.settings = function( args ) {
  */
 __.SP.list.create = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oWeb = ctx.get_web();
 	var oInfo = new SP.ListCreationInformation();
 	oInfo.set_title( args.sList );
@@ -329,7 +329,7 @@ __.SP.list.create = function( args ) {
  */
 __.SP.list.del = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	oList.deleteObject();
 	ctx.load( oList );
@@ -441,7 +441,7 @@ __.SP.list.addFields = function( args ) { // sList, loFields
 	var async = __.Async.promise( args );
 	async.then( __.SP.taxonomy, "loadSPScripts" )
 	async.then( function( args ) {
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oList = __.SP.list.get( ctx, args.sList );
 		if( args.loFields ) {
 			var oFields = oList.get_fields();
@@ -513,7 +513,7 @@ __.SP.list.addFields = function( args ) { // sList, loFields
  */
 __.SP.list.setLookup = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oField = args.oField;
 	oField.set_lookupList( "{" + args.idList + "}" );
 	oField.set_lookupField( args.sField );
@@ -578,7 +578,7 @@ __.SP.list.setLookups = function( args ) {
  */
 __.SP.list.setColumn = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oColumn = ctx.get_web().get_fields().getByInternalNameOrTitle( args.sColumn );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oField = oList.get_fields().add( oColumn );
@@ -641,7 +641,7 @@ __.SP.list.setColumns = function( args ) { // oList, loFields ) {
  */
 __.SP.list.nameByGuid = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = ctx.get_web().get_lists().getById( args.guid );
 	ctx.load( oList, "Title" );
 	__.SP.exec( ctx, oList, function( oList ) {
@@ -746,7 +746,7 @@ __.SP.list.field = {};
 // REF: think of merging with setLookup, setColumn and reanme method to update?
 __.SP.list.field.display = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oField = oList.get_fields().getByInternalNameOrTitle( args.sField );
 	var bDisp = ( typeof args.bDisp !== "undefined" ) ? args.bDisp : true;
@@ -830,7 +830,7 @@ __.SP.list.field.displays = function( args ) {
  */
 __.SP.list.field.reorder = function( args ) { 
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oCTs = oList.get_contentTypes();
 	ctx.load( oCTs );
@@ -871,7 +871,7 @@ __.SP.list.field.reorder = function( args ) {
  */
 __.SP.list.field.setJsLink= function( args ) { // sList, [sField], urlJsLink
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var sField = args.sField || "jsLink";
 	var oField = oList.get_fields().getByInternalNameOrTitle( sField );
@@ -929,7 +929,7 @@ __.SP.list.breakInheritance = function( args ) { // sList, id
  */
 __.SP.list.resetInheritance = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	oList.resetRoleInheritance();
 	ctx.load( oList );
@@ -962,7 +962,7 @@ __.SP.list.resetInheritance = function( args ) {
 
 __.SP.list.addGroup = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	ctx.load( oList );
 	var oGroups = ctx.get_web().get_siteGroups();
@@ -1000,7 +1000,7 @@ __.SP.list.addGroup = function( args ) {
 
 __.SP.list.restrictToGroup = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	ctx.load( oList );
 	var oGroups = ctx.get_web().get_siteGroups();
@@ -1038,7 +1038,7 @@ __.SP.list.restrictToGroup = function( args ) {
  */
 __.SP.list.restrictToUser = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	ctx.load( oList );
 	var oUsers = ctx.get_web().get_siteUsers();

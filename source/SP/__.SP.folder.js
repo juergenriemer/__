@@ -22,7 +22,7 @@ __.SP.folder = {
 	 */
 	  create : function( args ) { // sList, sFolder
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var path = "";
 		var sFolder = args.sFolder;
 		if( /\//.test( args.sFolder ) ) {
@@ -74,7 +74,7 @@ __.SP.folder = {
 	 */
 	, read : function( args ) {
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oFolder = ctx.get_web().getFolderByServerRelativeUrl( args.path );
 		ctx.load( oFolder, "ListItemAllFields" );
 		__.SP.exec( ctx, oFolder, function( oFolder ) {
@@ -103,7 +103,7 @@ __.SP.folder = {
 };
 __.SP.folder.content = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var path = _spPageContextInfo.webServerRelativeUrl + "" + unescape( args.path );
 	var mpQuery = {
 		  "folders" : 	"<View><Query><Where> \
@@ -199,7 +199,7 @@ __.SP.folder.content( {
 */
 __.SP.folder.content = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var path = _spPageContextInfo.webServerRelativeUrl + "" + unescape( args.path );
 	var mpQuery = {
 		  "folders" : 	"<View><Query><Where> \

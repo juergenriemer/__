@@ -61,14 +61,14 @@ top.__.SP.Error = __.Class.extend( {
 			, url : self.location.href
 		};
 	}
-	, log : function() {
+	, logError : function() {
 		var sException = this.oError.__toString();
 		if( ! sException ) {
 			sException = "[fallback]" + this.oError.sError + this.oError.sStack + this.oError.url;
 		}
 		var oPayload = {
 			  level : this.oError.sLevel
-			, message : "[" + this.oError.idError + "][" + O$C3.sApp + "] " + this.oError.sError
+			, message : "[" + this.oError.idError + "][" + this.oError.sApplication + "] " + this.oError.sError
 			, exception : sException
 		}
 		top.__.SP.webservice.call( {
@@ -77,7 +77,31 @@ top.__.SP.Error = __.Class.extend( {
 			, oPayload : oPayload
 			, bIgnoreFailure : true
 		} );
-	
+	}
+	, init : function( args ) { 
+		var oError = args.oError || null;
+		var kvOpts = args.kvOpts || null;
+		// the error below is triggered by SharePoint in case an internal Ajax request is cancelled,
+		// e.g. by navigating away from a page before a result was delivered. We can savely ignore.
+		if( oError && oError.sError && /The status code of response is '0'./.test( oError.sError ) ) {
+			console.warn( "ajax navigation abort hickup" );
+			return;
+		}
+		var bShowToUser = ( kvOpts && kvOpts.bHideError ) ? false : true;
+		var bLogError = ( kvOpts && kvOpts.bPreventLogging ) ? false : true;
+		console.warn( "-------------ERROR-------------" );
+		console.warn( "show to user: " + bShowToUser );
+		console.warn( "log error: " + bLogError );
+		console.warn( oError );
+		console.warn( "-------------ERROR-------------" );
+		this.createErrorData( oError );
+		// default behaviour is to log the error and show the message to the user
+		if( bShowToUser ) {
+			this.showToUser();
+		}
+		if( bLogError ) {
+			this.logError();
+		}
 	}
 	, hMessage : function() {
 		var hTemplate = " \
@@ -120,18 +144,8 @@ top.__.SP.Error = __.Class.extend( {
 			return null;
 		}
 	}
-	, init : function( args ) { 
-		// the error below is triggered by SharePoint in case an internal Ajax request is cancelled,
-		// e.g. by navigating away from a page before a result was delivered. We can savely ignore.
-		if( args && args.sError && /The status code of response is '0'./.test( args.sError ) ) {
-			console.warn( "ajax navigation abort hickup" );
-			return;
-		}
-		console.warn( "-------------ERROR-------------" );
-		console.warn( args );
-		console.warn( "-------------ERROR-------------" );
+	, showToUser : function() { 
 		var that = this;
-		this.createErrorData( args );
 		var hMessage = this.hMessage( this.oError );
 		if( hMessage ) {
 			var oApp = null;
@@ -177,11 +191,14 @@ top.__.SP.Error = __.Class.extend( {
 			}
 			this.dnWindow = top.__.SP.modal.open( oModalConfig );
 		}
-		this.log();
 	}
 } );
 
-top.__.SP.Error.show = function( args ) {
-	return __.Class.instantiate( top.__.SP.Error, args );
+top.__.SP.Error.show = function( oError, kvOpts ) {
+	return __.Class.instantiate(
+		top.__.SP.Error, {
+			  oError : oError
+			, kvOpts : kvOpts
+		}
+	);
 };
-

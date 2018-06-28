@@ -175,7 +175,7 @@ __.SP.taxonomy.load = function( args ) {
 	}
 	async.then( __.SP.taxonomy, "loadSPScripts" )
 	async.then( function( args ) {
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var sTermStore = args.sTermStore || "Managed Metadata Service";
 		var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
 		var oStore = oTax.get_termStores().getByName( sTermStore );
@@ -308,7 +308,7 @@ __.SP.taxonomy.addTerm = function( args ) {
 	var async = __.Async.promise( args );
 	async.then( __.SP.taxonomy, "loadSPScripts" )
 	async.then( function( args ) {
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var sTermStore = args.sTermStore || "Managed Metadata Service";
 		var oTax = SP.Taxonomy.TaxonomySession.getTaxonomySession( ctx );
 		var oStore = oTax.get_termStores().getByName( sTermStore );

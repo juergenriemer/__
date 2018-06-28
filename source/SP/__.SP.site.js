@@ -120,7 +120,7 @@ __.SP.site.lists = function( args ) {
 
 __.SP.site.addColumn = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oFields = ctx.get_web().get_fields();
 	oFields.addFieldAsXml( args.xml );
 	ctx.load( oFields );
@@ -136,7 +136,7 @@ __.SP.site.addColumn = function( args ) {
 // __.SP.site.readColumn({sColumn:"FrontOffice"})
 __.SP.site.readColumn = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oFields = ctx.get_web().get_fields();
 	var oWeb = ctx.get_site().get_rootWeb();
 	var oColumn = oWeb.get_availableFields().getByInternalNameOrTitle( args.sColumn );
@@ -160,7 +160,7 @@ __.SP.site.readColumn = function( args ) {
 
 __.SP.site.addCSS = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var ctx = SP.ClientContext.get_current()
 	var oWeb = ctx.get_web();
 	oWeb.set_alternateCssUrl( args.url );

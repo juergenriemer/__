@@ -30,7 +30,7 @@ __.SP.webpart = {
 	 */
 	  settings : function( args ) { // path, ixWP, kv
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var path = ( /^http/.test( args.path ) )
 			? args.path
 			: _spPageContextInfo.webServerRelativeUrl + args.path;

@@ -54,7 +54,7 @@ __.SP.ribbon.reload = function() {
  */
 __.SP.ribbon.addIcon = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oIcon = oList.get_userCustomActions().add();
 	oIcon.set_location( args.sRibbon );

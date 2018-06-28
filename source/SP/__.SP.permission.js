@@ -26,7 +26,7 @@ __.SP.group = {};
  */
 __.SP.group.add = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oWeb = ctx.get_web();
 	var oCreate = new SP.GroupCreationInformation();
 	oCreate.set_title( args.sName );
@@ -66,7 +66,7 @@ __.SP.group.add = function( args ) {
  */
 __.SP.group.addUser = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oUser = ctx.get_web().ensureUser( args.sUser );
 	var oGroup = ctx.get_web().get_siteGroups().getByName( args.sGroup );
 	oGroup.get_users().addUser( oUser );

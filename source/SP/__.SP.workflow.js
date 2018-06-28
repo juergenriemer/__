@@ -46,8 +46,7 @@ __.SP.workflow.myTasks = function( args ) {
 	var async = __.Async.promise( args );
 	async.then( __.SP.workflow, "loadSPScripts" )
 	async.then( function( args ) {
-		var ctx = __.SP.ctx();
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oSession = new SP.WorkManagement.OM.UserOrderedSessionManager( ctx ).createSession();
 		var oTaskQuery = new SP.WorkManagement.OM.TaskQuery( ctx );
 		var oLocations = new SP.WorkManagement.OM.UserSettingsManager( ctx ).getAllLocations();

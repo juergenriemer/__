@@ -38,7 +38,7 @@ __.SP.item = {
 	  create : function( args ) { // sList, kv
 		var async = __.Async.promise( args );
 		// get context
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		// get list
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oInfo = new SP.ListItemCreationInformation();
@@ -99,7 +99,7 @@ __.SP.item = {
 	, update : function( args ) { // sList, id, kv
 		var async = __.Async.promise( args );
 		// get context
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		// get list
 		var oList = __.SP.list.get( ctx, args.sList );
 		// get the item by ID
@@ -108,6 +108,17 @@ __.SP.item = {
 		for( var k in args.kv ) {
 			var v = args.kv[ k ];
 			if( typeof v == "object" ) {
+				if( v.taxterms ) {
+					var lsTerms = [];
+					v.taxterms.forEach( function( aTerm ) {
+						lsTerms.push( "-1;#" + aTerm.sLabel + "|" + aTerm.guid );
+					} );
+					var sTerms = lsTerms.join( ";#" );
+					var oField = oList.get_fields().getByInternalNameOrTitle( k );
+					var oTaxField = ctx.castTo( oField, SP.Taxonomy.TaxonomyField );
+					var oTerms = new SP.Taxonomy.TaxonomyFieldValueCollection( ctx, sTerms, oTaxField );
+					oTaxField.setFieldValueByValueCollection( oItem, oTerms );
+				}
 				if( v.lookup ) {
 					var lo = [];
 					v.lookup.forEach( function( id ) {
@@ -161,7 +172,7 @@ __.SP.item = {
 	, read : function( args ) {
 		var async = __.Async.promise( args );
 		// get context
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		// get list
 		var oList = __.SP.list.get( ctx, args.sList );
 		// get item by ID
@@ -253,7 +264,7 @@ __.SP.item = {
 	 */
 	, isEditable : function( args ) {
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
 		ctx.load( oItem, "EffectiveBasePermissions" );
@@ -286,7 +297,7 @@ __.SP.item = {
 	 */
 	, breakInheritance : function( args ) { // sList, id
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
 		oItem.breakRoleInheritance( false );
@@ -315,7 +326,7 @@ __.SP.item = {
 	 */
 	, resetInheritance : function( args ) {
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
 		oItem.resetRoleInheritance();
@@ -349,7 +360,7 @@ __.SP.item = {
 	 */
 	, addGroup : function( args ) {
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
 		ctx.load( oItem );
@@ -388,7 +399,7 @@ __.SP.item = {
 	 */
 	, restrictToGroup : function( args ) {
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
 		ctx.load( oItem );
@@ -429,7 +440,7 @@ __.SP.item = {
 	 */
 	, restrictToUser : function( args ) {
 		var async = __.Async.promise( args );
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oList = __.SP.list.get( ctx, args.sList );
 		var oItem = oList.getItemById( args.id );
 		ctx.load( oItem );

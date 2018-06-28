@@ -31,7 +31,7 @@ __.SP.view = {};
  */
 __.SP.view.list = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oViews = oList.get_views();
 	ctx.load( oViews );
@@ -79,7 +79,7 @@ __.SP.view.list = function( args ) {
  */
 __.SP.view.read = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sView );
 	var oFields = oView.get_viewFields();
@@ -137,7 +137,7 @@ __.SP.view.read = function( args ) {
  */
 __.SP.view.deleteFields = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sView );
 	var oFields = oView.get_viewFields();
@@ -196,7 +196,7 @@ __.SP.view.deleteFields = function( args ) {
  */
 __.SP.view.add = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oViews = oList.get_views();
 	// REF: refactor bPersonal.. its confusing
@@ -293,7 +293,7 @@ __.SP.view.add = function( args ) {
  */
 __.SP.view.del = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sView );
 	oView.deleteObject();
@@ -336,7 +336,7 @@ __.SP.view.del = function( args ) {
  */
 __.SP.view.update = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sView );
 	var oFields = oView.get_viewFields();
@@ -414,7 +414,7 @@ __.SP.view.update = function( args ) {
  */
 __.SP.view.copy = function( args ) {
 	var async = __.Async.promise( args );
-	var ctx = __.SP.ctx();
+	var ctx = __.SP.ctx( args );
 	var oList = __.SP.list.get( ctx, args.sList );
 	var oView = oList.get_views().getByTitle( args.sOldView );
 	ctx.load( oView );

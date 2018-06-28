@@ -24,7 +24,7 @@ __.SP = {
 	 * indicate via absolute Url
 	 * @memberof __.SP
 	 * @method ctx
-	 * @example var ctx = __.SP.ctx();
+	 * @example var ctx = __.SP.ctx( args );
 	 * @example var ctx = __.SP.ctx( "https://jarvis.osce.org/sites/sec_ict" );
 	 * @param {String} [sSite] Absolute Url of the SharePoint site
 	 * @returns {Object} SharePoint site context

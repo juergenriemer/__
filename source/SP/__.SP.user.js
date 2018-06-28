@@ -40,7 +40,7 @@ __.SP.user.current = function( args ) {
 		return;
 	}
 	var _getCurrentUserInfo = function() {
-		var ctx = __.SP.ctx();
+		var ctx = __.SP.ctx( args );
 		var oUser = ctx.get_web().get_currentUser();
 		ctx.load( oUser );
 		__.SP.exec( ctx, oUser, function( oUser ) {
