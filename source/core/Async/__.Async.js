@@ -1,7 +1,7 @@
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @output_file_name __.async.min.js
-// @js_externs var __; __.Async; __.Async.ix; __.Async.store; __.Async.fnerr; __.Async.fnstat; __.Async.stub; __.Async.resolve; __.Async.reject; __.Async.Promise; __.Async.Promise.debug; __.Async.Promise.clear; __.Async.Promise.wait; __.Async.Promise.parallel; __.Async.Promise.then; __.Async.Promise.start; __.Async.Promise.resolve; __.Async.Promise.stop; __.Async.Promise.reject; __.Async.Promise.ctx; __.Async.Promise.fnerr; __.Async.Promise.fnstat; __.Async.Promise._next; __.Async.promise; __.Async.Promise.sdftError; __.Async.Promise.__guid_async__; __.Async.__guid_async__; __.Async.Promise._args;
+// @js_externs var __; __.Async; __.Async.ix; __.Async.store; __.Async.fnerr; __.Async.fnstat; __.Async.stub; __.Async.resolve; __.Async.reject; __.Async.Promise; __.Async.Promise.debug; __.Async.Promise.try; __.Async.Promise.catch; __.Async.Promise.clear; __.Async.Promise.wait; __.Async.Promise.when; __.Async.Promise.then; __.Async.Promise.start; __.Async.Promise.resolve; __.Async.Promise.stop; __.Async.Promise.reject; __.Async.Promise.ctx; __.Async.Promise.fnerr; __.Async.Promise.fnstat; __.Async.Promise._next; __.Async.promise; __.Async.Promise.sdftError; __.Async.Promise.__guid_async__; __.Async.__guid_async__; __.Async.Promise._args;
 // ==/ClosureCompiler==
 /**
  * @namespace __
@@ -113,6 +113,7 @@ __.Async.Promise = function( args ) {
 	this._args = { __guid_async__ : this.__guid_async__ };
 	this._loTasks = [];
 	this._bDebug = false;
+	this._bTrying = false;
 	this.ctx = ( args && args.ctx ) ? args.ctx : window;
 	this.id = ( args && args.id ) ? args.id : this.__guid_async__;
 	this.sdftError = ( args && args.sdftError ) ? args.sdftError : "";
@@ -220,15 +221,55 @@ __.Async.Promise.prototype = {
 		this._add( ofn );
 		return this;
 	}
+	 /**
+	 * Indicates a try block of tasks
+	 * @memberof __.Async
+	 * @method try
+	 * @example async.try()
+	 * @instance
+	 */
+	, try : function() {
+		var that = this;
+		var ofn = {
+			  ctx : this.ctx
+			, sfn : function() {
+				that._bTrying = true;
+				that.resolve();
+			}
+			, args : {}
+		};
+		this._add( ofn );
+		return this;
+	}
+	 /**
+	 * Adds a catch
+	 * @memberof __.Async
+	 * @method try
+	 * @example async.try()
+	 * @instance
+	 */
+	, catch : function( fn ) {
+		var that = this;
+		var ofn = {
+			  ctx : this.ctx
+			, sfn : fn || function( args ) {
+				that.resolve();
+			}
+			, args : {}
+			, bCatch : true
+		};
+		this._add( ofn );
+		return this;
+	}
 	/**
 	 * Registers methods to the task chain that shall get executed
 	 * in parallel. 
 	 * @memberof __.Async
-	 * @method parallel 
+	 * @method when 
 	 * @example
 	 * ( new __.Async() )
 	 * .then( this, "task1", {x:1}, "p1" )
-	 * .parallel( [
+	 * .when( [
 	 * 	  ( new __.Async() )
 	 * 		.then( this, "task2", {x:2}, "p2" )
 	 * 		.then( function( args ) {
@@ -250,7 +291,7 @@ __.Async.Promise.prototype = {
 	 * @returns {Object} Promise instance for chaining
 	 * @instance
 	 */
-	, parallel : function( loAsyncs, sMsg ) {
+	, when : function( loAsyncs, sMsg ) {
 		// get original arguments
 		var _args = this._args;
 		// set optional loggin message
@@ -417,6 +458,13 @@ __.Async.Promise.prototype = {
 		var that = this;
 		// cut next function object from list
 		var ofn = this._loTasks.shift();
+		// first we check if its a catch and we didn't encounter an
+		// error in which case we skip it and invoke the next task
+		// NOTE: _bTrying is set to false by reject
+		if( ofn.bCatch && this._bTrying ) {
+			this._next();
+			return;
+		}
 		// save the current action message
 		this.scurMsg = ofn.sMsg;
 		// increase action count
@@ -541,7 +589,7 @@ __.Async.Promise.prototype = {
 	 * error condition 
 	 * @instance
 	 */
-	, reject : function( xError ) {
+	, _errorStack : function( xError ) {
 		var stringify = function( s ) {
 			try {
 				return ( s ) ? JSON.stringify( s ) : "na";
@@ -575,8 +623,35 @@ __.Async.Promise.prototype = {
 			, "sError" : sError
 			, "sStack" : sStack
 		};
+		return oStack;
+	}
+	, reject : function( xError ) {
+		// create error stack
+		var oStack = this._errorStack( xError );
+		// now check if we are in a try catch block
+		if( this._bTrying ) {
+			// in which case we jump to the closest catch
+			// by deleting all task in between, to this 
+			// we get the index of the next catch
+			var ixCatch = 0;
+			var c = this._loTasks.length;
+			for( var ix=0; ix<c; ix++ ) {
+				var oTask = this._loTasks[ ix ];
+				if( oTask.bCatch ) {
+					ixCatch = ix;
+					break;
+				}
+			}
+			// and blank all tasks before
+			this._loTasks.splice( 0, ixCatch );
+			// add the error stack object to the arguments chain
+			this._bTrying = false;
+			this._args.oError = oStack;
+			// and invoke next task which is catch
+			this._next();
+		}
 		// and invoke the error function with error and args object
-		if( this.fnerr ) {
+		else if( this.fnerr ) {
 			this.fnerr( oStack );
 		}
 	}
@@ -586,5 +661,6 @@ __.Async.Promise.prototype = {
 		}
 	}
 }
+
 
 

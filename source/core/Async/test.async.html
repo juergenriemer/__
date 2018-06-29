@@ -1,13 +1,13 @@
 <html>
+<meta http-equiv="X-UA-Compatible" content="IE=10" />
 <body>
 <script>
-cAsserts = 24;
+cAsserts = 31;
 msAssertCheck = 2000;
 </script>
 <script src="../test.js"></script>
 <div id="output"></div>
 <script>
-
 assert = function( sMsg, exp, got ) {
 	Test.assert( got, exp, sMsg );
 }
@@ -45,6 +45,58 @@ waiter2 = function( args ) {
 		aResult.push( "w2" + s );
 		async.resolve( { aResult : aResult} );
 	}, ms );
+}
+var error = function( args ) {
+	var async = __.Async.promise( args );
+	setTimeout( function() {
+		var s = "[" + args.s + "]";
+		//console.log( s, args.sRes );
+		args.sRes = ( args.sRes ) ? args.sRes + s : s;
+		if( args.bErr ) {
+			async.reject( { sError : s } );
+		}
+		else {
+			async.resolve( { sOk : s } );
+		}
+	}, 1 );
+}
+var error2 = function( args ) {
+	var async = __.Async.promise( args );
+	setTimeout( function() {
+		var s = "[" + args.s + "]";
+		args.sRes = ( args.sRes ) ? args.sRes + s : s;
+		if( args.bErr ) {
+			async.reject( { sError : s } );
+		}
+		else {
+			async.resolve( { sOk : s } );
+		}
+	}, 1 );
+}
+
+para = function( args ) {
+	var async = __.Async.promise( args );
+	setTimeout( function() {
+		var aResult = args && args.aResult;
+		if( ! aResult ) {
+			aResult = []
+		}
+		var s = ( args && args.x ) ? args.x : "_";
+		aResult.push( "pp" + s );
+		async.resolve( { aResult : aResult} );
+	}, 100 );
+}
+para2 = function( args ) {
+	var async = __.Async.promise( args );
+	setTimeout( function() {
+		var paraResult = args && args.paraResult;
+		if( ! paraResult ) {
+			paraResult = []
+		}
+		var s = ( args && args.x ) ? args.x : "_";
+		paraResult.push( "p" + s );
+		async.resolve( { paraResult : paraResult} );
+	}, 50 );
 }
 fnStatus=function( args ){}
 
@@ -396,35 +448,11 @@ getKey( { salt : "Y"
 } );
 getKey( { salt : "Z" } );
 // parallel async tasks
-para = function( args ) {
-	var async = __.Async.promise( args );
-	setTimeout( function() {
-		var aResult = args && args.aResult;
-		if( ! aResult ) {
-			aResult = []
-		}
-		var s = ( args && args.x ) ? args.x : "_";
-		aResult.push( "pp" + s );
-		async.resolve( { aResult : aResult} );
-	}, 100 );
-}
-para2 = function( args ) {
-	var async = __.Async.promise( args );
-	setTimeout( function() {
-		var paraResult = args && args.paraResult;
-		if( ! paraResult ) {
-			paraResult = []
-		}
-		var s = ( args && args.x ) ? args.x : "_";
-		paraResult.push( "p" + s );
-		async.resolve( { paraResult : paraResult} );
-	}, 50 );
-}
 var parallel = new __.Async()
 .then( this, "waiter", {x:1}, "p1" )
 .then( this, "waiter", {x:2}, "p2" )
 .then( this, "waiter", {x:3}, "p3" )
-.parallel( [
+.when( [
 	  ( new __.Async() )
 		.then( this, "para", {x:21}, "p21" )
 		.then( this, "para", {x:22}, "p22" )
@@ -466,7 +494,222 @@ var parallel = new __.Async()
 } )
 .start()
 
+// try catch
+
+// simple try catch
+var err = ( new __.Async( {
+	fnerr : function( oError ) {
+		console.log( ">>>>>>>>>", oError );
+	}
+} ) )
+.then( this, "error", {bErr:0,s:"good"} )
+.try()
+.then( this, "error", {bErr:1,s:"bad"} )
+.catch()
+.then( this, "error", {bErr:0,s:"g00d"} )
+.then( function( args ) {
+	Test.assert( args.sRes, "[good][bad][g00d]", "simple try catch, one task" );
+} )
+.start();
+
+
+var err = ( new __.Async( {
+	fnerr : function( oError ) {
+		//c_onsole.log( ">>>>>>>>>", oError );
+	}
+} ) )
+.then( this, "error", {bErr:false,s:"good"} )
+.try()
+	.then( this, "error", {bErr:true,s:"bad1"} )
+	.then( this, "error", {bErr:true,s:"bad2"} )
+	.then( this, "error", {bErr:true,s:"bad3"} )
+.catch()
+	.then( this, "error", {bErr:false,s:"g00d"} )
+.then( function( args ) {
+	Test.assert( args.sRes, "[good][bad1][g00d]", "simple try catch, many tasks" );
+} )
+.start();
+
+var err = ( new __.Async( {
+	fnerr : function( oError ) {
+		//c_onsole.log( ">>>>>>>>>", oError );
+	}
+} ) )
+.then( this, "error", {bErr:false,s:"good"} )
+.try().then( this, "error", {bErr:true,s:"bad1"} ).catch()
+.try().then( this, "error", {bErr:true,s:"bad2"} ).catch()
+.try()
+	.then( this, "error", {bErr:true,s:"bad3"} )
+	.then( this, "error", {bErr:true,s:"bad4"} )
+.catch()
+.then( this, "error", {bErr:false,s:"g00d"} )
+.then( function( args ) {
+	Test.assert( args.sRes, "[good][bad1][bad2][bad3][g00d]", "multiple catches" );
+} )
+.start();
+
+
+var err = ( new __.Async( {
+	fnerr : function( oError ) {
+		//c_onsole.log( ">>>>>>>>>", oError );
+	}
+} ) )
+// err.debug()
+err.try()
+.then( this, "error", {bErr:true,s:"bad"} )
+.catch( function( args ) {
+	var async = __.Async.promise( args );
+	async.then( this, "error2", {bErr:false,s:"DMIEP"} )
+	async.then( this, "error2", {bErr:false,s:"AWIEGL"} )
+	async.resolve();
+} )
+.then( this, "error", {bErr:false,s:"good2"} )
+.then( function( args ) {
+	Test.assert( args.sRes, "[bad][DMIEP][AWIEGL][good2]", "try catch with func" );
+} )
+.start();
+
+var err = ( new __.Async( {
+	fnerr : function( oError ) {
+		//c_onsole.log( ">>>>>>>>>", oError );
+	}
+} ) )
+err.try()
+.then( this, "error", {bErr:false,s:"notsobad"} )
+.catch( function( args ) {
+	var async = __.Async.promise( args );
+	async.then( this, "error2", {bErr:false,s:"DMIEP"} )
+	async.then( this, "error2", {bErr:false,s:"AWIEGL"} )
+	async.resolve();
+} )
+.then( this, "error", {bErr:false,s:"good2"} )
+.then( function( args ) {
+	Test.assert( args.sRes, "[notsobad][good2]", "try catch with func and no error" );
+} )
+.start();
+
+var err = ( new __.Async() );
+err.try()
+.then( this, "error", {bErr:true,s:"bad"} )
+.catch( function( args ) {
+	var async = __.Async.promise( args );
+	if( args.bErr ) {
+		async.then( this, "error2", {bErr:false,s:"DMIEP"} )
+	}
+	async.resolve();
+} )
+.then( this, "error", {bErr:false,s:"good2"} )
+.then( function( args ) {
+	Test.assert( args.sRes, "[bad][DMIEP][good2]", "try catch with func and no error" );
+} )
+.start();
+// parallel tasks with try catch
+app = {
+	test : function() {
+		var lsRes = [];
+		var err = ( new __.Async() );
+		err.debug()
+		.then( self, "error", {bErr:false,s:"good1"}, "ulla" )
+		.when( [
+			  ( new __.Async() )
+				.try()
+				.then( self, "error", {bErr:false,s:"good1"}, "g1" )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				}, "g2" )
+				.catch()
+			, ( new __.Async() )
+				.try()
+				.then( self, "error", {bErr:true,s:"bad1"}, "b1" )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				}, "b2" )
+				.catch()
+			, ( new __.Async() )
+				.try()
+				.then( self, "error", {bErr:false,s:"good2"} )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				} )
+				.catch()
+			, ( new __.Async() )
+				.try()
+				.then( self, "error", {bErr:true,s:"bad2"} )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				} )
+				.catch()
+		] )
+		.then( function( args ) {
+			var async = __.Async.promise( args );
+			Test.assert( lsRes, ["good1","good2"], "try catch with parallel tasks" );
+			async.resolve();
+		} )
+		.start()
+	}
+}
+app.test();
+app2 = {
+	test : function() {
+		var lsRes = [];
+		var err = ( new __.Async() );
+		err.debug()
+		.try()
+		.then( self, "error", {bErr:false,s:"good1"}, "ulla" )
+		.when( [
+			  ( new __.Async() )
+				.then( self, "error", {bErr:false,s:"good1"}, "g1" )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				}, "g2" )
+			, ( new __.Async() )
+				.then( self, "error", {bErr:true,s:"bad1"}, "b1" )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				}, "b2" )
+			, ( new __.Async() )
+				.then( self, "error", {bErr:false,s:"good2"} )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				} )
+			, ( new __.Async() )
+				.then( self, "error", {bErr:true,s:"bad2"} )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				} )
+		] )
+		.catch()
+		.then( function( args ) {
+			var async = __.Async.promise( args );
+			console.log( lsRes );
+			Test.assert( lsRes, ["good1","good2"], "try catch with parallel tasks" );
+			async.resolve();
+		} )
+		.start()
+	}
+}
+// app2.test();
+// branching
 </script>
 
 </body>
 </html>
+
+
+
