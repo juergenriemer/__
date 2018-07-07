@@ -244,8 +244,14 @@ __.Async.Promise.prototype = {
 	 /**
 	 * Adds a catch
 	 * @memberof __.Async
-	 * @method try
-	 * @example async.try()
+	 * @method catch
+	 * @example async.catch( function( args ) {
+	 *	var async = __.Async.promise( args );
+	 *	// do sg
+	 *	async.resolve();
+	 * } )
+	 * @param {Function} fn An anonymous function to be executed in case of
+	 * exception
 	 * @instance
 	 */
 	, catch : function( fn ) {
@@ -296,10 +302,13 @@ __.Async.Promise.prototype = {
 		var _args = this._args;
 		// set optional loggin message
 		var sMsg = sMsg || "";
+		var that = this;
 		this.then( function() {
 			var async = __.Async.promise( _args );
 			var c = loAsyncs.length;
 			loAsyncs.forEach( function( oAsync ) {
+				// set link to parent Async stack
+				oAsync.oParent = that;
 				// add last task in parallel task stack
 				// to identify whether we are finished
 				oAsync.then( function( args ) {
@@ -589,6 +598,44 @@ __.Async.Promise.prototype = {
 	 * error condition 
 	 * @instance
 	 */
+	, reject : function( xError ) {
+		// create error stack
+		var oStack = this._errorStack( xError );
+		// if we are in a try/catch block we handle exception
+		if( this._bTrying ) {
+			this._handleException( oStack );
+		}
+		// check for try wrap in parent stack in which case we
+		// invoke the parents exception handling
+		else if( this.oParent && this.oParent._bTrying ) {
+			this.oParent._handleException( oStack );
+		}
+		// or invoke the error function with error and args object
+		else if( this.fnerr ) {
+			this.fnerr( oStack );
+		}
+	}
+	, _handleException : function( oStack ) {
+		// in which case we jump to the closest catch
+		// by deleting all task in between, to this 
+		// we get the index of the next catch
+		var ixCatch = 0;
+		var c = this._loTasks.length;
+		for( var ix=0; ix<c; ix++ ) {
+			var oTask = this._loTasks[ ix ];
+			if( oTask.bCatch ) {
+				ixCatch = ix;
+				break;
+			}
+		}
+		// and blank all tasks before
+		this._loTasks.splice( 0, ixCatch );
+		// add the error stack object to the arguments chain
+		this._bTrying = false;
+		this._args.oError = oStack;
+		// and invoke next task which is catch
+		this._next();
+	}
 	, _errorStack : function( xError ) {
 		var stringify = function( s ) {
 			try {
@@ -624,36 +671,6 @@ __.Async.Promise.prototype = {
 			, "sStack" : sStack
 		};
 		return oStack;
-	}
-	, reject : function( xError ) {
-		// create error stack
-		var oStack = this._errorStack( xError );
-		// now check if we are in a try catch block
-		if( this._bTrying ) {
-			// in which case we jump to the closest catch
-			// by deleting all task in between, to this 
-			// we get the index of the next catch
-			var ixCatch = 0;
-			var c = this._loTasks.length;
-			for( var ix=0; ix<c; ix++ ) {
-				var oTask = this._loTasks[ ix ];
-				if( oTask.bCatch ) {
-					ixCatch = ix;
-					break;
-				}
-			}
-			// and blank all tasks before
-			this._loTasks.splice( 0, ixCatch );
-			// add the error stack object to the arguments chain
-			this._bTrying = false;
-			this._args.oError = oStack;
-			// and invoke next task which is catch
-			this._next();
-		}
-		// and invoke the error function with error and args object
-		else if( this.fnerr ) {
-			this.fnerr( oStack );
-		}
 	}
 	, _cleanUp : function() {
 		if( ! this._bDebug ) {

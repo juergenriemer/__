@@ -32,7 +32,7 @@ __.Event = {
 		var that = this;
 		__onScroll( function( aInfo ) {
 			that.trigger( "scroll", aInfo );
-		} );
+		}, 50 );
 	}
 	/**
 	 * Lets an object listen to one or many events. It needs to 

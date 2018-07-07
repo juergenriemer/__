@@ -2,7 +2,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=10" />
 <body>
 <script>
-cAsserts = 31;
+cAsserts = 33;
 msAssertCheck = 2000;
 </script>
 <script src="../test.js"></script>
@@ -48,6 +48,7 @@ waiter2 = function( args ) {
 }
 var error = function( args ) {
 	var async = __.Async.promise( args );
+	var ms = args.ms || 1;
 	setTimeout( function() {
 		var s = "[" + args.s + "]";
 		//console.log( s, args.sRes );
@@ -58,7 +59,7 @@ var error = function( args ) {
 		else {
 			async.resolve( { sOk : s } );
 		}
-	}, 1 );
+	}, ms );
 }
 var error2 = function( args ) {
 	var async = __.Async.promise( args );
@@ -99,7 +100,6 @@ para2 = function( args ) {
 	}, 50 );
 }
 fnStatus=function( args ){}
-
 // error async
 Error = new __.Async({
 	  sdftError : "hi mom"
@@ -554,7 +554,6 @@ var err = ( new __.Async( {
 		//c_onsole.log( ">>>>>>>>>", oError );
 	}
 } ) )
-// err.debug()
 err.try()
 .then( this, "error", {bErr:true,s:"bad"} )
 .catch( function( args ) {
@@ -608,8 +607,7 @@ app = {
 	test : function() {
 		var lsRes = [];
 		var err = ( new __.Async() );
-		err.debug()
-		.then( self, "error", {bErr:false,s:"good1"}, "ulla" )
+		err.then( self, "error", {bErr:false,s:"good1"}, "ulla" )
 		.when( [
 			  ( new __.Async() )
 				.try()
@@ -661,19 +659,17 @@ app2 = {
 	test : function() {
 		var lsRes = [];
 		var err = ( new __.Async() );
-		err.debug()
-		.try()
-		.then( self, "error", {bErr:false,s:"good1"}, "ulla" )
+		err.try()
 		.when( [
 			  ( new __.Async() )
-				.then( self, "error", {bErr:false,s:"good1"}, "g1" )
+				.then( self, "error", {bErr:false,ms:10,s:"good1"}, "g1" )
 				.then( function( args ) {
 					var async = __.Async.promise( args );
 					lsRes.push( args.s );
 					async.resolve();
 				}, "g2" )
 			, ( new __.Async() )
-				.then( self, "error", {bErr:true,s:"bad1"}, "b1" )
+				.then( self, "error", {bErr:true,ms:100,s:"bad1"}, "b1" )
 				.then( function( args ) {
 					var async = __.Async.promise( args );
 					lsRes.push( args.s );
@@ -687,25 +683,71 @@ app2 = {
 					async.resolve();
 				} )
 			, ( new __.Async() )
-				.then( self, "error", {bErr:true,s:"bad2"} )
+				.then( self, "error", {bErr:true,ms:100,s:"bad2"} )
 				.then( function( args ) {
 					var async = __.Async.promise( args );
 					lsRes.push( args.s );
 					async.resolve();
 				} )
 		] )
-		.catch()
+		.catch( function( args ) {
+			var async = __.Async.promise( args );
+			lsRes.push( "catch" );
+			async.resolve();
+
+		} )
 		.then( function( args ) {
 			var async = __.Async.promise( args );
-			console.log( lsRes );
-			Test.assert( lsRes, ["good1","good2"], "try catch with parallel tasks" );
+			Test.assert( lsRes, ["good2","good1","catch"], "try catch with parallel tasks wrapping" );
 			async.resolve();
 		} )
 		.start()
 	}
 }
-// app2.test();
+app2.test();
+
+
+
+app3 = {
+	test : function() {
+		var lsRes = [];
+		var err = ( new __.Async() );
+		err.try()
+		.when( [
+			  ( new __.Async() )
+				.then( self, "error", {bErr:false,ms:100,s:"good1"}, "g1" )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				}, "g2" )
+			, ( new __.Async() )
+				.then( self, "error", {bErr:true,s:"bad1"}, "b1" )
+				.then( function( args ) {
+					var async = __.Async.promise( args );
+					lsRes.push( args.s );
+					async.resolve();
+				}, "b2" )
+		] )
+		.then( function( args ) {
+			var async = __.Async.promise( args );
+			lsRes.push( "catch" );
+			async.resolve();
+
+		} )
+		.then( function( args ) {
+			var async = __.Async.promise( args );
+			Test.assert( lsRes, ["catch"], "try catch with parallel tasks wrapping" );
+			async.resolve();
+		} )
+		.start()
+	}
+}
+app3.test();
+
+
 // branching
+// late arrival catch
 </script>
 
 </body>

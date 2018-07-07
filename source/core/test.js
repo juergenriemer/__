@@ -100,6 +100,8 @@ Test = {
 		}
 		else {
 			document.body.style.background = "green";
+		}
+		if( top !== self ) {
 			self.location.href = "about:blank";
 		}
 	}
